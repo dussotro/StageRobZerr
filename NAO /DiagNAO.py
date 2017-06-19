@@ -4,8 +4,8 @@ from naoqi import ALProxy
 import motion
 import select
 
-robotIP = "localhost"
-port = 11212
+robotIP = "172.20.12.126"
+port = 9559
 Frequency = 0.0 #low speed
 
 try:
@@ -32,11 +32,7 @@ def StiffnessOn(proxy):
 
 
 def doInitialisation():
-<<<<<<< HEAD
     print ">>>>>> Initialisation"   
-=======
-    print ">>>>>> Initialisation"
->>>>>>> 706988238cc951774060f11ea56bfff06d400027
     # Set NAO in Stiffness On
     StiffnessOn(motionProxy)
     # Send NAO to Pose Init
@@ -81,14 +77,14 @@ def Test_Detection():
         # Check whether we got a valid output.
         if(val and isinstance(val, list) and len(val) >= 2):
 
-        # We detected faces !
-        # For each face, we can read its shape info and ID.
+            # We detected faces !
+            # For each face, we can read its shape info and ID.
 
-        # First Field = TimeStamp.
-        timeStamp = val[0]
+            # First Field = TimeStamp.
+            timeStamp = val[0]
 
-        # Second Field = array of face_Info's.
-        faceInfoArray = val[1]
+            # Second Field = array of face_Info's.
+            faceInfoArray = val[1]
 
             try:
                 # Browse the faceInfoArray to get info on each detected face.
@@ -107,7 +103,7 @@ def Test_Detection():
                 print "faces detected, but it seems getData is invalid. ALValue ="
                 print val
                 print "Error msg %s" % (str(e))
-          else:
+        else:
               print "No face detected"
 
         # Unsubscribe the module.
@@ -116,14 +112,10 @@ def Test_Detection():
         print "Detection finished"
 
 if __name__== "__main__":
-<<<<<<< HEAD
     doInitialisation()
     #test de la vision du NAO
     Test_Detection()
-=======
-    StiffnessOn(motionProxy)
-    doInitialisation()
->>>>>>> 706988238cc951774060f11ea56bfff06d400027
+
 
 
 
