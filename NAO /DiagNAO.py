@@ -10,26 +10,26 @@ Frequency = 0.0 #low speed
 
 try:
     motionProxy = ALProxy("ALMotion", robotIP, port)
-except Exception, e:
-    print "Could not create proxy to ALMotion"
-    print "Error was: ", e
+except(Exception, e):
+    print("Could not create proxy to ALMotion")
+    print("Error was: ", e)
 try:
     postureProxy = ALProxy("ALRobotPosture", robotIP, port)
-except Exception, e:
-    print "Could not create proxy to ALRobotPosture"
-    print "Error was: ", e
+except(Exception, e):
+    print("Could not create proxy to ALRobotPosture")
+    print("Error was: ", e)
 try:
-    self.sonarProxy = ALProxy("ALSonar", robotIp, robotPort)
-except Exception, e:
-    print "Could not create proxy to ALMotion"
-    print "Error was: ", e
+    sonarProxy = ALProxy("ALSonar", robotIP, port)
+except (Exception, e):
+    print ("Could not create proxy to ALSonar")
+    print ("Error was: ", e)
 
 
 try:
-    self.memoryProxy = ALProxy("ALMemory",robotIp, robotPort)
-except Exception, e:
-    print "Could not create proxy to ALMotion"
-    print "Error was: ", e
+    memoryProxy = ALProxy("ALMemory",robotIP, port)
+except (Exception, e):
+    print ("Could not create proxy to ALMemory")
+    print ("Error was: ", e)
 
 #stiffness for real NAO Robot
 def StiffnessOn(proxy):
@@ -40,40 +40,39 @@ def StiffnessOn(proxy):
     proxy.stiffnessInterpolation(pNames, pStiffnessLists, pTimeLists)
 
 def doInitialisation():
-    print ">>>>>> Initialisation"
+    print(">>>>>> Initialisation")
     # Set NAO in Stiffness On
     StiffnessOn(motionProxy)
     # Send NAO to Pose Init
     postureProxy.goToPosture("StandInit", 0.5)
 
 	
-"""""""""
-Vision
-"""""""""
+#==============================================================================
+# """Vision"""
+#==============================================================================
 
 def Test_Detection():
 
     # Create a proxy to ALFaceDetection
     try:
         faceProxy = ALProxy("ALFaceDetection", robotIP, port)
-    except Exception, e:
-        print "Error when creating face detection proxy:"
-        print str(e)
+    except (Exception, e):
+        print ("Error when creating face detection proxy:")
+        print (str(e))
         exit(1) 
 
 
     period = 500
     faceProxy.subscribe("Test_Face", period, 0.0 )
 
-
     # A simple loop that reads the memValue and checks whether faces are detected.
     for i in range(0, 20):
         time.sleep(0.5)
         val = memoryProxy.getData(memValue)
 
-        print ""
-        print "*****"
-        print ""
+        print ("")
+        print ("*****")
+        print ("")
 
         # Check whether we got a valid output.
         if(val and isinstance(val, list) and len(val) >= 2):
@@ -97,24 +96,27 @@ def Test_Detection():
                     # Second Field = Extra info (empty for now).
                     faceExtraInfo = faceInfo[1]
 
-                print "  alpha %.3f - beta %.3f" % (faceShapeInfo[1], faceShapeInfo[2])
-                print "  width %.3f - height %.3f" % (faceShapeInfo[3], faceShapeInfo[4])
+                print ("  alpha %.3f - beta %.3f" % (faceShapeInfo[1], faceShapeInfo[2]))
+                print ("  width %.3f - height %.3f" % (faceShapeInfo[3], faceShapeInfo[4]))
  
-            except Exception, e:
-                print "faces detected, but it seems getData is invalid. ALValue ="
-                print val
-                print "Error msg %s" % (str(e))
+            except (Exception, e):
+                print ("faces detected, but it seems getData is invalid. ALValue =")
+                print (val)
+                print ("Error msg %s" % (str(e)))
         else:
-              print "No face detected"
+              print ("No face detected")
 
         # Unsubscribe the module.
         faceProxy.unsubscribe("Test_Face")
 
-        print "Detection finished"
+        print ("Detection finished")
 
+#==============================================================================
+# """Sensors"""
+#==============================================================================
 def TrySensors():
-    Left = self.memoryProxy.getData("Device/SubDeviceList/US/Left/Sensor/Value")
-    Right = self.memoryProxy.getData("Device/SubDeviceList/US/Right/Sensor/Value") 
+    Left = memoryProxy.getData("Device/SubDeviceList/US/Left/Sensor/Value")
+    Right = memoryProxy.getData("Device/SubDeviceList/US/Right/Sensor/Value") 
     print ('Left :', Left)
     print ('Right:', Right)
     
@@ -122,7 +124,7 @@ def TrySensors():
 if __name__== "__main__":
     doInitialisation()
     #test de la vision du NAO
-    Test_Detection()
+    #Test_Detection()
     TrySensors()
 
 
