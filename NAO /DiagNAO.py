@@ -18,9 +18,17 @@ try:
 except Exception, e:
     print "Could not create proxy to ALRobotPosture"
     print "Error was: ", e
+try:
+    self.sonarProxy = ALProxy("ALSonar", robotIp, robotPort)
+except Exception, e:
+    print "Could not create proxy to ALMotion"
+    print "Error was: ", e
 
-
-
+try:
+    self.memoryProxy = ALProxy("ALMemory",robotIp, robotPort)
+except Exception, e:
+    print "Could not create proxy to ALMotion"
+    print "Error was: ", e
 
 #stiffness for real NAO Robot
 def StiffnessOn(proxy):
@@ -111,11 +119,18 @@ def Test_Detection():
 
         print "Detection finished"
 
+def TrySensors():
+    Left = self.memoryProxy.getData("Device/SubDeviceList/US/Left/Sensor/Value")
+    Right = self.memoryProxy.getData("Device/SubDeviceList/US/Right/Sensor/Value") 
+    print ('Left :', Left)
+    print ('Right:', Right)
+    
+    
 if __name__== "__main__":
     doInitialisation()
     #test de la vision du NAO
     Test_Detection()
-
+    TrySensors()
 
 
 
