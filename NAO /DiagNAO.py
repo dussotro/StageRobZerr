@@ -161,14 +161,14 @@ def doback():
     
 def doleft():
     
-    theta= -(np.pi/6)
+    theta= -(np.pi)
     motionProxy.moveTo (0, 0, theta)
     time.sleep(t)
     print"turning left"
 
 def doright():
     
-    theta= (np.pi/6)
+    theta= (np.pi)
     motionProxy.moveTo (0, 0, theta)
     time.sleep(t)
     print"turning right"
@@ -191,7 +191,7 @@ def doStop():
 
 def target_velocity():
     #TARGET VELOCITY
-    X = 0.8
+    X = 0.4
     Y = 0.0
     Theta = 0.0
     Frequency =1.0 # max speed
@@ -200,7 +200,7 @@ def target_velocity():
     time.sleep(4.0)
     print "walk Speed X :",motionProxy.getRobotVelocity()[0]," m/s"
     
-    X = -0.5  #backward
+    X = -0.4  #backward
     Y = 0.0
     Theta = 0.0
     Frequency =0.0 # low speed
@@ -310,6 +310,7 @@ if __name__== "__main__":
         Test_Image()
         #test de capteurs 
         TrySensors()
+        target_velocity()
     
 
         TestTts()
