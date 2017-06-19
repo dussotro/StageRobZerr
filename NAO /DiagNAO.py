@@ -203,14 +203,14 @@ def doback():
     
 def doleft():
     
-    theta= -(np.pi/6)
+    theta= -(np.pi)
     motionProxy.moveTo (0, 0, theta)
     time.sleep(t)
     print"turning left"
 
 def doright():
     
-    theta= (np.pi/6)
+    theta= (np.pi)
     motionProxy.moveTo (0, 0, theta)
     time.sleep(t)
     print"turning right"
