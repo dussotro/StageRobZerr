@@ -19,9 +19,6 @@ except Exception, e:
     print "Could not create proxy to ALRobotPosture"
     print "Error was: ", e
 
-
-
-
 #stiffness for real NAO Robot
 def StiffnessOn(proxy):
     # We use the "Body" name to signify the collection of all joints
@@ -29,7 +26,6 @@ def StiffnessOn(proxy):
     pStiffnessLists = 1.0
     pTimeLists = 1.0
     proxy.stiffnessInterpolation(pNames, pStiffnessLists, pTimeLists)
-
 
 def doInitialisation():
     print ">>>>>> Initialisation"   
@@ -47,7 +43,7 @@ def Test_Detection():
 
     # Create a proxy to ALFaceDetection
     try:
-        faceProxy = ALProxy("ALFaceDetection", IP, PORT)
+        faceProxy = ALProxy("ALFaceDetection", robotIP, port)
     except Exception, e:
         print "Error when creating face detection proxy:"
         print str(e)
@@ -59,7 +55,7 @@ def Test_Detection():
 
     # Create a proxy to ALMemory
     try:
-        memoryProxy = ALProxy("ALMemory", IP, PORT)
+        memoryProxy = ALProxy("ALMemory", robotIP, port)
     except Exception, e:
         print "Error when creating memory proxy:"
         print str(e)
