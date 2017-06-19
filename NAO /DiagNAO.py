@@ -160,16 +160,16 @@ def doback():
      time.sleep(t)
      print"back"
     
-def doleft():
+def doleft(angle):
     
-    theta= -(np.pi)
+    theta= -(angle)
     motionProxy.moveTo (0, 0, theta)
     time.sleep(t)
     print"turning left"
 
 def doright():
     
-    theta= (np.pi)
+    theta= angle
     motionProxy.moveTo (0, 0, theta)
     time.sleep(t)
     print"turning right"
@@ -231,6 +231,13 @@ def position_robot():
     #####################
     robotMove = m.pose2DInverse(initRobotPosition)*endRobotPosition
     print "Robot Move :", robotMove
+
+def Test_Square():
+    for i in range(4):
+        dorun(1)
+        doleft(np.pi/2)
+    
+
 #
 #def shoot():
 #    
