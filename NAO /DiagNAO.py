@@ -1,12 +1,18 @@
+# -*- coding: utf-8 -*-
 import time
 import sys
 from naoqi import ALProxy
 import motion
 import select
+import vision_definitions
+import numpy as np
+
+
 
 robotIP = "172.20.12.126"
 port = 9559
 Frequency = 0.0 #low speed
+t=1
 
 try:
     motionProxy = ALProxy("ALMotion", robotIP, port)
@@ -24,6 +30,18 @@ except Exception, e:
     print "Could not create proxy to ALSonar"
     print "Error was: ", e
 
+try :
+    audio = ALProxy("ALAudioDevice", robotIP,port)
+    audio.setOutputVolume(50)
+except Exception, e: 
+    print "Could not create proxy to ALaudioProxy"
+    print "Error was: ", e
+try :
+    tts = ALProxy("ALTextToSpeech", robotIP, port)
+    tts.setLanguage("French")
+except Exception, e: 
+    print "Could not create proxy to ALTextToSpeech"
+    print "Error was: ", e
 
 try:
     memoryProxy = ALProxy("ALMemory",robotIP, port)
@@ -46,6 +64,12 @@ def doInitialisation():
     # Send NAO to Pose Init
     postureProxy.goToPosture("StandInit", 0.5)
 
+
+#==============================================================================
+# Audio
+#==============================================================================
+def TestTts():
+    tts.say("Test Micro")
 	
 #==============================================================================
 # """Vision"""
@@ -111,12 +135,48 @@ def Test_Detection():
 
         print "Detection finished"
 
+def Test_Image():
+
+	####
+	# Create proxy on ALVideoDevice
+
+	print "Creating ALVideoDevice proxy to ", robotIP
+
+	camProxy = ALProxy("ALVideoDevice", robotIP, port)
+
+	####
+	# Register a Generic Video Module
+
+	resolution = vision_definitions.kQVGA
+	colorSpace = vision_definitions.kYUVColorSpace
+	fps = 30
+
+	nameId = camProxy.subscribe("python_GVM", resolution, colorSpace, fps)
+	print nameId
+
+	print 'getting images in local'
+	for i in range(0, 20):
+	  camProxy.getImageLocal(nameId)
+	  camProxy.releaseImage(nameId)
+
+	resolution = vision_definitions.kQQVGA
+	camProxy.setResolution(nameId, resolution)
+
+	print 'getting images in remote'
+	for i in range(0, 20):
+	  camProxy.getImageRemote(nameId)
+
+	camProxy.unsubscribe(nameId)
+
+	print 'end of gvm_getImageLocal python script'
+
+
 #==============================================================================
 # """Sensors"""
 #==============================================================================
 def TrySensors():
-    Left = memoryProxy.getData("Device/SubDeviceList/US/Left/Sensor/Value")
-    Right = memoryProxy.getData("Device/SubDeviceList/US/Right/Sensor/Value") 
+    Left = memoryProxy.getData("Device/SubDeviceList/US/Left/Sensor/Value1")
+    Right = memoryProxy.getData("Device/SubDeviceList/US/Right/Sensor/Value1") 
     print 'Left :', Left
     print 'Right:', Right
     
@@ -126,43 +186,43 @@ def TrySensors():
 #==============================================================================
 def dorun():
     
-    motionProxy.moveTo (0.8, 0, 0)
-    sleep(1.0)
+    motionProxy.moveTo (0.4, 0, 0)
+    time.sleep(t)
     print"running"
     
 
 def doback():
     
-     motionProxy.moveTo (-0.8, 0, 0)
-     sleep(1.0)
+     motionProxy.moveTo (-0.4, 0, 0)
+     time.sleep(t)
      print"back"
     
 def doleft():
     
     theta= -(np.pi/6)
     motionProxy.moveTo (0, 0, theta)
-    sleep(1.0)
+    time.sleep(t)
     print"turning left"
 
 def doright():
     
     theta= (np.pi/6)
     motionProxy.moveTo (0, 0, theta)
-    sleep(1.0)
+    time.sleep(t)
     print"turning right"
     
 def doStandUp():
     
     motionProxy.wakeUp()
     motionProxy.setStiffnesses("Body", 1.0)
-    sleep(1.0)
+    time.sleep(t)
     print"standing up"
     
 def doStop():
     
     motionProxy.rest()
     motionProxy.setStiffnesses("Body", 0.0)
-    sleep(deltat)
+    time.sleep(t)
     print"stoping"
 
 def parler():
@@ -292,6 +352,7 @@ if __name__== "__main__":
     #test de capteurs 
     TrySensors()
     
+<<<<<<< HEAD
     #test de déplacements
     dorun()
     doback()
@@ -310,6 +371,17 @@ if __name__== "__main__":
 
 	
     
+=======
+    TestTts()
+#    #test de déplacements
+#    dorun()
+#    doback()
+#    doleft()
+#    doright()
+#    doStandUp()
+#    doStop()
+#    
+>>>>>>> 2babe89e7cabaafeecf9f0800b214bf145340dda
 
 
 
