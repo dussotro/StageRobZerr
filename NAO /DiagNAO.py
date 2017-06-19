@@ -5,10 +5,14 @@ from naoqi import ALProxy
 import motion
 import select
 import vision_definitions
+import numpy as np
+
+
 
 robotIP = "172.20.12.126"
 port = 9559
 Frequency = 0.0 #low speed
+t=1
 
 try:
     motionProxy = ALProxy("ALMotion", robotIP, port)
@@ -27,13 +31,13 @@ except Exception, e:
     print "Error was: ", e
 
 try :
-    audioProxy = ALProxy("ALAudioDevice", robotIP,port)
-    audio.setOutputVolume(100)
+    audio = ALProxy("ALAudioDevice", robotIP,port)
+    audio.setOutputVolume(50)
 except Exception, e: 
     print "Could not create proxy to ALaudioProxy"
     print "Error was: ", e
 try :
-    tts = ALProxy("ALTextToSpeech", "172.20.28.198", 9559)
+    tts = ALProxy("ALTextToSpeech", robotIP, port)
     tts.setLanguage("French")
 except Exception, e: 
     print "Could not create proxy to ALTextToSpeech"
@@ -65,7 +69,7 @@ def doInitialisation():
 # Audio
 #==============================================================================
 def TestTts():
-    tts.say("test micro, un deux.... Un deux ...")
+    tts.say("Test Micro")
 	
 #==============================================================================
 # """Vision"""
@@ -171,8 +175,8 @@ def Test_Image():
 # """Sensors"""
 #==============================================================================
 def TrySensors():
-    Left = memoryProxy.getData("Device/SubDeviceList/US/Left/Sensor/Value")
-    Right = memoryProxy.getData("Device/SubDeviceList/US/Right/Sensor/Value") 
+    Left = memoryProxy.getData("Device/SubDeviceList/US/Left/Sensor/Value1")
+    Right = memoryProxy.getData("Device/SubDeviceList/US/Right/Sensor/Value1") 
     print 'Left :', Left
     print 'Right:', Right
     
@@ -182,43 +186,43 @@ def TrySensors():
 #==============================================================================
 def dorun():
     
-    motionProxy.moveTo (0.8, 0, 0)
-    sleep(1.0)
+    motionProxy.moveTo (0.4, 0, 0)
+    time.sleep(t)
     print"running"
     
 
 def doback():
     
-     motionProxy.moveTo (-0.8, 0, 0)
-     sleep(1.0)
+     motionProxy.moveTo (-0.4, 0, 0)
+     time.sleep(t)
      print"back"
     
 def doleft():
     
     theta= -(np.pi/6)
     motionProxy.moveTo (0, 0, theta)
-    sleep(1.0)
+    time.sleep(t)
     print"turning left"
 
 def doright():
     
     theta= (np.pi/6)
     motionProxy.moveTo (0, 0, theta)
-    sleep(1.0)
+    time.sleep(t)
     print"turning right"
     
 def doStandUp():
     
     motionProxy.wakeUp()
     motionProxy.setStiffnesses("Body", 1.0)
-    sleep(1.0)
+    time.sleep(t)
     print"standing up"
     
 def doStop():
     
     motionProxy.rest()
     motionProxy.setStiffnesses("Body", 0.0)
-    sleep(1.0)
+    time.sleep(t)
     print"stoping"
 
     
@@ -231,14 +235,14 @@ if __name__== "__main__":
     TrySensors()
     
     TestTts()
-    #test de déplacements
-    dorun()
-    doback()
-    doleft()
-    doright()
-    doStandUp()
-    doStop()
-    
+#    #test de déplacements
+#    dorun()
+#    doback()
+#    doleft()
+#    doright()
+#    doStandUp()
+#    doStop()
+#    
 
 
 
