@@ -76,66 +76,6 @@ def TestTts():
 # """Vision"""
 #==============================================================================
 
-def Test_Detection():
-
-    # Create a proxy to ALFaceDetection
-    try:
-        faceProxy = ALProxy("ALFaceDetection", robotIP, port)
-    except Exception, e:
-        print "Error when creating face detection proxy:"
-        print str(e)
-        exit(1) 
-
-
-    period = 500
-    faceProxy.subscribe("Test_Face", period, 0.0 )
-    
-    memValue = "FaceDetected"
-    # A simple loop that reads the memValue and checks whether faces are detected.
-    for i in range(0, 20):
-        time.sleep(0.5)
-        val = memoryProxy.getData(memValue)
-
-        print ""
-        print "*****"
-        print ""
-
-        # Check whether we got a valid output.
-        if(val and isinstance(val, list) and len(val) >= 2):
-
-            # We detected faces !
-            # For each face, we can read its shape info and ID.
-
-            # First Field = TimeStamp.
-            timeStamp = val[0]
-
-            # Second Field = array of face_Info's.
-            faceInfoArray = val[1]
-
-            try:
-                # Browse the faceInfoArray to get info on each detected face.
-                for j in range( len(faceInfoArray)-1 ):
-                    faceInfo = faceInfoArray[j]
-                    # First Field = Shape info.
-                    faceShapeInfo = faceInfo[0]
-
-                    # Second Field = Extra info (empty for now).
-                    faceExtraInfo = faceInfo[1]
-
-                print "  alpha %.3f - beta %.3f" % (faceShapeInfo[1], faceShapeInfo[2])
-                print "  width %.3f - height %.3f" % (faceShapeInfo[3], faceShapeInfo[4])
- 
-            except Exception, e:
-                print "faces detected, but it seems getData is invalid. ALValue ="
-                print val
-                print "Error msg %s" % (str(e))
-        else:
-              print "No face detected"
-
-        # Unsubscribe the module.
-        faceProxy.unsubscribe("Test_Face")
-
-        print "Detection finished"
 
 def Test_Image():
 
@@ -172,6 +112,24 @@ def Test_Image():
 
 	print 'end of gvm_getImageLocal python script'
 
+def showNaoImage():
+	videoRecorderProxy = ALProxy("ALVideoRecorder", robotIP, port)
+
+	# This records a 320*240 MJPG video at 10 fps.
+	# Note MJPG can't be recorded with a framerate lower than 3 fps.
+	videoRecorderProxy.setResolution(1)
+	videoRecorderProxy.setFrameRate(10)
+	videoRecorderProxy.setVideoFormat("MJPG")
+	videoRecorderProxy.startVideoRecord("/home/nao/recordings/cameras", "Desktop")
+
+	time.sleep(5)
+
+	# Video file is saved on the robot in the
+	# /home/nao/recordings/cameras/ folder.
+	videoInfo = videoRecorderProxy.stopVideoRecord()
+
+	print "Video was saved on the robot: ", videoInfo[1]
+	print "Num frames: ", videoInfo[0]
 
 #==============================================================================
 # """Sensors"""
