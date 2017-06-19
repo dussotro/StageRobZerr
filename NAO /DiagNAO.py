@@ -32,11 +32,8 @@ def StiffnessOn(proxy):
 
 
 def doInitialisation():
-<<<<<<< HEAD
     print ">>>>>> Initialisation"   
-=======
-    print ">>>>>> Initialisation"
->>>>>>> 706988238cc951774060f11ea56bfff06d400027
+
     # Set NAO in Stiffness On
     StiffnessOn(motionProxy)
     # Send NAO to Pose Init
@@ -116,14 +113,10 @@ def Test_Detection():
         print "Detection finished"
 
 if __name__== "__main__":
-<<<<<<< HEAD
     doInitialisation()
     #test de la vision du NAO
     Test_Detection()
-=======
-    StiffnessOn(motionProxy)
-    doInitialisation()
->>>>>>> 706988238cc951774060f11ea56bfff06d400027
+
 
 
 
