@@ -3,6 +3,7 @@ import sys
 from naoqi import ALProxy
 import motion
 import select
+import vision_definitions
 
 robotIP = "172.20.12.126"
 port = 9559
@@ -110,6 +111,42 @@ def Test_Detection():
         faceProxy.unsubscribe("Test_Face")
 
         print "Detection finished"
+
+def Test_Image():
+
+	####
+	# Create proxy on ALVideoDevice
+
+	print "Creating ALVideoDevice proxy to ", robotIP
+
+	camProxy = ALProxy("ALVideoDevice", robotIP, port)
+
+	####
+	# Register a Generic Video Module
+
+	resolution = vision_definitions.kQVGA
+	colorSpace = vision_definitions.kYUVColorSpace
+	fps = 30
+
+	nameId = camProxy.subscribe("python_GVM", resolution, colorSpace, fps)
+	print nameId
+
+	print 'getting images in local'
+	for i in range(0, 20):
+	  camProxy.getImageLocal(nameId)
+	  camProxy.releaseImage(nameId)
+
+	resolution = vision_definitions.kQQVGA
+	camProxy.setResolution(nameId, resolution)
+
+	print 'getting images in remote'
+	for i in range(0, 20):
+	  camProxy.getImageRemote(nameId)
+
+	camProxy.unsubscribe(nameId)
+
+	print 'end of gvm_getImageLocal python script'
+
 
 #==============================================================================
 # """Sensors"""
