@@ -147,7 +147,7 @@ def TrySensors():
 #==============================================================================
 # """Motion"""
 #==============================================================================
-def dorun():
+def dorun(t):
     
     motionProxy.moveTo (0.4, 0, 0)
     time.sleep(t)
@@ -167,7 +167,7 @@ def doleft(angle):
     time.sleep(t)
     print"turning left"
 
-def doright():
+def doright(angle):
     
     theta= angle
     motionProxy.moveTo (0, 0, theta)
@@ -323,7 +323,7 @@ if __name__== "__main__":
         showNaoImage()
         #TestTts()
     #    #test de déplacements
-    #    dorun()
+    #    dorun(1)
     #    doback()
     #    doleft()
     #    doright()
