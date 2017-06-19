@@ -199,7 +199,7 @@ def doStop():
     
     motionProxy.rest()
     motionProxy.setStiffnesses("Body", 0.0)
-    sleep(deltat)
+    sleep(1.0)
     print"stoping"
 
     
