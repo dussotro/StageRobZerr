@@ -10,26 +10,26 @@ Frequency = 0.0 #low speed
 
 try:
     motionProxy = ALProxy("ALMotion", robotIP, port)
-except(Exception, e):
-    print("Could not create proxy to ALMotion")
-    print("Error was: ", e)
+except Exception, e:
+    print"Could not create proxy to ALMotion"
+    print"Error was: ", e
 try:
     postureProxy = ALProxy("ALRobotPosture", robotIP, port)
-except(Exception, e):
-    print("Could not create proxy to ALRobotPosture")
-    print("Error was: ", e)
+except Exception, e:
+    print "Could not create proxy to ALRobotPosture"
+    print "Error was: ", e
 try:
     sonarProxy = ALProxy("ALSonar", robotIP, port)
-except (Exception, e):
-    print ("Could not create proxy to ALSonar")
-    print ("Error was: ", e)
+except Exception, e:
+    print "Could not create proxy to ALSonar"
+    print "Error was: ", e
 
 try:
     memoryProxy = ALProxy("ALMemory",robotIP, port)
-except (Exception, e):
-    print ("Could not create proxy to ALMemory")
-    print ("Error was: ", e)
-
+except Exception, e:
+    print "Could not create proxy to ALMemory"
+    print "Error was: ", e
+           
 #stiffness for real NAO Robot
 def StiffnessOn(proxy):
     # We use the "Body" name to signify the collection of all joints
@@ -56,9 +56,9 @@ def Test_Detection():
     # Create a proxy to ALFaceDetection
     try:
         faceProxy = ALProxy("ALFaceDetection", robotIP, port)
-    except (Exception, e):
-        print ("Error when creating face detection proxy:")
-        print (str(e))
+    except Exception, e:
+        print "Error when creating face detection proxy:"
+        print str(e)
         exit(1) 
 
 
@@ -70,9 +70,9 @@ def Test_Detection():
         time.sleep(0.5)
         val = memoryProxy.getData(memValue)
 
-        print ("")
-        print ("*****")
-        print ("")
+        print ""
+        print "*****"
+        print ""
 
         # Check whether we got a valid output.
         if(val and isinstance(val, list) and len(val) >= 2):
@@ -96,20 +96,20 @@ def Test_Detection():
                     # Second Field = Extra info (empty for now).
                     faceExtraInfo = faceInfo[1]
 
-                print ("  alpha %.3f - beta %.3f" % (faceShapeInfo[1], faceShapeInfo[2]))
-                print ("  width %.3f - height %.3f" % (faceShapeInfo[3], faceShapeInfo[4]))
+                print "  alpha %.3f - beta %.3f" % (faceShapeInfo[1], faceShapeInfo[2])
+                print "  width %.3f - height %.3f" % (faceShapeInfo[3], faceShapeInfo[4])
  
-            except (Exception, e):
-                print ("faces detected, but it seems getData is invalid. ALValue =")
-                print (val)
-                print ("Error msg %s" % (str(e)))
+            except Exception, e:
+                print "faces detected, but it seems getData is invalid. ALValue ="
+                print val
+                print "Error msg %s" % (str(e))
         else:
-              print ("No face detected")
+              print "No face detected"
 
         # Unsubscribe the module.
         faceProxy.unsubscribe("Test_Face")
 
-        print ("Detection finished")
+        print "Detection finished"
 
 #==============================================================================
 # """Sensors"""
@@ -117,8 +117,8 @@ def Test_Detection():
 def TrySensors():
     Left = memoryProxy.getData("Device/SubDeviceList/US/Left/Sensor/Value")
     Right = memoryProxy.getData("Device/SubDeviceList/US/Right/Sensor/Value") 
-    print ('Left :', Left)
-    print ('Right:', Right)
+    print 'Left :', Left
+    print 'Right:', Right
     
     
 if __name__== "__main__":
