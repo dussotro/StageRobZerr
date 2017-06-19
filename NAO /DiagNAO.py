@@ -148,29 +148,33 @@ def TrySensors():
 # """Motion"""
 #==============================================================================
 def dorun(t):
-    
+    motionProxy.setWalkTargetVelocity(0.4, 0, 0, 0.8)
     motionProxy.moveTo (0.4, 0, 0)
-    time.sleep(t)
+#    time.sleep(t)
     print"running"
     
 
 def doback():
     
      motionProxy.moveTo (-0.4, 0, 0)
+     
      time.sleep(t)
      print"back"
     
 def doleft(angle):
     
-    theta= -(angle)
+    theta= angle
+    motionProxy.setWalkTargetVelocity(0, 0, 0.5, 0.01)
     motionProxy.moveTo (0, 0, theta)
-    time.sleep(t)
-    print"turning left"
+
+#    time.sleep(t)
+#    print"turning left"
 
 def doright(angle):
     
-    theta= angle
-    motionProxy.moveTo (0, 0, theta)
+    theta= -angle
+#    motionProxy.moveTo (0, 0, theta)
+    motionProxy.setWalkTargetVelocity(0, 0, -0.5, 0.01)
     time.sleep(t)
     print"turning right"
     
@@ -320,8 +324,9 @@ if __name__== "__main__":
         #TrySensors()
         #target_velocity()
     
-        showNaoImage()
-        #TestTts()
+        #showNaoImage()
+#        TestTts()
+        Test_Square()
     #    #test de déplacements
     #    dorun(1)
     #    doback()
