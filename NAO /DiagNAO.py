@@ -1,6 +1,5 @@
-# -*- coding: utf-8 -*-
 import time
-import sys 
+import sys
 from naoqi import ALProxy
 import motion
 import select
@@ -9,9 +8,6 @@ import vision_definitions
 robotIP = "172.20.12.126"
 port = 9559
 Frequency = 0.0 #low speed
-
-t = 1
-
 
 try:
     motionProxy = ALProxy("ALMotion", robotIP, port)
@@ -161,12 +157,7 @@ def TrySensors():
     print 'Left :', Left
     print 'Right:', Right
     
-#==============================================================================
-# Sound
-#==============================================================================
 
-def TrySound():
-    
 #==============================================================================
 # """Motion"""
 #==============================================================================
@@ -213,37 +204,20 @@ def doStop():
 
     
 if __name__== "__main__":
-    
     doInitialisation()
-    
     #test de la vision du NAO
-    
     #Test_Detection()
-    Test_detection()
-    time.sleep(t)
     
     #test de capteurs 
     TrySensors()
-    time.sleep(t)
     
     #test de déplacements
     dorun()
-    time.sleep(t)
-    
     doback()
-    time.sleep(t)
-    
     doleft()
-    time.sleep(t)
-    
     doright()
-    time.sleep(t)
-    
     doStandUp()
-    time.sleep(t)
-    
     doStop()
-    time.sleep(t)
     
 
 
