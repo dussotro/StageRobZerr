@@ -25,6 +25,18 @@ except Exception, e:
     print "Could not create proxy to ALSonar"
     print "Error was: ", e
 
+try :
+    audioProxy = ALProxy("ALAudioDevice", robotIP,port)
+    audio.setOutputVolume(100)
+except Exception, e: 
+    print "Could not create proxy to ALaudioProxy"
+    print "Error was: ", e
+try :
+    tts = ALProxy("ALTextToSpeech", "172.20.28.198", 9559)
+    tts.setLanguage("French")
+except Exception, e: 
+    print "Could not create proxy to ALTextToSpeech"
+    print "Error was: ", e
 
 try:
     memoryProxy = ALProxy("ALMemory",robotIP, port)
@@ -47,6 +59,12 @@ def doInitialisation():
     # Send NAO to Pose Init
     postureProxy.goToPosture("StandInit", 0.5)
 
+
+#==============================================================================
+# Audio
+#==============================================================================
+def TestTts():
+    tts.say("test micro, un deux.... Un deux ...")
 	
 #==============================================================================
 # """Vision"""
@@ -211,6 +229,7 @@ if __name__== "__main__":
     #test de capteurs 
     TrySensors()
     
+    TestTts()
     #test de déplacements
     dorun()
     doback()
