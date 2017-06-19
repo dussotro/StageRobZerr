@@ -33,17 +33,16 @@ def StiffnessOn(proxy):
 
 # functions (actions of the fsm)
 def doInitialisation():
-    print ">>>>>> Initialisation"   
-    
+    print ">>>>>> Initialisation"
     # Set NAO in Stiffness On
     StiffnessOn(motionProxy)
     # Send NAO to Pose Init
     postureProxy.goToPosture("StandInit", 0.5)
-    return event # return event to be able to define the transition
 
 
 if __name__== "__main__":
-    
+    StiffnessOn(motionProxy)
+    doInitialisation()
 
 
 
