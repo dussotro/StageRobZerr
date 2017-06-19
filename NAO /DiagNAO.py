@@ -313,14 +313,14 @@ if __name__== "__main__":
     doInitialisation()
     #test de la vision du NAO
     try:
-        Test_Detection()
-        Test_Image()
+        #Test_Detection()
+        #Test_Image()
         #test de capteurs 
-        TrySensors()
-        target_velocity()
+        #TrySensors()
+        #target_velocity()
     
-
-        TestTts()
+        showNaoImage()
+        #TestTts()
     #    #test de déplacements
     #    dorun()
     #    doback()
