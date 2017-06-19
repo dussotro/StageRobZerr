@@ -18,6 +18,18 @@ try:
 except Exception, e:
     print "Could not create proxy to ALRobotPosture"
     print "Error was: ", e
+try:
+    self.sonarProxy = ALProxy("ALSonar", robotIp, robotPort)
+except Exception, e:
+    print "Could not create proxy to ALMotion"
+    print "Error was: ", e
+
+
+try:
+    self.memoryProxy = ALProxy("ALMemory",robotIp, robotPort)
+except Exception, e:
+    print "Could not create proxy to ALMotion"
+    print "Error was: ", e
 
 #stiffness for real NAO Robot
 def StiffnessOn(proxy):
@@ -28,7 +40,7 @@ def StiffnessOn(proxy):
     proxy.stiffnessInterpolation(pNames, pStiffnessLists, pTimeLists)
 
 def doInitialisation():
-    print ">>>>>> Initialisation"   
+    print ">>>>>> Initialisation"
     # Set NAO in Stiffness On
     StiffnessOn(motionProxy)
     # Send NAO to Pose Init
@@ -53,13 +65,6 @@ def Test_Detection():
     period = 500
     faceProxy.subscribe("Test_Face", period, 0.0 )
 
-    # Create a proxy to ALMemory
-    try:
-        memoryProxy = ALProxy("ALMemory", robotIP, port)
-    except Exception, e:
-        print "Error when creating memory proxy:"
-        print str(e)
-        exit(1)
 
     # A simple loop that reads the memValue and checks whether faces are detected.
     for i in range(0, 20):
@@ -107,11 +112,18 @@ def Test_Detection():
 
         print "Detection finished"
 
+def TrySensors():
+    Left = self.memoryProxy.getData("Device/SubDeviceList/US/Left/Sensor/Value")
+    Right = self.memoryProxy.getData("Device/SubDeviceList/US/Right/Sensor/Value") 
+    print ('Left :', Left)
+    print ('Right:', Right)
+    
+    
 if __name__== "__main__":
     doInitialisation()
     #test de la vision du NAO
     Test_Detection()
-
+    TrySensors()
 
 
 
