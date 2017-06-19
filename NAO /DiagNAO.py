@@ -24,6 +24,7 @@ except Exception, e:
     print "Could not create proxy to ALSonar"
     print "Error was: ", e
 
+
 try:
     memoryProxy = ALProxy("ALMemory",robotIP, port)
 except Exception, e:
@@ -38,7 +39,6 @@ def StiffnessOn(proxy):
     pTimeLists = 1.0
     proxy.stiffnessInterpolation(pNames, pStiffnessLists, pTimeLists)
 
-
 def doInitialisation():
     print(">>>>>> Initialisation")
     # Set NAO in Stiffness On
@@ -47,9 +47,9 @@ def doInitialisation():
     postureProxy.goToPosture("StandInit", 0.5)
 
 	
-"""""""""
-Vision
-"""""""""
+#==============================================================================
+# """Vision"""
+#==============================================================================
 
 def Test_Detection():
 
