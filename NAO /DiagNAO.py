@@ -113,23 +113,24 @@ def Test_Image():
 	print 'end of gvm_getImageLocal python script'
 
 def showNaoImage():
-	videoRecorderProxy = ALProxy("ALVideoRecorder", robotIP, port)
+    videoRecorderProxy = ALProxy("ALVideoRecorder", robotIP, port)
+    
+    # This records a 320*240 MJPG video at 10 fps.
+    # Note MJPG can't be recorded with a framerate lower than 3 fps.
+    videoRecorderProxy.setResolution(1)
+    videoRecorderProxy.setFrameRate(10)
+    videoRecorderProxy.setVideoFormat("MJPG")
+    videoRecorderProxy.startRecording("./", "test")
 
-	# This records a 320*240 MJPG video at 10 fps.
-	# Note MJPG can't be recorded with a framerate lower than 3 fps.
-	videoRecorderProxy.setResolution(1)
-	videoRecorderProxy.setFrameRate(10)
-	videoRecorderProxy.setVideoFormat("MJPG")
-	videoRecorderProxy.startRecording("/home/nao/recordings/cameras", "test")
+    time.sleep(5)
+    # Video file is saved on the robot in the
+    # /home/nao/recordings/cameras/ folder.
+    videoInfo = videoRecorderProxy.stopRecording()
+    #print type video
+    print "Video was saved on the robot: ", videoInfo[1]
+    print "Num frames: ", videoInfo[0]
+    video = memoryProxy.getData("./test.avi")
 
-	time.sleep(5)
-
-	# Video file is saved on the robot in the
-	# /home/nao/recordings/cameras/ folder.
-	videoInfo = videoRecorderProxy.stopRecording()
-
-	print "Video was saved on the robot: ", videoInfo[1]
-	print "Num frames: ", videoInfo[0]
 
 #==============================================================================
 # """Sensors"""
