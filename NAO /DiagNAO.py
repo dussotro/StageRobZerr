@@ -9,7 +9,7 @@ import numpy as np
 
 
 
-robotIP = "172.20.12.126"
+robotIP = "172.20.28.103"
 port = 9559
 Frequency = 0.0 #low speed
 t=1
@@ -26,13 +26,14 @@ except Exception, e:
     print "Error was: ", e
 try:
     sonarProxy = ALProxy("ALSonar", robotIP, port)
+    sonarProxy.subscribe("myApplication")
 except Exception, e:
     print "Could not create proxy to ALSonar"
     print "Error was: ", e
 
 try :
     audio = ALProxy("ALAudioDevice", robotIP,port)
-    audio.setOutputVolume(50)
+    audio.setOutputVolume(100)
 except Exception, e: 
     print "Could not create proxy to ALaudioProxy"
     print "Error was: ", e
@@ -88,7 +89,8 @@ def Test_Detection():
 
     period = 500
     faceProxy.subscribe("Test_Face", period, 0.0 )
-
+    
+    memValue = "FaceDetected"
     # A simple loop that reads the memValue and checks whether faces are detected.
     for i in range(0, 20):
         time.sleep(0.5)
@@ -175,8 +177,10 @@ def Test_Image():
 # """Sensors"""
 #==============================================================================
 def TrySensors():
-    Left = memoryProxy.getData("Device/SubDeviceList/US/Left/Sensor/Value1")
-    Right = memoryProxy.getData("Device/SubDeviceList/US/Right/Sensor/Value1") 
+ 
+    
+    Left = memoryProxy.getData("Device/SubDeviceList/US/Left/Sensor/Value")
+    Right = memoryProxy.getData("Device/SubDeviceList/US/Right/Sensor/Value") 
     print 'Left :', Left
     print 'Right:', Right
     
@@ -220,8 +224,10 @@ def doStandUp():
     
 def doStop():
     
-    motionProxy.rest()
+
+    postureProxy.goToPosture("Crouch", 0.3)
     motionProxy.setStiffnesses("Body", 0.0)
+    motionProxy.rest()
     time.sleep(t)
     print"stoping"
 
@@ -229,19 +235,23 @@ def doStop():
 if __name__== "__main__":
     doInitialisation()
     #test de la vision du NAO
-    #Test_Detection()
+    try:
+        Test_Detection()
+        Test_Image()
+        #test de capteurs 
+        TrySensors()
     
-    #test de capteurs 
-    TrySensors()
-    
-    TestTts()
-#    #test de déplacements
-#    dorun()
-#    doback()
-#    doleft()
-#    doright()
-#    doStandUp()
-#    doStop()
+        TestTts()
+    #    #test de déplacements
+    #    dorun()
+    #    doback()
+    #    doleft()
+    #    doright()
+    #    doStandUp()
+    except Exception, e:
+        print'erreur: ', e
+        
+    doStop()
 #    
 
 
