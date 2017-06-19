@@ -120,13 +120,68 @@ def TrySensors():
     print ('Left :', Left)
     print ('Right:', Right)
     
+
+#==============================================================================
+# """Motion"""
+#==============================================================================
+def dorun():
+    
+    motionProxy.moveTo (0.8, 0, 0)
+    sleep(1.0)
+    print"running"
+    
+
+def doback():
+    
+     motionProxy.moveTo (-0.8, 0, 0)
+     sleep(1.0)
+     print"back"
+    
+def doleft():
+    
+    theta= -(np.pi/6)
+    motionProxy.moveTo (0, 0, theta)
+    sleep(1.0)
+    print"turning left"
+
+def doright():
+    
+    theta= (np.pi/6)
+    motionProxy.moveTo (0, 0, theta)
+    sleep(1.0)
+    print"turning right"
+    
+def doStandUp():
+    
+    motionProxy.wakeUp()
+    motionProxy.setStiffnesses("Body", 1.0)
+    sleep(1.0)
+    print"standing up"
+    
+def doStop():
+    
+    motionProxy.rest()
+    motionProxy.setStiffnesses("Body", 0.0)
+    sleep(deltat)
+    print"stoping"
+
     
 if __name__== "__main__":
     doInitialisation()
     #test de la vision du NAO
     #Test_Detection()
+    
+    #test de capteurs 
     TrySensors()
-
+    
+    #test de déplacements
+    dorun()
+    doback()
+    doleft()
+    doright()
+    doStandUp()
+    doStop()
+    
 
 
 
