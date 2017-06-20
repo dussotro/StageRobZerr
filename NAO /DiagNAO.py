@@ -8,8 +8,8 @@ import vision_definitions
 import numpy as np
 
 
-
-robotIP = "172.20.28.103"
+robotIP = "172,20,12.126"
+#robotIP = "172.20.28.103"
 port = 9559
 Frequency = 0.0 #low speed
 t=1
@@ -33,7 +33,7 @@ except Exception, e:
 
 try :
     audio = ALProxy("ALAudioDevice", robotIP,port)
-    audio.setOutputVolume(100)
+    audio.setOutputVolume(50)
 except Exception, e: 
     print "Could not create proxy to ALaudioProxy"
     print "Error was: ", e
@@ -347,6 +347,10 @@ if __name__== "__main__":
         #showNaoImage()
 #        TestTts()
         Test_Square()
+        Accelero()
+        for i in range(5):
+            dorun(0.5)
+            Accelero()
     #    #test de déplacements
     #    dorun(1)
     #    doback()
