@@ -346,20 +346,26 @@ def Test_Articulations():
     StiffnessOn(motionProxy)
 
     # Send NAO to Pose Init
-    postureProxy.goToPosture("StandZero", 1.0)
+    postureProxy.goToPosture("StandInit", 1.0)
 
     space      = motion.FRAME_ROBOT
     axisMask   = almath.AXIS_MASK_ALL   # full control
     isAbsolute = False
 
     robot = Robot(1.0, isAbsolute, axisMask, space)
-
-    BodyPart = "RArm"
     
-
-
+    #===
+    BodyPart = "RArm"
+    print BodyPart
+    print " Roll"
+    robot.mvt(BodyPart, [0.0, 0.0, 0.0,-0.31, 0.0, 0.0])
+    robot.mvt(BodyPart, [0.0, 0.0, 0.0, 0.0, 0.0, 0.0])
+    robot.mvt(BodyPart, [0.0, -0.5, 0.0, 0.0, 0.0, 0.0])
+    
+    
+    #===
+    
     postureProxy.goToPosture("Crouch", 1.0)
-
 
 #
 #def shoot():
