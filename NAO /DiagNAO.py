@@ -249,11 +249,18 @@ def position_robot():
     robotMove = m.pose2DInverse(initRobotPosition)*endRobotPosition
     print "Robot Move :", robotMove
 
-def Test_Square():
+def Test_Square_Left_Right():
+    err = 0.2
+    print ">>>>>>>>>>> Test du carre"
+    print ">>> carre gauche"
     for i in range(4):
         dorun(1)
         doleft(np.pi/2)
-    
+    print ">>> carre droite"
+    for j in range(4):
+        dorun(1)
+        doright(np.pi/2)
+    print "fin de test du carre"
 
 #
 #def shoot():
@@ -348,4 +355,5 @@ if __name__== "__main__":
     #    doStandUp()
     except Exception, e:
         print'erreur: ', e
+        
     doStop()
