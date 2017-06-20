@@ -6,9 +6,13 @@ import motion
 import select
 import vision_definitions
 import numpy as np
+import almath
 
 
+<<<<<<< HEAD
 
+=======
+>>>>>>> 1282db3ef5535d301f8d47c8d6165bc82bdb9e84
 robotIP = "172.20.12.126"
 #robotIP = "172.20.28.103"
 port = 9559
@@ -74,6 +78,7 @@ def doInitialisation():
     # Send NAO to Pose Init
     postureProxy.goToPosture("StandInit", 0.5)
 
+<<<<<<< HEAD
 #class Battery(ALModule):
 #    """ Mandatory docstring.
 #        comment needed to create a new python module
@@ -100,11 +105,45 @@ def doInitialisation():
 #    
 #    self.level = self.
 #    pass
+=======
+#==============================================================================
+# Classe de test de toutes les articulations
+#==============================================================================
+
+
+class Robot:
+	def __init__(self, rt, ia, am, space):
+            self.d_mvt = {}
+            self.reference_time = rt
+            self.isAbsolute = ia
+            self.axisMask = am
+            self.space = space
+            self.tempo_time = 0
+
+	def mvt(self, where, path):
+            reference_time = 0
+            if self.tempo_time != 0:
+            	reference_time = self.tempo_time
+            	self.tempo_time = 0
+            else:
+            	reference_time = self.reference_time	
+            if not self.d_mvt.has_key(where):
+            	self.d_mvt[where] = path
+            else:
+            	old_path = self.d_mvt[where]
+            	saved_path = [el1 + el2 for el1, el2 in zip(path, old_path)]
+            	self.d_mvt[where] = saved_path
+            motionProxy.positionInterpolation(where, self.space, path, self.axisMask, reference_time, self.isAbsolute)
+                    
+            time.sleep(1.0)
+
+
+>>>>>>> 1282db3ef5535d301f8d47c8d6165bc82bdb9e84
 #==============================================================================
 # Audio
 #==============================================================================
-def TestTts():
-    tts.say("Test Micro")
+def TestTts(texte):
+    tts.say(texte)
 	
 #==============================================================================
 # """Vision"""
@@ -239,7 +278,12 @@ def doStop():
     motionProxy.setStiffnesses("Body", 0.0)
     motionProxy.rest()
     time.sleep(t)
+<<<<<<< HEAD
     print"stopping"
+=======
+    print"Stopping"
+    
+>>>>>>> 1282db3ef5535d301f8d47c8d6165bc82bdb9e84
 
 def target_velocity():
     #TARGET VELOCITY
@@ -296,6 +340,7 @@ def Test_Square_Left_Right():
         doright(np.pi/2)
     print "fin de test du carre"
 
+<<<<<<< HEAD
 def Battery():
     percentage = memoryProxy.getData("Device/SubDeviceList/Battery/Current/Sensor/Value") 
     b = memoryProxy.getData ("Device/SubDeviceList/Battery/Charge/Sensor/Status")
@@ -303,6 +348,41 @@ def Battery():
     print"percentage = ", percentage
     print "b =", b
     print "c =", c
+=======
+
+def Test_Articulations():
+    StiffnessOn(motionProxy)
+
+    # Send NAO to Pose Init
+    postureProxy.goToPosture("StandZero", 1.0)
+
+    space      = motion.FRAME_ROBOT
+    axisMask   = almath.AXIS_MASK_ALL   # full control
+    isAbsolute = False
+
+    robot = Robot(1.0, isAbsolute, axisMask, space)
+
+    BodyParts = ["RArm", "LArm"]
+    
+    for i, v in enumerate(BodyParts):
+        dim = 6
+        print "Articulations: ", v
+        for j in range(dim):
+            postureProxy.goToPosture("StandZero", 1.0)
+            movement = np.zeros(dim).tolist()
+            movement[j] = (-1)**(i+1) * 0.1
+            robot.mvt(v, movement)
+            movement[j] = -(-1)**(i+1) * 0.2
+            robot.mvt(v, movement)
+            movement[j] = (-1)**(i+1) * 0.1
+            robot.mvt(v, movement)
+            print "..."
+
+
+    postureProxy.goToPosture("Crouch", 1.0)
+
+
+>>>>>>> 1282db3ef5535d301f8d47c8d6165bc82bdb9e84
 #
 #def shoot():
 #    
@@ -386,6 +466,7 @@ if __name__== "__main__":
         #target_velocity()
     
         #showNaoImage()
+<<<<<<< HEAD
 #        TestTts()
 #        Test_Square()
         Accelero()
@@ -399,6 +480,18 @@ if __name__== "__main__":
     #    doleft()
     #    doright()
     #    doStandUp()
+=======
+        TestTts("Test")
+
+#        #test de déplacements
+#        dorun(1)
+#        doback()
+#        doleft()
+#        doright()
+#        doStandUp()
+        Test_Articulations()
+        
+>>>>>>> 1282db3ef5535d301f8d47c8d6165bc82bdb9e84
     except Exception, e:
         print'erreur: ', e
         
