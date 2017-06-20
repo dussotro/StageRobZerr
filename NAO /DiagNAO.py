@@ -8,8 +8,7 @@ import vision_definitions
 import numpy as np
 import almath
 
-print a
-
+print 2
 
 robotIP = "172.20.12.126"
 #robotIP = "172.20.28.103"
