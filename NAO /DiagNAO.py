@@ -301,13 +301,14 @@ def Accelero():
 # """Motion"""
 #==============================================================================
 def dorun(t):
-    motionProxy.setWalkTargetVelocity(0.4, 0, 0, 1)
+    motionProxy.setWalkTargetVelocity(0.8, 0, 0, 1)
     t0 = time.time()
-    while time.time()<t0 +1:
+    while time.time()< (t0 +t):
         Accelero()
         time.sleep(0.2)
 #    motionProxy.moveTo (0.4, 0, 0)
 #    time.sleep(t)
+    motionProxy.setWalkTargetVelocity(0.0, 0, 0, 1)
     print"running"
     
 
@@ -346,6 +347,7 @@ def doStop():
     
 
     postureProxy.goToPosture("Crouch", 0.3)
+    Accelero()
     motionProxy.setStiffnesses("Body", 0.0)
     motionProxy.rest()
     time.sleep(t)
@@ -572,7 +574,7 @@ if __name__== "__main__":
         #target_velocity()
     
         #showNaoImage()
-        TestTts("Test")
+#        TestTts("Test")
         
 #        #test de déplacements
 #        Test_Square_Left_Right()
@@ -581,16 +583,17 @@ if __name__== "__main__":
 #        BatteryMemory()
 #        Test_Square_Left_Right()
 #        BatteryMemory()
-
-        dorun(1)
-        dorun(1)
+        dorun(3)
+        BatteryMemory()
+        dorun(3)
+        BatteryMemory()
 
 #        dorun(1)
 #        doback()
 #        doleft()
 #        doright()
 #        doStandUp()
-        Test_Articulations()
+#        Test_Articulations()
 
     except Exception, e:
         print'erreur: ', e
