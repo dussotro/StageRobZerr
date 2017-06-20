@@ -10,8 +10,8 @@ import almath
 
 print 2
 
-robotIP = "172.20.12.126"
-#robotIP = "172.20.28.103"
+#robotIP = "172.20.12.126"
+robotIP = "172.20.28.103"
 port = 9559
 Frequency = 0.0 #low speed
 t=1
@@ -76,32 +76,34 @@ def doInitialisation():
     postureProxy.goToPosture("StandInit", 0.5)
     
 
-#class Battery(ALModule):
-#    """ Mandatory docstring.
-#        comment needed to create a new python module
-#    """
-#    def __init__(self, name):
-#        ALModule.__init__(self, name)
-#        # No need for IP and port here because
-#        # we have our Python broker connected to NAOqi broker
-#        # Create a proxy to ALTextToSpeech for later use
-#        self.battery = BatteryProxy
-#        self.level = 0
-#
-#        # Subscribe to the BatteryChange event:
-#        self.battery.subscribeToEvent("BatteryChargeChanged",
-#            "BatteryRob",
-#            "callBackBattery")
-#        
-#  def callBackBattery(self, *_args):
-#    """ Mandatory docstring.
-#        comment needed to create a bound method
-#    """
-#    self.battery.unsubscribeToEvent("BatteryChargeChanged",
-#            "BatteryRob") 
-#    
-#    self.level = self.
-#    pass
+class Battery(ALModule):
+    """ Mandatory docstring.
+        comment needed to create a new python module
+    """
+    def __init__(self, name):
+        ALModule.__init__(self, name)
+        # No need for IP and port here because
+        # we have our Python broker connected to NAOqi broker
+        # Create a proxy to ALTextToSpeech for later use
+        self.battery = BatteryProxy
+        self.level = 0
+
+        # Subscribe to the BatteryChange event:
+        self.battery.subscribeToEvent("BatteryChargeChanged",
+            "BatteryRob",
+            "callBackBattery")
+        
+  def callBackBattery(self, *_args):
+    """ Mandatory docstring.
+        comment needed to create a bound method
+    """
+    self.battery.unsubscribeToEvent("BatteryChargeChanged",
+            "BatteryRob") 
+    
+    print 'self.percentage'
+    self.battery.unsubscribeToEvent("BatteryChargeChanged",
+            "BatteryRob") 
+    
 
 #==============================================================================
 # Classe de test de toutes les articulations
@@ -450,17 +452,19 @@ if __name__== "__main__":
         #target_velocity()
     
         #showNaoImage()
-        TestTts("michel est mort ce soir")
+#        TestTts("michel est mort ce soir")
 
 
 #        #test de déplacements
-#        dorun(1)
+        dorun(1)
+        dorun(1)
+        dorun(1)
 #        doback()
 #        doleft()
 #        doright()
 #        doStandUp()
-        print' test de ouf'
-        Test_Articulations()
+#        print' test de ouf'
+#        Test_Articulations()
     except Exception, e:
         print'erreur: ', e
     print "michel"    
