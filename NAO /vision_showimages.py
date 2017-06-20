@@ -42,7 +42,7 @@ class ImageWidget(QWidget):
         self._registerImageClient(IP, PORT)
 
         # Trigget 'timerEvent' every 100 ms.
-        self.startTimer(500)
+        self.startTimer(100)
 
 
     def _registerImageClient(self, IP, PORT):
@@ -50,7 +50,7 @@ class ImageWidget(QWidget):
         Register our video module to the robot.
         """
         self._videoProxy = ALProxy("ALVideoDevice", IP, PORT)
-        resolution = vision_definitions.kVGA  # 320 * 240
+        resolution = vision_definitions.kQVGA  # 320 * 240
         colorSpace = vision_definitions.kRGBColorSpace
         self._imgClient = self._videoProxy.subscribe("_client", resolution, colorSpace, 5)
 
