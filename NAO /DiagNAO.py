@@ -113,23 +113,24 @@ def Test_Image():
 	print 'end of gvm_getImageLocal python script'
 
 def showNaoImage():
-	videoRecorderProxy = ALProxy("ALVideoRecorder", robotIP, port)
+    videoRecorderProxy = ALProxy("ALVideoRecorder", robotIP, port)
+    
+    # This records a 320*240 MJPG video at 10 fps.
+    # Note MJPG can't be recorded with a framerate lower than 3 fps.
+    videoRecorderProxy.setResolution(1)
+    videoRecorderProxy.setFrameRate(10)
+    videoRecorderProxy.setVideoFormat("MJPG")
+    videoRecorderProxy.startRecording("./", "test")
 
-	# This records a 320*240 MJPG video at 10 fps.
-	# Note MJPG can't be recorded with a framerate lower than 3 fps.
-	videoRecorderProxy.setResolution(1)
-	videoRecorderProxy.setFrameRate(10)
-	videoRecorderProxy.setVideoFormat("MJPG")
-	videoRecorderProxy.startRecording("/home/nao/recordings/cameras", "test")
+    time.sleep(5)
+    # Video file is saved on the robot in the
+    # /home/nao/recordings/cameras/ folder.
+    videoInfo = videoRecorderProxy.stopRecording()
+    #print type video
+    print "Video was saved on the robot: ", videoInfo[1]
+    print "Num frames: ", videoInfo[0]
+    video = memoryProxy.getData("./test.avi")
 
-	time.sleep(5)
-
-	# Video file is saved on the robot in the
-	# /home/nao/recordings/cameras/ folder.
-	videoInfo = videoRecorderProxy.stopRecording()
-
-	print "Video was saved on the robot: ", videoInfo[1]
-	print "Num frames: ", videoInfo[0]
 
 #==============================================================================
 # """Sensors"""
@@ -146,30 +147,34 @@ def TrySensors():
 #==============================================================================
 # """Motion"""
 #==============================================================================
-def dorun():
-    
+def dorun(t):
+    motionProxy.setWalkTargetVelocity(0.4, 0, 0, 0.8)
     motionProxy.moveTo (0.4, 0, 0)
-    time.sleep(t)
+#    time.sleep(t)
     print"running"
     
 
 def doback():
     
      motionProxy.moveTo (-0.4, 0, 0)
+     
      time.sleep(t)
      print"back"
     
 def doleft(angle):
     
-    theta= -(angle)
-    motionProxy.moveTo (0, 0, theta)
-    time.sleep(t)
-    print"turning left"
-
-def doright():
-    
     theta= angle
+    motionProxy.setWalkTargetVelocity(0, 0, 0.5, 0.01)
     motionProxy.moveTo (0, 0, theta)
+
+#    time.sleep(t)
+#    print"turning left"
+
+def doright(angle):
+    
+    theta= -angle
+#    motionProxy.moveTo (0, 0, theta)
+    motionProxy.setWalkTargetVelocity(0, 0, -0.5, 0.01)
     time.sleep(t)
     print"turning right"
     
@@ -326,10 +331,11 @@ if __name__== "__main__":
         #TrySensors()
         #target_velocity()
     
-        showNaoImage()
-        #TestTts()
+        #showNaoImage()
+#        TestTts()
+        Test_Square()
     #    #test de déplacements
-    #    dorun()
+    #    dorun(1)
     #    doback()
     #    doleft()
     #    doright()
