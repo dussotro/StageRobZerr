@@ -1,14 +1,15 @@
 # -*- coding: utf-8 -*-
 import time
 import sys
-from naoqi import ALProxy
+from naoqi import ALProxy, ALModule
 import motion
 import select
 import vision_definitions
 import numpy as np
 
 
-robotIP = "172,20,12.126"
+
+robotIP = "172.20.12.126"
 #robotIP = "172.20.28.103"
 port = 9559
 Frequency = 0.0 #low speed
@@ -49,7 +50,15 @@ try:
 except Exception, e:
     print "Could not create proxy to ALMemory"
     print "Error was: ", e
-           
+    
+try:
+    BatteryProxy = ALProxy("ALBattery",robotIP, port)
+except Exception, e:
+    print "Could not create proxy to AlBattery"
+    print "Error was: ", e
+
+
+
 #stiffness for real NAO Robot
 def StiffnessOn(proxy):
     # We use the "Body" name to signify the collection of all joints
@@ -59,13 +68,38 @@ def StiffnessOn(proxy):
     proxy.stiffnessInterpolation(pNames, pStiffnessLists, pTimeLists)
 
 def doInitialisation():
-    print(">>>>>> Initialisation")
+    print">>>>>> Initialisation"
     # Set NAO in Stiffness On
     StiffnessOn(motionProxy)
     # Send NAO to Pose Init
     postureProxy.goToPosture("StandInit", 0.5)
 
-
+#class Battery(ALModule):
+#    """ Mandatory docstring.
+#        comment needed to create a new python module
+#    """
+#    def __init__(self, name):
+#        ALModule.__init__(self, name)
+#        # No need for IP and port here because
+#        # we have our Python broker connected to NAOqi broker
+#        # Create a proxy to ALTextToSpeech for later use
+#        self.battery = BatteryProxy
+#        self.level = 0
+#
+#        # Subscribe to the BatteryChange event:
+#        self.battery.subscribeToEvent("BatteryChargeChanged",
+#            "BatteryRob",
+#            "callBackBattery")
+#        
+#  def callBackBattery(self, *_args):
+#    """ Mandatory docstring.
+#        comment needed to create a bound method
+#    """
+#    self.battery.unsubscribeToEvent("BatteryChargeChanged",
+#            "BatteryRob") 
+#    
+#    self.level = self.
+#    pass
 #==============================================================================
 # Audio
 #==============================================================================
@@ -205,7 +239,7 @@ def doStop():
     motionProxy.setStiffnesses("Body", 0.0)
     motionProxy.rest()
     time.sleep(t)
-    print"stoping"
+    print"stopping"
 
 def target_velocity():
     #TARGET VELOCITY
@@ -262,6 +296,13 @@ def Test_Square_Left_Right():
         doright(np.pi/2)
     print "fin de test du carre"
 
+def Battery():
+    percentage = memoryProxy.getData("Device/SubDeviceList/Battery/Current/Sensor/Value") 
+    b = memoryProxy.getData ("Device/SubDeviceList/Battery/Charge/Sensor/Status")
+    c = memoryProxy.getData ("Device/SubDeviceList/Battery/Charge/Sensor/Value")
+    print"percentage = ", percentage
+    print "b =", b
+    print "c =", c
 #
 #def shoot():
 #    
@@ -346,11 +387,12 @@ if __name__== "__main__":
     
         #showNaoImage()
 #        TestTts()
-        Test_Square()
+#        Test_Square()
         Accelero()
-        for i in range(5):
+        for i in range(3):
             dorun(0.5)
             Accelero()
+            Battery()
     #    #test de déplacements
     #    dorun(1)
     #    doback()
