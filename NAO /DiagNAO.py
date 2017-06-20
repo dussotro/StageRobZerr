@@ -451,7 +451,7 @@ if __name__== "__main__":
         #target_velocity()
     
         #showNaoImage()
-        TestTts("Test")
+        TestTts("michel est mort ce soir")
 
 
 #        #test de déplacements
