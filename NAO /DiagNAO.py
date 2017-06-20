@@ -144,6 +144,19 @@ def TrySensors():
     print 'Right:', Right
     
 
+def Accelero():
+    X = memoryProxy.getData("Device/SubDeviceList/InertialSensor/AccelerometerX/Sensor/Value")
+    Y = memoryProxy.getData("Device/SubDeviceList/InertialSensor/AccelerometerY/Sensor/Value") 
+    Z = memoryProxy.getData("Device/SubDeviceList/InertialSensor/AccelerometerZ/Sensor/Value")
+    print "X = ", X
+    print "Y = ", Y
+    print "Z = ", Z
+    
+    AngleX = memoryProxy.getData("Device/SubDeviceList/InertialSensor/AngleX/Sensor/Value")
+    AngleY = memoryProxy.getData("Device/SubDeviceList/InertialSensor/AngleX/Sensor/Value")
+    print "AngleX =" , AngleX
+    print "AngleY =" , AngleY
+    
 #==============================================================================
 # """Motion"""
 #==============================================================================
