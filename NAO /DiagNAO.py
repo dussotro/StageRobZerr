@@ -6,10 +6,11 @@ import motion
 import select
 import vision_definitions
 import numpy as np
-
+import almath
 
 
 robotIP = "172.20.12.126"
+#robotIP = "172.20.28.103"
 port = 9559
 Frequency = 0.0 #low speed
 t=1
@@ -33,7 +34,7 @@ except Exception, e:
 
 try :
     audio = ALProxy("ALAudioDevice", robotIP,port)
-    audio.setOutputVolume(100)
+    audio.setOutputVolume(50)
 except Exception, e: 
     print "Could not create proxy to ALaudioProxy"
     print "Error was: ", e
@@ -72,37 +73,36 @@ def doInitialisation():
 
 class Robot:
 	def __init__(self, rt, ia, am, space):
-		self.d_mvt = {}
-		self.reference_time = rt
-		self.isAbsolute = ia
-		self.axisMask = am
-		self.space = space
-		self.tempo_time = 0
+            self.d_mvt = {}
+            self.reference_time = rt
+            self.isAbsolute = ia
+            self.axisMask = am
+            self.space = space
+            self.tempo_time = 0
 
 	def mvt(self, where, path):
-		reference_time = 0
-		if self.tempo_time != 0:
-			reference_time = self.tempo_time
-			self.tempo_time = 0
-		else:
-			reference_time = self.reference_time
-			
-		if not self.d_mvt.has_key(where):
-			self.d_mvt[where] = path
-		else:
-			old_path = self.d_mvt[where]
-			saved_path = [el1 + el2 for el1, el2 in zip(path, old_path)]
-			self.d_mvt[where] = saved_path
-		
-		motionProxy.positionInterpolation(where, self.space, path, self.axisMask, reference_time, self.isAbsolute)
-
+            reference_time = 0
+            if self.tempo_time != 0:
+            	reference_time = self.tempo_time
+            	self.tempo_time = 0
+            else:
+            	reference_time = self.reference_time	
+            if not self.d_mvt.has_key(where):
+            	self.d_mvt[where] = path
+            else:
+            	old_path = self.d_mvt[where]
+            	saved_path = [el1 + el2 for el1, el2 in zip(path, old_path)]
+            	self.d_mvt[where] = saved_path
+            motionProxy.positionInterpolation(where, self.space, path, self.axisMask, reference_time, self.isAbsolute)
+                    
+            time.sleep(1.0)
 
 
 #==============================================================================
 # Audio
 #==============================================================================
-def TestTts():
-    tts.say("Test Micro")
+def TestTts(texte):
+    tts.say(texte)
 	
 #==============================================================================
 # """Vision"""
@@ -176,6 +176,19 @@ def TrySensors():
     print 'Right:', Right
     
 
+def Accelero():
+    X = memoryProxy.getData("Device/SubDeviceList/InertialSensor/AccelerometerX/Sensor/Value")
+    Y = memoryProxy.getData("Device/SubDeviceList/InertialSensor/AccelerometerY/Sensor/Value") 
+    Z = memoryProxy.getData("Device/SubDeviceList/InertialSensor/AccelerometerZ/Sensor/Value")
+    print "X = ", X
+    print "Y = ", Y
+    print "Z = ", Z
+    
+    AngleX = memoryProxy.getData("Device/SubDeviceList/InertialSensor/AngleX/Sensor/Value")
+    AngleY = memoryProxy.getData("Device/SubDeviceList/InertialSensor/AngleX/Sensor/Value")
+    print "AngleX =" , AngleX
+    print "AngleY =" , AngleY
+    
 #==============================================================================
 # """Motion"""
 #==============================================================================
@@ -224,7 +237,8 @@ def doStop():
     motionProxy.setStiffnesses("Body", 0.0)
     motionProxy.rest()
     time.sleep(t)
-    print"stoping"
+    print"Stopping"
+    
 
 def target_velocity():
     #TARGET VELOCITY
@@ -286,7 +300,7 @@ def Test_Articulations():
     StiffnessOn(motionProxy)
 
     # Send NAO to Pose Init
-    postureProxy.goToPosture("Stand", 1.0)
+    postureProxy.goToPosture("StandZero", 1.0)
 
     space      = motion.FRAME_ROBOT
     axisMask   = almath.AXIS_MASK_ALL   # full control
@@ -294,18 +308,22 @@ def Test_Articulations():
 
     robot = Robot(1.0, isAbsolute, axisMask, space)
 
-    Body_Parts = ["Torso", "RArm", "LArm", "RLeg", "Lleg"]
+    BodyParts = ["RArm", "LArm"]
     
-    for i in BodyParts:
+    for i, v in enumerate(BodyParts):
         dim = 6
+        print "Articulations: ", v
         for j in range(dim):
-            movement = np.tolist(np.zeros(dim))
-            movement[j] = 0.1
-            robot.mvt(i, movement)
-            movement[j] = -0.2
-            robot.mvt(i, movement)
-            movement[j] = 0.1
-            robot.mvt(i, movement)
+            postureProxy.goToPosture("StandZero", 1.0)
+            movement = np.zeros(dim).tolist()
+            movement[j] = (-1)**(i+1) * 0.1
+            robot.mvt(v, movement)
+            movement[j] = -(-1)**(i+1) * 0.2
+            robot.mvt(v, movement)
+            movement[j] = (-1)**(i+1) * 0.1
+            robot.mvt(v, movement)
+            print "..."
+
 
     postureProxy.goToPosture("Crouch", 1.0)
 
@@ -393,15 +411,16 @@ if __name__== "__main__":
         #target_velocity()
     
         #showNaoImage()
-#        TestTts()
-        #Test_Square()
-    #    #test de déplacements
-    #    dorun(1)
-    #    doback()
-    #    doleft()
-    #    doright()
-    #    doStandUp()
+        TestTts("Test")
+
+#        #test de déplacements
+#        dorun(1)
+#        doback()
+#        doleft()
+#        doright()
+#        doStandUp()
         Test_Articulations()
+        
     except Exception, e:
         print'erreur: ', e
         
