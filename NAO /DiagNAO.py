@@ -8,7 +8,7 @@ import vision_definitions
 import numpy as np
 import almath
 
-print 2
+
 
 robotIP = "172.20.12.126"
 #robotIP = "172.20.28.103"
@@ -107,6 +107,78 @@ def doInitialisation():
 # Classe de test de toutes les articulations
 #==============================================================================
 
+
+
+def configRob(HeadYawAngle, HeadPitchAngle, ShoulderPitchAngle, ShoulderRollAngle, ElbowYawAngle, ElbowRollAngle,WristYawAngle, HandAngle, kneeAngle, torsoAngle, spreadAngle):
+    robotConfig = motionProxy.getRobotConfig()
+    robotName = ""
+    for i in range(len(robotConfig[0])):
+        if (robotConfig[0][i] == "Model Type"):
+            robotName = robotConfig[1][i]
+    
+        if robotName == "naoH25":
+    
+            Head     = [HeadYawAngle, HeadPitchAngle]
+    
+            LeftArm  = [ShoulderPitchAngle, +ShoulderRollAngle, +ElbowYawAngle, +ElbowRollAngle, WristYawAngle, HandAngle]
+            RightArm = [ShoulderPitchAngle, -ShoulderRollAngle, -ElbowYawAngle, -ElbowRollAngle, WristYawAngle, HandAngle]
+    
+            LeftLeg  = [0.0,                      #hipYawPitch
+                        spreadAngle,              #hipRoll
+                        -kneeAngle/2-torsoAngle,  #hipPitch
+                        kneeAngle,                #kneePitch
+                        -kneeAngle/2,             #anklePitch
+                        -spreadAngle]             #ankleRoll
+            RightLeg = [0.0, -spreadAngle, -kneeAngle/2-torsoAngle, kneeAngle, -kneeAngle/2,  spreadAngle]
+    
+        elif robotName == "naoH21":
+    
+            Head     = [HeadYawAngle, HeadPitchAngle]
+    
+            LeftArm  = [ShoulderPitchAngle, +ShoulderRollAngle, +ElbowYawAngle, +ElbowRollAngle]
+            RightArm = [ShoulderPitchAngle, -ShoulderRollAngle, -ElbowYawAngle, -ElbowRollAngle]
+    
+            LeftLeg  = [0.0,  spreadAngle, -kneeAngle/2-torsoAngle, kneeAngle, -kneeAngle/2, -spreadAngle]
+            RightLeg = [0.0, -spreadAngle, -kneeAngle/2-torsoAngle, kneeAngle, -kneeAngle/2,  spreadAngle]
+    
+        elif robotName == "naoT14":
+    
+            Head     = [HeadYawAngle, HeadPitchAngle]
+    
+            LeftLeg  = [0.0,  spreadAngle, -kneeAngle/2-torsoAngle, kneeAngle, -kneeAngle/2, -spreadAngle]
+            RightLeg = [0.0, -spreadAngle, -kneeAngle/2-torsoAngle, kneeAngle, -kneeAngle/2,  spreadAngle]
+    
+            LeftLeg  = []
+            RightLeg = []
+    
+        elif robotName == "naoT2":
+    
+            Head     = [HeadYawAngle, HeadPitchAngle]
+    
+            LeftArm  = []
+            RightArm = []
+    
+            LeftLeg  = []
+            RightLeg = []
+    
+        else:
+            print "ERROR : Your robot is unknown"
+            print "This test is not available for your Robot"
+            print "---------------------"
+            exit(1)
+    
+        # Gather the joints together
+        pTargetAngles = Head + LeftArm + LeftLeg + RightLeg + RightArm
+    
+        # Convert to radians
+        pTargetAngles = [ x * almath.TO_RAD for x in pTargetAngles]
+
+        # We use the "Body" name to signify the collection of all joints
+        pNames = "Body"
+        # We set the fraction of max speed
+        pMaxSpeedFraction = 0.2
+        # Ask motion to do this with a blocking call    
+        motionProxy.angleInterpolationWithSpeed(pNames, pTargetAngles, pMaxSpeedFraction)
 
 class Robot:
 	def __init__(self, rt, ia, am, space):
@@ -342,27 +414,64 @@ def Battery():
     print "b =", b
     print "c =", c
 
+def sumList(a, b):
+    result = []
+    for i in range(len(a)):
+        result.append(a[i] + b[i])
+    return result
+
 def Test_Articulations():
     StiffnessOn(motionProxy)
 
     # Send NAO to Pose Init
-    postureProxy.goToPosture("StandInit", 1.0)
+    postureProxy.goToPosture("StandZero", 1.0)
+    # Get the Robot Configuration
 
-    space      = motion.FRAME_ROBOT
-    axisMask   = almath.AXIS_MASK_ALL   # full control
-    isAbsolute = False
+#    # Define The Initial Position for the upper body
+#    HeadYawAngle       = + 0.0
+#    HeadPitchAngle     = + 0.0
+#    
+#    ShoulderPitchAngle = +80.0
+#    ShoulderRollAngle  = +20.0
+#    ElbowYawAngle      = -80.0
+#    ElbowRollAngle     = -60.0
+#    WristYawAngle      = + 0.0
+#    HandAngle          = + 0.0
+#    
+#    # Define legs position
+#    kneeAngle    = +40.0
+#    torsoAngle   = + 0.0 
+#    spreadAngle  = + 0.0 
 
-    robot = Robot(1.0, isAbsolute, axisMask, space)
-    
-    #===
-    BodyPart = "RArm"
-    print BodyPart
-    print " Roll"
-    robot.mvt(BodyPart, [0.0, 0.0, 0.0,-0.31, 0.0, 0.0])
-    robot.mvt(BodyPart, [0.0, 0.0, 0.0, 0.0, 0.0, 0.0])
-    robot.mvt(BodyPart, [0.0, -0.5, 0.0, 0.0, 0.0, 0.0])
     
     
+#    listParts = [HeadYawAngle, HeadPitchAngle, ShoulderPitchAngle, ShoulderRollAngle, ElbowYawAngle, ElbowRollAngle,WristYawAngle,
+#           HandAngle, kneeAngle, torsoAngle, spreadAngle]
+    listValStandInit = [memoryProxy.getData("Device/SubDeviceList/HeadYaw/Position/Actuator/Value"),
+                        memoryProxy.getData("Device/SubDeviceList/HeadPitch/Position/Actuator/Value"),
+                        memoryProxy.getData("Device/SubDeviceList/LShoulderPitch/Position/Actuator/Value"),
+                        memoryProxy.getData("Device/SubDeviceList/LShoulderRoll/Position/Actuator/Value"),
+                        memoryProxy.getData("Device/SubDeviceList/LElbowYaw/Position/Actuator/Value"),
+                        memoryProxy.getData("Device/SubDeviceList/LElbowRoll/Position/Actuator/Value"),
+                        memoryProxy.getData("Device/SubDeviceList/LWristYaw/Position/Actuator/Value"),
+                        memoryProxy.getData("Device/SubDeviceList/RHand/Position/Actuator/Value"),
+                        memoryProxy.getData("Device/SubDeviceList/LKneePitch/Position/Actuator/Value"),
+                        0,
+                        0]
+    
+    tab = [[[130,0,0,0,0,0,0,0,0,0,0],[-260,0,0,0,0,0,0,0,0,0,0], [130,0,0,0,0,0,0,0,0,0,0]],
+           [[0,30,0,0,0,0,0,0,0,0,0],[0,-70,0,0,0,0,0,0,0,0,0], [0,40,0,0,0,0,0,0,0,0,0]],
+           [[0,0,120,0,0,0,0,0,0,0,0],[0,0,-240,0,0,0,0,0,0,0,0], [0,0,120,0,0,0,0,0,0,0,0]],
+           [[0,0,0,-18,0,0,0,0,0,0,0],[0,0,0,95,0,0,0,0,0,0,0], [0,0,0,-75,0,0,0,0,0,0,0]],
+           [[0,0,0,0,120,0,0,0,0,0,0],[0,0,0,0,-240,0,0,0,0,0,0], [0,0,0,0,120,0,0,0,0,0,0]],
+           [[0,0,0,0,0,0,-2,0,0,0,0,0],[0,0,0,0,0,90,0,0,0,0,0], [0,0,0,0,0,0,-88,0,0,0,0]],
+           [[0,0,0,0,0,0,105,0,0,0,0],[0,0,0,0,0,0,-210,0,0,0,0], [0,0,0,0,0,0,105,0,0,0,0]]]
+    
+    for i in range(len(tab)):
+        for j in range(3):
+            listValStandInit = sumList(listValStandInit, tab[i][j])
+            configRob(listValStandInit[0], listValStandInit[1], listValStandInit[2], listValStandInit[3], listValStandInit[4], listValStandInit[5], listValStandInit[6], listValStandInit[7], listValStandInit[8], listValStandInit[9], listValStandInit[10])
+    time.sleep(1)
     #===
     
     postureProxy.goToPosture("Crouch", 1.0)
@@ -450,7 +559,7 @@ if __name__== "__main__":
         #target_velocity()
     
         #showNaoImage()
-        TestTts("michel est mort ce soir")
+        TestTts("Test")
 
 
 #        #test de déplacements
@@ -459,7 +568,6 @@ if __name__== "__main__":
 #        doleft()
 #        doright()
 #        doStandUp()
-        print' test de ouf'
         Test_Articulations()
     except Exception, e:
         print'erreur: ', e
