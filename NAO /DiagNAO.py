@@ -9,12 +9,18 @@ import numpy as np
 import almath
 from PyQt4.QtGui import QWidget, QImage, QApplication, QPainter
 
+<<<<<<< HEAD
 
 robotIP = "172.20.12.126"
 #robotIP = "172.20.28.103"
 port = 9559
 CameraID = 0
 Frequency = 0.0 #low speed
+=======
+#robotIP = "172.20.12.126"
+robotIP = "172.20.28.103"
+port = 9559
+>>>>>>> 5787c19ee5e34bc1464c79ff11feb2c0c49b8e2c
 t=1
 
 try:
@@ -281,8 +287,7 @@ def showNaoImage():
 # """Sensors"""
 #==============================================================================
 def TrySensors():
- 
-    
+
     Left = memoryProxy.getData("Device/SubDeviceList/US/Left/Sensor/Value")
     Right = memoryProxy.getData("Device/SubDeviceList/US/Right/Sensor/Value") 
     print 'Left :', Left
@@ -306,9 +311,14 @@ def Accelero():
 # """Motion"""
 #==============================================================================
 def dorun(t):
-    motionProxy.setWalkTargetVelocity(0.4, 0, 0, 0.8)
-    motionProxy.moveTo (0.4, 0, 0)
+    motionProxy.setWalkTargetVelocity(0.8, 0, 0, 1)
+    t0 = time.time()
+    while time.time()< (t0 +t):
+        Accelero()
+        time.sleep(0.2)
+#    motionProxy.moveTo (0.4, 0, 0)
 #    time.sleep(t)
+    motionProxy.setWalkTargetVelocity(0.0, 0, 0, 1)
     print"running"
     
 
@@ -347,6 +357,7 @@ def doStop():
     
 
     postureProxy.goToPosture("Crouch", 0.3)
+    Accelero()
     motionProxy.setStiffnesses("Body", 0.0)
     motionProxy.rest()
     time.sleep(t)
@@ -411,7 +422,9 @@ def Test_Square_Left_Right():
     print "fin de test du carre"
     BatteryMemory()
 
-
+#==============================================================================
+# Battery
+#==============================================================================
 def BatteryMemory():
     percentage = memoryProxy.getData("Device/SubDeviceList/Battery/Current/Sensor/Value") 
     c = memoryProxy.getData ("Device/SubDeviceList/Battery/Charge/Sensor/Value")
@@ -471,6 +484,7 @@ if __name__== "__main__":
     doInitialisation()
     #test de la vision du NAO
     try:
+
         
 #        BatteryMemory()
 #        #test de capteurs
@@ -502,6 +516,7 @@ if __name__== "__main__":
         print "Test des articulations Tete / Bras"
         Test_Articulations()
         print "Fin articulations..."
+
 
         
         BatteryMemory()
