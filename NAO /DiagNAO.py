@@ -8,12 +8,10 @@ import vision_definitions
 import numpy as np
 import almath
 
-print 2
 
 #robotIP = "172.20.12.126"
 robotIP = "172.20.28.103"
 port = 9559
-Frequency = 0.0 #low speed
 t=1
 
 try:
@@ -208,8 +206,7 @@ def showNaoImage():
 # """Sensors"""
 #==============================================================================
 def TrySensors():
- 
-    
+
     Left = memoryProxy.getData("Device/SubDeviceList/US/Left/Sensor/Value")
     Right = memoryProxy.getData("Device/SubDeviceList/US/Right/Sensor/Value") 
     print 'Left :', Left
@@ -233,8 +230,12 @@ def Accelero():
 # """Motion"""
 #==============================================================================
 def dorun(t):
-    motionProxy.setWalkTargetVelocity(0.4, 0, 0, 0.8)
-    motionProxy.moveTo (0.4, 0, 0)
+    motionProxy.setWalkTargetVelocity(0.4, 0, 0, 1)
+    t0 = time.time()
+    while time.time()<t0 +1:
+        Accelero()
+        time.sleep(0.2)
+#    motionProxy.moveTo (0.4, 0, 0)
 #    time.sleep(t)
     print"running"
     
@@ -338,7 +339,9 @@ def Test_Square_Left_Right():
     print "fin de test du carre"
     BatteryMemory()
 
-
+#==============================================================================
+# Battery
+#==============================================================================
 def BatteryMemory():
     percentage = memoryProxy.getData("Device/SubDeviceList/Battery/Current/Sensor/Value") 
     c = memoryProxy.getData ("Device/SubDeviceList/Battery/Charge/Sensor/Value")
@@ -464,14 +467,14 @@ if __name__== "__main__":
 
 
 #        #test de déplacements
-        Test_Square_Left_Right()
-        BatteryMemory()
-        Test_Square_Left_Right()
-        BatteryMemory()
-        Test_Square_Left_Right()
-        BatteryMemory()
-#        dorun(1)
-#        dorun(1)
+#        Test_Square_Left_Right()
+#        BatteryMemory()
+#        Test_Square_Left_Right()
+#        BatteryMemory()
+#        Test_Square_Left_Right()
+#        BatteryMemory()
+        dorun(1)
+        dorun(1)
 #        dorun(1)
 #        doback()
 #        doleft()
