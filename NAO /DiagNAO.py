@@ -9,7 +9,7 @@ import numpy as np
 
 
 
-robotIP = "172.20.28.103"
+robotIP = "172.20.12.126"
 port = 9559
 Frequency = 0.0 #low speed
 t=1
@@ -64,6 +64,38 @@ def doInitialisation():
     StiffnessOn(motionProxy)
     # Send NAO to Pose Init
     postureProxy.goToPosture("StandInit", 0.5)
+
+#==============================================================================
+# Classe de test de toutes les articulations
+#==============================================================================
+
+
+class Robot:
+	def __init__(self, rt, ia, am, space):
+		self.d_mvt = {}
+		self.reference_time = rt
+		self.isAbsolute = ia
+		self.axisMask = am
+		self.space = space
+		self.tempo_time = 0
+
+	def mvt(self, where, path):
+		reference_time = 0
+		if self.tempo_time != 0:
+			reference_time = self.tempo_time
+			self.tempo_time = 0
+		else:
+			reference_time = self.reference_time
+			
+		if not self.d_mvt.has_key(where):
+			self.d_mvt[where] = path
+		else:
+			old_path = self.d_mvt[where]
+			saved_path = [el1 + el2 for el1, el2 in zip(path, old_path)]
+			self.d_mvt[where] = saved_path
+		
+		motionProxy.positionInterpolation(where, self.space, path, self.axisMask, reference_time, self.isAbsolute)
+
 
 
 #==============================================================================
@@ -249,6 +281,35 @@ def Test_Square_Left_Right():
         doright(np.pi/2)
     print "fin de test du carre"
 
+
+def Test_Articulations():
+    StiffnessOn(motionProxy)
+
+    # Send NAO to Pose Init
+    postureProxy.goToPosture("Stand", 1.0)
+
+    space      = motion.FRAME_ROBOT
+    axisMask   = almath.AXIS_MASK_ALL   # full control
+    isAbsolute = False
+
+    robot = Robot(1.0, isAbsolute, axisMask, space)
+
+    Body_Parts = ["Torso", "RArm", "LArm", "RLeg", "Lleg"]
+    
+    for i in BodyParts:
+        dim = 6
+        for j in range(dim):
+            movement = np.tolist(np.zeros(dim))
+            movement[j] = 0.1
+            robot.mvt(i, movement)
+            movement[j] = -0.2
+            robot.mvt(i, movement)
+            movement[j] = 0.1
+            robot.mvt(i, movement)
+
+    postureProxy.goToPosture("Crouch", 1.0)
+
+
 #
 #def shoot():
 #    
@@ -333,13 +394,14 @@ if __name__== "__main__":
     
         #showNaoImage()
 #        TestTts()
-        Test_Square()
+        #Test_Square()
     #    #test de déplacements
     #    dorun(1)
     #    doback()
     #    doleft()
     #    doright()
     #    doStandUp()
+        Test_Articulations()
     except Exception, e:
         print'erreur: ', e
         
