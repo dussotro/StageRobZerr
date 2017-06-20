@@ -65,6 +65,7 @@ def doInitialisation():
     StiffnessOn(motionProxy)
     # Send NAO to Pose Init
     postureProxy.goToPosture("StandInit", 0.5)
+    
 
 #==============================================================================
 # Classe de test de toutes les articulations
@@ -308,21 +309,8 @@ def Test_Articulations():
 
     robot = Robot(1.0, isAbsolute, axisMask, space)
 
-    BodyParts = ["RArm", "LArm"]
+    BodyPart = "RArm"
     
-    for i, v in enumerate(BodyParts):
-        dim = 6
-        print "Articulations: ", v
-        for j in range(dim):
-            postureProxy.goToPosture("StandZero", 1.0)
-            movement = np.zeros(dim).tolist()
-            movement[j] = (-1)**(i+1) * 0.1
-            robot.mvt(v, movement)
-            movement[j] = -(-1)**(i+1) * 0.2
-            robot.mvt(v, movement)
-            movement[j] = (-1)**(i+1) * 0.1
-            robot.mvt(v, movement)
-            print "..."
 
 
     postureProxy.goToPosture("Crouch", 1.0)
@@ -411,7 +399,7 @@ if __name__== "__main__":
         #target_velocity()
     
         #showNaoImage()
-        TestTts("Test")
+        #TestTts("Test")
 
 #        #test de déplacements
 #        dorun(1)
@@ -420,7 +408,7 @@ if __name__== "__main__":
 #        doright()
 #        doStandUp()
         Test_Articulations()
-        
+        pass
     except Exception, e:
         print'erreur: ', e
         
