@@ -10,8 +10,8 @@ import almath
 
 
 
-robotIP = "172.20.12.126"
-#robotIP = "172.20.28.103"
+#robotIP = "172.20.12.126"
+robotIP = "172.20.28.103"
 port = 9559
 Frequency = 0.0 #low speed
 t=1
@@ -93,15 +93,17 @@ def doInitialisation():
 #            "BatteryRob",
 #            "callBackBattery")
 #        
-#  def callBackBattery(self, *_args):
-#    """ Mandatory docstring.
+#    def callBackBattery(self, *_args):
+#        """ Mandatory docstring.
 #        comment needed to create a bound method
-#    """
-#    self.battery.unsubscribeToEvent("BatteryChargeChanged",
-#            "BatteryRob") 
+#        """
+#        self.battery.unsubscribeToEvent("BatteryChargeChanged",
+#                                        "BatteryRob") 
+#        print 'im right here'
+#        print self.percentage
+#        self.battery.unsubscribeToEvent("BatteryChargeChanged",
+#                                            "BatteryRob") 
 #    
-#    self.level = self.
-#    pass
 
 #==============================================================================
 # Classe de test de toutes les articulations
@@ -319,7 +321,7 @@ def doback():
 def doleft(angle):
     
     theta= angle
-    motionProxy.setWalkTargetVelocity(0, 0, 0.5, 0.01)
+#    motionProxy.setWalkTargetVelocity(0, 0, 0.5, 0.01)
     motionProxy.moveTo (0, 0, theta)
 
 #    time.sleep(t)
@@ -328,8 +330,8 @@ def doleft(angle):
 def doright(angle):
     
     theta= -angle
-#    motionProxy.moveTo (0, 0, theta)
-    motionProxy.setWalkTargetVelocity(0, 0, -0.5, 0.01)
+    motionProxy.moveTo (0, 0, theta)
+#    motionProxy.setWalkTargetVelocity(0, 0, -0.5, 0.01)
     time.sleep(t)
     print"turning right"
     
@@ -398,27 +400,35 @@ def Test_Square_Left_Right():
     print ">>> carre gauche"
     for i in range(4):
         dorun(1)
+        BatteryMemory()
         doleft(np.pi/2)
     print ">>> carre droite"
     for j in range(4):
         dorun(1)
+        BatteryMemory()
         doright(np.pi/2)
     print "fin de test du carre"
+    BatteryMemory()
 
 
-def Battery():
+def BatteryMemory():
     percentage = memoryProxy.getData("Device/SubDeviceList/Battery/Current/Sensor/Value") 
-    b = memoryProxy.getData ("Device/SubDeviceList/Battery/Charge/Sensor/Status")
     c = memoryProxy.getData ("Device/SubDeviceList/Battery/Charge/Sensor/Value")
-    print"percentage = ", percentage
-    print "b =", b
-    print "c =", c
-
+    b = memoryProxy.getData ("Device/SubDeviceList/Battery/Charge/Sensor/Status")
+    s = 0
+    for i in range(10):
+        s += c
+        c = memoryProxy.getData ("Device/SubDeviceList/Battery/Charge/Sensor/Value")
+    print"percentage = ", percentage    
+    print "value =", s/10
+    print "status =", b
+    
 def sumList(a, b):
     result = []
     for i in range(len(a)):
         result.append(a[i] + b[i])
     return result
+
 
 def Test_Articulations():
     StiffnessOn(motionProxy)
@@ -552,6 +562,7 @@ if __name__== "__main__":
     doInitialisation()
     #test de la vision du NAO
     try:
+#        BatteryRob = Battery('BatteryRob')
         #Test_Detection()
         #Test_Image()
         #test de capteurs 
@@ -560,15 +571,23 @@ if __name__== "__main__":
     
         #showNaoImage()
         TestTts("Test")
-
-
+        
 #        #test de déplacements
+#        Test_Square_Left_Right()
+#        BatteryMemory()
+#        Test_Square_Left_Right()
+#        BatteryMemory()
+#        Test_Square_Left_Right()
+#        BatteryMemory()
+#        dorun(1)
+#        dorun(1)
 #        dorun(1)
 #        doback()
 #        doleft()
 #        doright()
 #        doStandUp()
         Test_Articulations()
+
     except Exception, e:
         print'erreur: ', e
        
