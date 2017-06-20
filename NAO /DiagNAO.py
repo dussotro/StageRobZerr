@@ -93,16 +93,16 @@ class Battery(ALModule):
             "BatteryRob",
             "callBackBattery")
         
-  def callBackBattery(self, *_args):
-    """ Mandatory docstring.
+    def callBackBattery(self, *_args):
+        """ Mandatory docstring.
         comment needed to create a bound method
-    """
-    self.battery.unsubscribeToEvent("BatteryChargeChanged",
-            "BatteryRob") 
-    
-    print 'self.percentage'
-    self.battery.unsubscribeToEvent("BatteryChargeChanged",
-            "BatteryRob") 
+        """
+        self.battery.unsubscribeToEvent("BatteryChargeChanged",
+                                        "BatteryRob") 
+        
+        print 'self.percentage'
+        self.battery.unsubscribeToEvent("BatteryChargeChanged",
+                                            "BatteryRob") 
     
 
 #==============================================================================
