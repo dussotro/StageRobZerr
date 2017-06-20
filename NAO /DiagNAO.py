@@ -459,6 +459,7 @@ if __name__== "__main__":
 #        doleft()
 #        doright()
 #        doStandUp()
+        print' test de ouf'
         Test_Articulations()
     except Exception, e:
         print'erreur: ', e
