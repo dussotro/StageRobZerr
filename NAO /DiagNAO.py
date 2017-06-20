@@ -76,34 +76,34 @@ def doInitialisation():
     postureProxy.goToPosture("StandInit", 0.5)
     
 
-class Battery(ALModule):
-    """ Mandatory docstring.
-        comment needed to create a new python module
-    """
-    def __init__(self, name):
-        ALModule.__init__(self, name)
-        # No need for IP and port here because
-        # we have our Python broker connected to NAOqi broker
-        # Create a proxy to ALTextToSpeech for later use
-        self.battery = BatteryProxy
-        self.level = 0
-
-        # Subscribe to the BatteryChange event:
-        self.battery.subscribeToEvent("BatteryChargeChanged",
-            "BatteryRob",
-            "callBackBattery")
-        
-    def callBackBattery(self, *_args):
-        """ Mandatory docstring.
-        comment needed to create a bound method
-        """
-        self.battery.unsubscribeToEvent("BatteryChargeChanged",
-                                        "BatteryRob") 
-        
-        print 'self.percentage'
-        self.battery.unsubscribeToEvent("BatteryChargeChanged",
-                                            "BatteryRob") 
-    
+#class Battery(ALModule):
+#    """ Mandatory docstring.
+#        comment needed to create a new python module
+#    """
+#    def __init__(self, name):
+#        ALModule.__init__(self, name)
+#        # No need for IP and port here because
+#        # we have our Python broker connected to NAOqi broker
+#        # Create a proxy to ALTextToSpeech for later use
+#        self.battery = BatteryProxy
+#        self.level = 0
+#
+#        # Subscribe to the BatteryChange event:
+#        self.battery.subscribeToEvent("BatteryChargeChanged",
+#            "BatteryRob",
+#            "callBackBattery")
+#        
+#    def callBackBattery(self, *_args):
+#        """ Mandatory docstring.
+#        comment needed to create a bound method
+#        """
+#        self.battery.unsubscribeToEvent("BatteryChargeChanged",
+#                                        "BatteryRob") 
+#        print 'im right here'
+#        print self.percentage
+#        self.battery.unsubscribeToEvent("BatteryChargeChanged",
+#                                            "BatteryRob") 
+#    
 
 #==============================================================================
 # Classe de test de toutes les articulations
@@ -249,7 +249,7 @@ def doback():
 def doleft(angle):
     
     theta= angle
-    motionProxy.setWalkTargetVelocity(0, 0, 0.5, 0.01)
+#    motionProxy.setWalkTargetVelocity(0, 0, 0.5, 0.01)
     motionProxy.moveTo (0, 0, theta)
 
 #    time.sleep(t)
@@ -258,8 +258,8 @@ def doleft(angle):
 def doright(angle):
     
     theta= -angle
-#    motionProxy.moveTo (0, 0, theta)
-    motionProxy.setWalkTargetVelocity(0, 0, -0.5, 0.01)
+    motionProxy.moveTo (0, 0, theta)
+#    motionProxy.setWalkTargetVelocity(0, 0, -0.5, 0.01)
     time.sleep(t)
     print"turning right"
     
@@ -328,22 +328,29 @@ def Test_Square_Left_Right():
     print ">>> carre gauche"
     for i in range(4):
         dorun(1)
+        BatteryMemory()
         doleft(np.pi/2)
     print ">>> carre droite"
     for j in range(4):
         dorun(1)
+        BatteryMemory()
         doright(np.pi/2)
     print "fin de test du carre"
+    BatteryMemory()
 
 
-def Battery():
+def BatteryMemory():
     percentage = memoryProxy.getData("Device/SubDeviceList/Battery/Current/Sensor/Value") 
-    b = memoryProxy.getData ("Device/SubDeviceList/Battery/Charge/Sensor/Status")
     c = memoryProxy.getData ("Device/SubDeviceList/Battery/Charge/Sensor/Value")
-    print"percentage = ", percentage
-    print "b =", b
-    print "c =", c
-
+    b = memoryProxy.getData ("Device/SubDeviceList/Battery/Charge/Sensor/Status")
+    s = 0
+    for i in range(10):
+        s += c
+        c = memoryProxy.getData ("Device/SubDeviceList/Battery/Charge/Sensor/Value")
+    print"percentage = ", percentage    
+    print "value =", s/10
+    print "status =", b
+    
 def Test_Articulations():
     StiffnessOn(motionProxy)
 
@@ -445,6 +452,7 @@ if __name__== "__main__":
     doInitialisation()
     #test de la vision du NAO
     try:
+#        BatteryRob = Battery('BatteryRob')
         #Test_Detection()
         #Test_Image()
         #test de capteurs 
@@ -452,13 +460,19 @@ if __name__== "__main__":
         #target_velocity()
     
         #showNaoImage()
-#        TestTts("michel est mort ce soir")
+#        TestTts("Test micro")
 
 
 #        #test de déplacements
-        dorun(1)
-        dorun(1)
-        dorun(1)
+        Test_Square_Left_Right()
+        BatteryMemory()
+        Test_Square_Left_Right()
+        BatteryMemory()
+        Test_Square_Left_Right()
+        BatteryMemory()
+#        dorun(1)
+#        dorun(1)
+#        dorun(1)
 #        doback()
 #        doleft()
 #        doright()
