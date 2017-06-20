@@ -463,5 +463,5 @@ if __name__== "__main__":
         Test_Articulations()
     except Exception, e:
         print'erreur: ', e
-        
+    print "michel"    
     doStop()
