@@ -430,6 +430,7 @@ def BatteryMemory():
     #print "Percentage = ", percentage    
     print "Pourcentage de la batterie :", s/10
     #print "status =", b
+    return s/10
     
 def sumList(a, b):
     result = []
@@ -485,17 +486,17 @@ if __name__== "__main__":
     try:
 
         
-        BatteryMemory()
+        b0 = BatteryMemory()
         #test de capteurs
         print "Test des capteurs frontaux du robot" 
         TrySensors()
         print "Fin capteurs..." 
 
         print "Test de calcul de vitesse et position"
-        #target_velocity()
-        #position_robot()
+        target_velocity()
+        position_robot()
         print "Fin vitesse / position ..." 
-#
+        
         print "Test de la fonction de parole du nao"
         TestTts("Test Micro")
         print "Fin parole..."
@@ -511,9 +512,9 @@ if __name__== "__main__":
 
 
         
-        BatteryMemory()
+        b1 = BatteryMemory()
         print "Fin Batterie..."
-        
+        print(b1 - b0)
         print "Test d'affichage en temps réel de la vision du robot"
         app = QApplication(sys.argv)
         myWidget = vis.ImageWidget(robotIP, port, CameraID)
