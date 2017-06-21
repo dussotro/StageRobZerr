@@ -7,20 +7,14 @@ import select
 import vision_showimages as vis
 import numpy as np
 import almath
-from PyQt4.QtGui import QWidget, QImage, QApplication, QPainter
+from PyQt4.QtGui import QWidget, QImage, QApplication, QPainter, QPushButton
 
-<<<<<<< HEAD
 
-robotIP = "172.20.12.126"
-#robotIP = "172.20.28.103"
+robotIP = "172.20.12.126" #Rouge
+#robotIP = "172.20.28.103" #Bleu
 port = 9559
 CameraID = 0
 Frequency = 0.0 #low speed
-=======
-#robotIP = "172.20.12.126"
-robotIP = "172.20.28.103"
-port = 9559
->>>>>>> 5787c19ee5e34bc1464c79ff11feb2c0c49b8e2c
 t=1
 
 try:
@@ -443,9 +437,14 @@ def sumList(a, b):
         result.append(a[i] + b[i])
     return result
 
-
+def close():
+    myWidget.close()
+    boutton.close()
+#    app.exit()
+    
 def Test_Articulations():
     StiffnessOn(motionProxy)
+
 
     # Send NAO to Pose Init
     postureProxy.goToPosture("StandZero", 1.0)
@@ -486,32 +485,25 @@ if __name__== "__main__":
     try:
 
         
-#        BatteryMemory()
-#        #test de capteurs
-#        print "Test des capteurs frontaux du robot" 
-#        TrySensors()
-#        print "Fin capteurs..." 
+        BatteryMemory()
+        #test de capteurs
+        print "Test des capteurs frontaux du robot" 
+        TrySensors()
+        print "Fin capteurs..." 
+
+        print "Test de calcul de vitesse et position"
+        #target_velocity()
+        #position_robot()
+        print "Fin vitesse / position ..." 
 #
-#        print "Test de calcul de vitesse et position"
-#        #target_velocity()
-#        #position_robot()
-#        print "Fin vitesse / position ..." 
-#    
-#        print "Test d'affichage en temps réel de la vision du robot"
-#        app = QApplication(sys.argv)
-#        myWidget = vis.ImageWidget(robotIP, port, CameraID)
-#        myWidget.show()
-#        #sys.exit(app.exec_())
-#        print "Fin video..."
-#
-#        print "Test de la fonction de parole du nao"
-#        TestTts("Test")
-#        print "Fin parole..."
-#        
-#        print "Test de deplacement du robot"
-#        print "trajectoire: carre droite puis carre gauche"
-#        Test_Square_Left_Right()
-#        print "Fin deplacement..."
+        print "Test de la fonction de parole du nao"
+        TestTts("Test Micro")
+        print "Fin parole..."
+        
+        print "Test de deplacement du robot"
+        print "trajectoire: carre droite puis carre gauche"
+        Test_Square_Left_Right()
+        print "Fin deplacement..."
 
         print "Test des articulations Tete / Bras"
         Test_Articulations()
@@ -521,6 +513,18 @@ if __name__== "__main__":
         
         BatteryMemory()
         print "Fin Batterie..."
+        
+        print "Test d'affichage en temps réel de la vision du robot"
+        app = QApplication(sys.argv)
+        myWidget = vis.ImageWidget(robotIP, port, CameraID)
+        myWidget.show()
+        boutton= QPushButton()
+        boutton.show()
+        boutton.clicked.connect(close)
+
+        sys.exit(app.exec_())
+        
+        print "Fin video..."
         
     except Exception, e:
         print'erreur: ', e
