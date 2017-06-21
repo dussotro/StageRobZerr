@@ -1,4 +1,6 @@
 # -*- coding: utf-8 -*-
+#h25 v4
+
 import time
 import sys
 from naoqi import ALProxy, ALModule
@@ -7,18 +9,17 @@ import select
 import vision_showimages as vis
 import numpy as np
 import almath
-from PyQt4.QtGui import QWidget, QImage, QApplication, QPainter
+from PyQt4.QtGui import QWidget, QImage, QApplication, QPainter, QPushButton
 
-#michel rouge
-robotIP = "172.20.12.126"
-#michel bleu
-#robotIP = "172.20.28.103" 
+
+#robotIP = "172.20.12.126" #Rouge
+#robotIP = "172.20.28.103" #Bleu
+robotIP = "172.20.12.49"
 
 port = 9559
 CameraID = 0
 Frequency = 0.0 #low speed
-
-t=1
+t=1.0
 
 try:
     motionProxy = ALProxy("ALMotion", robotIP, port)
@@ -295,26 +296,31 @@ def Accelero():
     X = memoryProxy.getData("Device/SubDeviceList/InertialSensor/AccelerometerX/Sensor/Value")
     Y = memoryProxy.getData("Device/SubDeviceList/InertialSensor/AccelerometerY/Sensor/Value") 
     Z = memoryProxy.getData("Device/SubDeviceList/InertialSensor/AccelerometerZ/Sensor/Value")
-    print "X = ", X
-    print "Y = ", Y
-    print "Z = ", Z
+#    print "X = ", X
+#    print "Y = ", Y
+#    print "Z = ", Z
     
     AngleX = memoryProxy.getData("Device/SubDeviceList/InertialSensor/AngleX/Sensor/Value")
     AngleY = memoryProxy.getData("Device/SubDeviceList/InertialSensor/AngleX/Sensor/Value")
-    print "AngleX =" , AngleX
-    print "AngleY =" , AngleY
+    return AngleX, AngleY
+
     
 #==============================================================================
 # """Motion"""
 #==============================================================================
 def dorun(t):
-    motionProxy.setWalkTargetVelocity(0.8, 0, 0, 1)
+    motionProxy.setWalkTargetVelocity(0.6, 0, 0, 1)
     t0 = time.time()
-    while time.time()< (t0 +t):
-        Accelero()
+    AngX, AngY = [], []
+    while time.time()< (t0 + t):
+        accelero = Accelero()
+        AngX.append(accelero[0])
+        AngY.append(accelero[1])
         time.sleep(0.2)
 #    motionProxy.moveTo (0.4, 0, 0)
 #    time.sleep(t)
+    maxAngX, maxAngY = max(AngX), max(AngY)
+    print "maxAngX, maxAngY = ", maxAngX, ", ", maxAngY
     motionProxy.setWalkTargetVelocity(0.0, 0, 0, 1)
     print"running"
     
@@ -328,18 +334,47 @@ def doback():
     
 def doleft(angle):
     
+    initRobotPosition = almath.Pose2D(motionProxy.getRobotPosition(False))
+    
     theta= angle
 #    motionProxy.setWalkTargetVelocity(0, 0, 0.5, 0.01)
     motionProxy.moveTo (0, 0, theta)
+    #####################
+    ## get robot position after move
+    #####################
+    endRobotPosition = almath.Pose2D(motionProxy.getRobotPosition(False))
+
+    #####################
+    ## compute and print the robot motion
+    #####################
+    robotMove = almath.pose2DInverse(initRobotPosition)*endRobotPosition
+    print "virage gauche :", robotMove
+
+
+
 
 #    time.sleep(t)
 #    print"turning left"
 
 def doright(angle):
     
+    initRobotPosition = almath.Pose2D(motionProxy.getRobotPosition(False))
+    
     theta= -angle
     motionProxy.moveTo (0, 0, theta)
 #    motionProxy.setWalkTargetVelocity(0, 0, -0.5, 0.01)
+    #####################
+    ## get robot position after move
+    #####################
+    endRobotPosition = almath.Pose2D(motionProxy.getRobotPosition(False))
+
+    #####################
+    ## compute and print the robot motion
+    #####################
+    robotMove = almath.pose2DInverse(initRobotPosition)*endRobotPosition
+    print "virage droite :", robotMove
+
+
     time.sleep(t)
     print"turning right"
     
@@ -406,16 +441,17 @@ def position_robot():
     print "Robot Move :", robotMove
 
 def Test_Square_Left_Right():
-    err = 0.2
     print ">>>>>>>>>>> Test du carre"
     print ">>> carre gauche"
+    time.sleep(2)
     for i in range(4):
-        dorun(1)
+        dorun(6)
         BatteryMemory()
         doleft(np.pi/2)
+    time.sleep(2)
     print ">>> carre droite"
     for j in range(4):
-        dorun(1)
+        dorun(6)
         BatteryMemory()
         doright(np.pi/2)
     print "fin de test du carre"
@@ -428,13 +464,15 @@ def BatteryMemory():
     percentage = memoryProxy.getData("Device/SubDeviceList/Battery/Current/Sensor/Value") 
     c = memoryProxy.getData ("Device/SubDeviceList/Battery/Charge/Sensor/Value")
     b = memoryProxy.getData ("Device/SubDeviceList/Battery/Charge/Sensor/Status")
-    s = 0
-    for i in range(10):
-        s += c
+    s = []
+    t0 = time.time()
+    while time.time() - t0 < 2:
+        s.append(c)
         c = memoryProxy.getData ("Device/SubDeviceList/Battery/Charge/Sensor/Value")
     #print "Percentage = ", percentage    
-    print "Pourcentage de la batterie :", s/10
+    print "Pourcentage de la batterie :", np.mean(s) * 100, "%"
     #print "status =", b
+    return np.mean(s) * 100
     
 def sumList(a, b):
     result = []
@@ -442,12 +480,17 @@ def sumList(a, b):
         result.append(a[i] + b[i])
     return result
 
-
+def close():
+    myWidget.close()
+    boutton.close()
+#    app.exit()
+    
 def Test_Articulations():
     StiffnessOn(motionProxy)
 
+
     # Send NAO to Pose Init
-    postureProxy.goToPosture("StandZero", 1.0)
+    postureProxy.goToPosture("StandZero", 2.0)
     # Get the Robot Configuration    
     listValStandInit = [memoryProxy.getData("Device/SubDeviceList/HeadYaw/Position/Actuator/Value"),
                         memoryProxy.getData("Device/SubDeviceList/HeadPitch/Position/Actuator/Value"),
@@ -474,9 +517,9 @@ def Test_Articulations():
         for j in range(3):
             listValStandInit = sumList(listValStandInit, tab[i][j])
             configRob(listValStandInit[0], listValStandInit[1], listValStandInit[2], listValStandInit[3], listValStandInit[4], listValStandInit[5], listValStandInit[6], listValStandInit[7], listValStandInit[8], listValStandInit[9], listValStandInit[10])
-    time.sleep(1)
+    time.sleep(2)
     
-    postureProxy.goToPosture("Crouch", 1.0)
+    postureProxy.goToPosture("Crouch", 2.0)
 
 
 if __name__== "__main__":
@@ -485,40 +528,49 @@ if __name__== "__main__":
     try:
 
         
-        BatteryMemory()
-        #test de capteurs
-        print "Test des capteurs frontaux du robot" 
-        TrySensors()
-        print "Fin capteurs..." 
-
-        print "Test de calcul de vitesse et position"
-        target_velocity()
-        position_robot()
-        print "Fin vitesse / position ..." 
-    
-        print "Test d'affichage en temps réel de la vision du robot"
-        app = QApplication(sys.argv)
-        myWidget = vis.ImageWidget(robotIP, port, CameraID)        
-        myWidget.show()
-        time.sleep(5)
-        myWidget.close()
+        print 'b0 :'
+#        b0 = BatteryMemory()
+#        #test de capteurs
+#        print "Test des capteurs frontaux du robot" 
+#        TrySensors()
+#        print "Fin capteurs..." 
+#
+#        print "Test de calcul de vitesse et position"
+#        target_velocity()
+#        position_robot()
+#        print "Fin vitesse / position ..." 
+#        
+#        print "Test de la fonction de parole du nao"
+#        TestTts("Test Micro")
+#        time.sleep(1.0)
+#        print "Fin parole..."
+#        
+#        print "Test de deplacement du robot"
+#        print "trajectoire: carre gauche puis carre droite"
+#        Test_Square_Left_Right()
+#        print "Fin deplacement..."
+#
+#        print "Test des articulations Tete / Bras"
+#        Test_Articulations()
+#        print "Fin articulations..."
+#        
+#        print "b1 :"
+#        b1 = BatteryMemory()
+#        print "Fin Batterie..."
+#        print "différence",(b0-b1)
+#        
+#        print "Test d'affichage en temps réel de la vision du robot"
+#        doStop()
+#        app = QApplication(sys.argv)
+#        myWidget = vis.ImageWidget(robotIP, port, CameraID)
+#        myWidget.show()
+#        boutton= QPushButton()
+#        boutton.show()
+#        boutton.clicked.connect(close)
+#
+#        sys.exit(app.exec_())
+#        
         print "Fin video..."
-
-        print "Test de la fonction de parole du nao"
-        TestTts("Test")
-        print "Fin parole..."
-        
-        print "Test de deplacement du robot"
-        print "trajectoire: carre gauche puis carre droite"
-        Test_Square_Left_Right()
-        print "Fin deplacement..."
-
-        print "Test des articulations Tete / Bras"
-        Test_Articulations()
-        print "Fin articulations..."
-
-        BatteryMemory()
-        print "Fin Batterie..."
         
 
         
@@ -526,4 +578,3 @@ if __name__== "__main__":
         print'erreur: ', e
        
     doStop()
-    sys.exit(app.exec_())
