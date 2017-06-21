@@ -12,9 +12,9 @@ import almath
 from PyQt4.QtGui import QWidget, QImage, QApplication, QPainter, QPushButton
 
 
-#robotIP = "172.20.12.126" 
-#robotIP = "172.20.28.103" 
-robotIP = "172.20.28.103" #éta
+#robotIP = "172.20.12.126" #Rouge
+#robotIP = "172.20.28.103" #Bleu
+robotIP = "172.20.12.49"
 
 port = 9559
 CameraID = 0
