@@ -349,7 +349,7 @@ def doStandUp():
     
 def doStop():
     
-
+    motionProxy.setWalkTargetVelocity(0, 0, 0, Frequency)
     postureProxy.goToPosture("Crouch", 0.3)
     Accelero()
     motionProxy.setStiffnesses("Body", 0.0)
@@ -367,6 +367,7 @@ def target_velocity():
     motionProxy.setWalkTargetVelocity(X, Y, Theta, Frequency)
 
     time.sleep(4.0)
+    print "Straight Forward"
     print "walk Speed X :",motionProxy.getRobotVelocity()[0]," m/s"
     
     X = -0.4  #backward
@@ -376,11 +377,12 @@ def target_velocity():
     motionProxy.setWalkTargetVelocity(X, Y, Theta, Frequency)
     
     time.sleep(4.0)
+    print "Straight Backward"
     print "walk Speed X :",motionProxy.getRobotVelocity()[0]," m/s"
 
 def position_robot():
     
-    initRobotPosition = m.Pose2D(motionProxy.getRobotPosition(False))
+    initRobotPosition = almath.Pose2D(motionProxy.getRobotPosition(False))
 
     X = 0.3
     Y = 0.1
@@ -392,12 +394,12 @@ def position_robot():
     #####################
     ## get robot position after move
     #####################
-    endRobotPosition = m.Pose2D(motionProxy.getRobotPosition(False))
+    endRobotPosition = almath.Pose2D(motionProxy.getRobotPosition(False))
 
     #####################
     ## compute and print the robot motion
     #####################
-    robotMove = m.pose2DInverse(initRobotPosition)*endRobotPosition
+    robotMove = almath.pose2DInverse(initRobotPosition)*endRobotPosition
     print "Robot Move :", robotMove
 
 def Test_Square_Left_Right():
@@ -486,6 +488,7 @@ if __name__== "__main__":
     try:
 
         
+
         b0 = BatteryMemory()
         #test de capteurs
         print "Test des capteurs frontaux du robot" 
@@ -502,19 +505,19 @@ if __name__== "__main__":
         print "Fin parole..."
         
         print "Test de deplacement du robot"
-        print "trajectoire: carre droite puis carre gauche"
+        print "trajectoire: carre gauche puis carre droite"
+
         Test_Square_Left_Right()
         print "Fin deplacement..."
 
         print "Test des articulations Tete / Bras"
         Test_Articulations()
         print "Fin articulations..."
-
-
         
         b1 = BatteryMemory()
         print "Fin Batterie..."
         print(b1 - b0)
+        
         print "Test d'affichage en temps réel de la vision du robot"
         app = QApplication(sys.argv)
         myWidget = vis.ImageWidget(robotIP, port, CameraID)
@@ -526,6 +529,8 @@ if __name__== "__main__":
         sys.exit(app.exec_())
         
         print "Fin video..."
+        
+
         
     except Exception, e:
         print'erreur: ', e
