@@ -309,7 +309,31 @@ def Accelero():
 # """Motion"""
 #==============================================================================
 def dorun(t):
-    motionProxy.setWalkTargetVelocity(0.6, 0, 0, 1)
+    X         = 0.5
+    Y         = 0.0
+    Theta     = 0.0
+    Frequency = 0.7
+    try:
+        motionProxy.moveToward(X, Y, Theta,[["Frequency", Frequency],
+                                            #BOTH FEET
+                                            ["MaxStepX", 0.08],
+                                            # LEFT FOOT
+                                            ["LeftStepHeight", 0.0022],
+                                            ["LeftMaxStepFrequency", 0.3],
+                                            ["LeftTorsoWx", -1*almath.TO_RAD],
+                                            ["LeftTorsoWy", 7.0*almath.TO_RAD],
+                                            # RIGHT FOOT
+                                            ["RightStepHeight", 0.002],
+                                            ["RightMaxStepFrequency", 0.3],
+                                            ["RightTorsoWx", 1*almath.TO_RAD],
+                                            ["RightTorsoWy", 7.0*almath.TO_RAD]])
+
+        
+    except Exception, errorMsg:
+        print str(errorMsg)
+        print "This example is not allowed on this robot."
+        exit()
+        
     t0 = time.time()
     AngX, AngY = [], []
     while time.time()< (t0 + t):
@@ -317,17 +341,25 @@ def dorun(t):
         AngX.append(accelero[0])
         AngY.append(accelero[1])
         time.sleep(0.2)
-#    motionProxy.moveTo (0.4, 0, 0)
-#    time.sleep(t)
     maxAngX, maxAngY = max(AngX), max(AngY)
     print "maxAngX, maxAngY = ", maxAngX, ", ", maxAngY
-    motionProxy.setWalkTargetVelocity(0.0, 0, 0, 1)
     print"running"
-    
 
 def doback():
     
-     motionProxy.moveTo (-0.4, 0, 0)
+     motionProxy.moveToward(-0.4, 0,0,[["Frequency", Frequency],
+                                            #BOTH FEET
+                                            ["MaxStepX", 0.08],
+                                            # LEFT FOOT
+                                            ["LeftStepHeight", 0.0022],
+                                            ["LeftMaxStepFrequency", 0.3],
+                                            ["LeftTorsoWx", -1*almath.TO_RAD],
+                                            ["LeftTorsoWy", 7.0*almath.TO_RAD],
+                                            # RIGHT FOOT
+                                            ["RightStepHeight", 0.002],
+                                            ["RightMaxStepFrequency", 0.3],
+                                            ["RightTorsoWx", 1*almath.TO_RAD],
+                                            ["RightTorsoWy", 7.0*almath.TO_RAD]])
      
      time.sleep(t)
      print"back"
@@ -338,7 +370,19 @@ def doleft(angle):
     
     theta= angle
 #    motionProxy.setWalkTargetVelocity(0, 0, 0.5, 0.01)
-    motionProxy.moveTo (0, 0, theta)
+    motionProxy.moveToward(0, 0, theta,[["Frequency", Frequency],
+                                            #BOTH FEET
+                                            ["MaxStepX", 0.08],
+                                            # LEFT FOOT
+                                            ["LeftStepHeight", 0.0022],
+                                            ["LeftMaxStepFrequency", 0.3],
+                                            ["LeftTorsoWx", -1*almath.TO_RAD],
+                                            ["LeftTorsoWy", 7.0*almath.TO_RAD],
+                                            # RIGHT FOOT
+                                            ["RightStepHeight", 0.002],
+                                            ["RightMaxStepFrequency", 0.3],
+                                            ["RightTorsoWx", 1*almath.TO_RAD],
+                                            ["RightTorsoWy", 7.0*almath.TO_RAD]])
     #####################
     ## get robot position after move
     #####################
@@ -361,7 +405,20 @@ def doright(angle):
     initRobotPosition = almath.Pose2D(motionProxy.getRobotPosition(False))
     
     theta= -angle
-    motionProxy.moveTo (0, 0, theta)
+    motionProxy.moveToward(0, 0, theta,[["Frequency", Frequency],
+                                            #BOTH FEET
+                                            ["MaxStepX", 0.08],
+                                            # LEFT FOOT
+                                            ["LeftStepHeight", 0.0022],
+                                            ["LeftMaxStepFrequency", 0.3],
+                                            ["LeftTorsoWx", -1*almath.TO_RAD],
+                                            ["LeftTorsoWy", 7.0*almath.TO_RAD],
+                                            # RIGHT FOOT
+                                            ["RightStepHeight", 0.002],
+                                            ["RightMaxStepFrequency", 0.3],
+                                            ["RightTorsoWx", 1*almath.TO_RAD],
+                                            ["RightTorsoWy", 7.0*almath.TO_RAD]])
+                
 #    motionProxy.setWalkTargetVelocity(0, 0, -0.5, 0.01)
     #####################
     ## get robot position after move
@@ -447,13 +504,13 @@ def Test_Square_Left_Right():
     for i in range(4):
         dorun(6)
         BatteryMemory()
-        doleft(np.pi/2)
+        doleft(0.5)
     time.sleep(2)
     print ">>> carre droite"
     for j in range(4):
         dorun(6)
         BatteryMemory()
-        doright(np.pi/2)
+        doright(0.5)
     print "fin de test du carre"
     BatteryMemory()
 
@@ -520,56 +577,56 @@ def Test_Articulations():
     time.sleep(2)
     
     postureProxy.goToPosture("Crouch", 2.0)
+    
+    
 
 
 if __name__== "__main__":
     doInitialisation()
     #test de la vision du NAO
     try:
-
-        
         print 'b0 :'
-#        b0 = BatteryMemory()
-#        #test de capteurs
-#        print "Test des capteurs frontaux du robot" 
-#        TrySensors()
-#        print "Fin capteurs..." 
-#
-#        print "Test de calcul de vitesse et position"
-#        target_velocity()
-#        position_robot()
-#        print "Fin vitesse / position ..." 
-#        
-#        print "Test de la fonction de parole du nao"
-#        TestTts("Test Micro")
-#        time.sleep(1.0)
-#        print "Fin parole..."
-#        
-#        print "Test de deplacement du robot"
-#        print "trajectoire: carre gauche puis carre droite"
-#        Test_Square_Left_Right()
-#        print "Fin deplacement..."
-#
-#        print "Test des articulations Tete / Bras"
-#        Test_Articulations()
-#        print "Fin articulations..."
-#        
-#        print "b1 :"
-#        b1 = BatteryMemory()
-#        print "Fin Batterie..."
-#        print "différence",(b0-b1)
-#        
-#        print "Test d'affichage en temps réel de la vision du robot"
-#        doStop()
-#        app = QApplication(sys.argv)
-#        myWidget = vis.ImageWidget(robotIP, port, CameraID)
-#        myWidget.show()
-#        boutton= QPushButton()
-#        boutton.show()
-#        boutton.clicked.connect(close)
-#
-#        sys.exit(app.exec_())
-#        
+        b0 = BatteryMemory()
+        #test de capteurs
+        print "Test des capteurs frontaux du robot" 
+        TrySensors()
+        print "Fin capteurs..." 
+
+        print "Test de calcul de vitesse et position"
+        #target_velocity()
+        #position_robot()
+        print "Fin vitesse / position ..." 
+        
+        print "Test de la fonction de parole du nao"
+        TestTts("Test Micro")
+        time.sleep(1.0)
+        print "Fin parole..."
+        
+        print "Test de deplacement du robot"
+        print "trajectoire: carre gauche puis carre droite"
+        Test_Square_Left_Right()
+        print "Fin deplacement..."
+
+        print "Test des articulations Tete / Bras"
+        Test_Articulations()
+        print "Fin articulations..."
+        
+        print "b1 :"
+        b1 = BatteryMemory()
+        print "Fin Batterie..."
+        print "différence",(b0-b1)
+        
+        print "Test d'affichage en temps réel de la vision du robot"
+        doStop()
+        app = QApplication(sys.argv)
+        myWidget = vis.ImageWidget(robotIP, port, CameraID)
+        myWidget.show()
+        boutton= QPushButton()
+        boutton.show()
+        boutton.clicked.connect(close)
+
+        sys.exit(app.exec_())
+        
         print "Fin video..."
         
 
