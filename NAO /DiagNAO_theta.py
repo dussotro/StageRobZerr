@@ -42,7 +42,7 @@ except Exception, e:
 
 try :
     audio = ALProxy("ALAudioDevice", robotIP,port)
-    audio.setOutputVolume(20)
+    audio.setOutputVolume(50)
 except Exception, e: 
     print "Could not create proxy to ALaudioProxy"
     print "Error was: ", e
@@ -67,6 +67,7 @@ except Exception, e:
 
 
 
+
 #stiffness for real NAO Robot
 def StiffnessOn(proxy):
     # We use the "Body" name to signify the collection of all joints
@@ -80,7 +81,8 @@ def doInitialisation():
     # Set NAO in Stiffness On
     StiffnessOn(motionProxy)
     # Send NAO to Pose Init
-    postureProxy.goToPosture("StandInit", 0.5)
+    postureProxy.goToPosture("StandInit", 0.5)    
+    motionProxy.setMotionConfig([["ENABLE_FOOT_CONTACT_PROTECTION", True]])
     
 
 #class Battery(ALModule):
@@ -311,7 +313,6 @@ def Accelero():
 # """Motion"""
 #==============================================================================
 def dorun(t):
-    motionProxy.setMotionConfig([["ENABLE_FOOT_CONTACT_PROTECTION", True]])
     motionProxy.setWalkTargetVelocity(1, 0, 0, 1)
     t0 = time.time()
     AngX, AngY = [], []
@@ -573,9 +574,9 @@ class HumanGreeterModule(ALModule):
         memory.subscribeToEvent("HandtRightBackTouched",
                                 "HumanGreeter",
                                 "Maingauche")
-        memory.subscribeToEvent("BatteryChargeChanged",
-                               "HumanGreeter",
-                               "Battery")
+#        memory.subscribeToEvent("BatteryChargeChanged",
+#                               "HumanGreeter",
+#                               "Battery")
         
     def Battery(self,eventName, percentage,subscriberIdentifier):
         memory.unsubscribeToEvent("BatteryChargeChanged",
@@ -595,7 +596,13 @@ class HumanGreeterModule(ALModule):
                                 "Maingauche")
         
     def Footcontact(self,*_args):
+        memory.unsubscribeToEvent("footContactChanged",
+                                "HumanGreeter")
+        
         self.tts.say("j'ai plus les pied sur terre.")
+        memory.subscribeToEvent("footContactChanged",
+                                "HumanGreeter",
+                                "Footcontact")
         
         
     def onFaceDetected(self, *_args):
@@ -608,7 +615,7 @@ class HumanGreeterModule(ALModule):
         memory.unsubscribeToEvent("FaceDetected",
             "HumanGreeter")
 
-        self.tts.say("Hello, you")
+        self.tts.say("Bonjour")
 
         # Subscribe again to the event
         memory.subscribeToEvent("FaceDetected",
@@ -657,12 +664,11 @@ if __name__== "__main__":
         HumanGreeter = HumanGreeterModule("HumanGreeter")
     
     
-
-            
         while True :
-            FSRPIED()
+#            FSRPIED()
             time.sleep(1)
-#        dorun(3)  
+            
+#        dorun(7)  
 #     
 #        doback()
 #        
@@ -711,7 +717,7 @@ if __name__== "__main__":
 #        sys.exit(app.exec_())
 #        
         print "Fin video..."
-#        doStop()
+        doStop()
         myBroker.shutdown()
 
         
