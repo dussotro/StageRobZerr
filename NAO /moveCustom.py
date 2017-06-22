@@ -63,6 +63,14 @@ except Exception, e:
 
 
 def moveToEta(X, Y, Theta, Frequency):
+    """
+    In :
+        X -> Distance à parcourir en X (face)
+        Y -> Distance à parcourir en Y (cote)
+        Theta -> Angle à parcourir    
+        Frequency -> Vitesse du robot (entre 0 et 1)
+    """    
+    
     configEta = [["Frequency", Frequency],
           #BOTH FEET
           ["MaxStepX", 0.08],
@@ -85,9 +93,9 @@ def moveToEta(X, Y, Theta, Frequency):
     
     xi, yi, thi = initRobotPosition[3],initRobotPosition[7], np.arctan(initRobotPosition[1]/initRobotPosition[0])
     
-    vX = X/2
-    vY = 0.0
-    omega = Theta/5
+    vX =  0.8
+    vY =  0.0 
+    omega = 0.05
     
     try:
         motionProxy.moveToward(vX, vY, omega, configEta)   
@@ -103,14 +111,23 @@ def moveToEta(X, Y, Theta, Frequency):
         endRobotPosition = list(almath.transformFromPose2D(endRobotPosition).toVector())
     
         xf, yf, thf = endRobotPosition[3], endRobotPosition[7], np.arctan(endRobotPosition[1]/endRobotPosition[0])
-
-        if abs(xf - xi) > abs(X) and abs(yf - yi) > abs(Y) and abs(thf - thi) > abs(Theta):
+        print abs(xf - xi)
+        if abs(xf - xi) > abs(X) or abs(yf - yi) > abs(Y) or abs(thf - thi) > abs(Theta):
             flag = True            
     
     motionProxy.moveToward(0.0, 0.0, 0.0)
     
     
 def moveTowardEta(U, V, Omega, Frequency):
+    """
+    In :
+        X -> Distance à parcourir en X (face)
+        Y -> Distance à parcourir en Y (cote)
+        Theta -> Angle à parcourir    
+    
+    """   
+    
+    
     configEta = [["Frequency", Frequency],
           #BOTH FEET
           ["MaxStepX", 0.08],
@@ -135,7 +152,7 @@ if __name__ == '__main__':
     try :
         
        print "Test moveToEta"
-       moveToEta(1, 0, 0, 0.5)
+       moveToEta(1, 0, 0, 1.57)
        
        time.sleep(5)
        moveTowardEta(0.5, 0, 0, 0.1)
