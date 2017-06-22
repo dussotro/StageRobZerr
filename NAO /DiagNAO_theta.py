@@ -44,7 +44,7 @@ except Exception, e:
 
 try :
     audio = ALProxy("ALAudioDevice", robotIP,port)
-    audio.setOutputVolume(50)
+    audio.setOutputVolume(30)
 except Exception, e: 
     print "Could not create proxy to ALaudioProxy"
     print "Error was: ", e
@@ -681,8 +681,9 @@ j'voudrais faire un Slam
 pour une vieille femme dans laquelle j'ai grandi
 j'voudrais faire un Slam
 pour cette banlieue nord de paname qu'on appelle saint denis
-''')
-        time.sleep(3)
+''') 
+
+        time.sleep(50)
         audioProxy.post.stopAll()            
 #        dorun(7)  
 #     
@@ -704,7 +705,7 @@ pour cette banlieue nord de paname qu'on appelle saint denis
 #        
 #        print "Test de la fonction de parole du nao"
 #        TestTts("Test Micro")
-#        time.sleep(1.0)
+#        time.sleep(1.0)https://www.youtube.com/watch?v=RxabLA7UQ9k
 #        print "Fin parole..."
 #        
 #        print "Test de deplacement du robot"
