@@ -13,6 +13,7 @@ from naoqi import ALModule
 from optparse import OptionParser
 
 NAO_IP = "172.20.12.126"
+NAO_IP = "172.20.12.49" 
 
 
 # Global variable to store the HumanGreeter module instance
@@ -71,7 +72,8 @@ class HumanGreeterModule(ALModule):
                                 "Maingauche")
         
     def Footcontact(self,*_args):
-        self.tts.say("j'ai plus les pied sur terre.")
+        if _args[1] == 0 :
+            self.tts.say("j'ai plus les pied sur terre.")
         
         
     def onFaceDetected(self, *_args):

@@ -16,12 +16,14 @@ from optparse import OptionParser
 robotIP = "172.20.12.126" #Rouge
 #robotIP = "172.20.28.103" #Bleu
 #robotIP = "172.20.12.49" 
+#robotIP = "172,20,11,237"
 
 
 port = 9559
 CameraID = 0
 Frequency = 0.0 #low speed
 t=1.0
+
 
 try:
     motionProxy = ALProxy("ALMotion", robotIP, port)
@@ -42,7 +44,7 @@ except Exception, e:
 
 try :
     audio = ALProxy("ALAudioDevice", robotIP,port)
-    audio.setOutputVolume(20)
+    audio.setOutputVolume(30)
 except Exception, e: 
     print "Could not create proxy to ALaudioProxy"
     print "Error was: ", e
@@ -64,6 +66,13 @@ try:
 except Exception, e:
     print "Could not create proxy to AlBattery"
     print "Error was: ", e
+    
+try :
+    audioProxy = ALProxy("ALAudioPlayer", robotIP, port)
+except Exception, e:
+    print'Could not create proxy to ALMotion'
+    print"Error was: ",e
+
 
 
 
@@ -80,7 +89,8 @@ def doInitialisation():
     # Set NAO in Stiffness On
     StiffnessOn(motionProxy)
     # Send NAO to Pose Init
-    postureProxy.goToPosture("StandInit", 0.5)
+    postureProxy.goToPosture("StandInit", 0.5)    
+    motionProxy.setMotionConfig([["ENABLE_FOOT_CONTACT_PROTECTION", True]])
     
 
 #class Battery(ALModule):
@@ -311,7 +321,6 @@ def Accelero():
 # """Motion"""
 #==============================================================================
 def dorun(t):
-    motionProxy.setMotionConfig([["ENABLE_FOOT_CONTACT_PROTECTION", True]])
     motionProxy.setWalkTargetVelocity(1, 0, 0, 1)
     t0 = time.time()
     AngX, AngY = [], []
@@ -573,9 +582,9 @@ class HumanGreeterModule(ALModule):
         memory.subscribeToEvent("HandtRightBackTouched",
                                 "HumanGreeter",
                                 "Maingauche")
-        memory.subscribeToEvent("BatteryChargeChanged",
-                               "HumanGreeter",
-                               "Battery")
+#        memory.subscribeToEvent("BatteryChargeChanged",
+#                               "HumanGreeter",
+#                               "Battery")
         
     def Battery(self,eventName, percentage,subscriberIdentifier):
         memory.unsubscribeToEvent("BatteryChargeChanged",
@@ -595,7 +604,13 @@ class HumanGreeterModule(ALModule):
                                 "Maingauche")
         
     def Footcontact(self,*_args):
+        memory.unsubscribeToEvent("footContactChanged",
+                                "HumanGreeter")
+        
         self.tts.say("j'ai plus les pied sur terre.")
+        memory.subscribeToEvent("footContactChanged",
+                                "HumanGreeter",
+                                "Footcontact")
         
         
     def onFaceDetected(self, *_args):
@@ -608,7 +623,7 @@ class HumanGreeterModule(ALModule):
         memory.unsubscribeToEvent("FaceDetected",
             "HumanGreeter")
 
-        self.tts.say("Hello, you")
+        self.tts.say("Bonjour")
 
         # Subscribe again to the event
         memory.subscribeToEvent("FaceDetected",
@@ -657,12 +672,20 @@ if __name__== "__main__":
         HumanGreeter = HumanGreeterModule("HumanGreeter")
     
     
+        audioProxy.post.playFile("/home/nao/music/a.mp3")
+        tts.say('''j'voudrais faire un Slam
+pour une grande dame que j'connais depuis tout petit
+j'voudrais faire un Slam
+pour celle qui voit ma vieille canne du lundi au samedi
+j'voudrais faire un Slam
+pour une vieille femme dans laquelle j'ai grandi
+j'voudrais faire un Slam
+pour cette banlieue nord de paname qu'on appelle saint denis
+''') 
 
-            
-        while True :
-            FSRPIED()
-            time.sleep(1)
-#        dorun(3)  
+        time.sleep(50)
+        audioProxy.post.stopAll()            
+#        dorun(7)  
 #     
 #        doback()
 #        
@@ -682,7 +705,7 @@ if __name__== "__main__":
 #        
 #        print "Test de la fonction de parole du nao"
 #        TestTts("Test Micro")
-#        time.sleep(1.0)
+#        time.sleep(1.0)https://www.youtube.com/watch?v=RxabLA7UQ9k
 #        print "Fin parole..."
 #        
 #        print "Test de deplacement du robot"
@@ -711,7 +734,7 @@ if __name__== "__main__":
 #        sys.exit(app.exec_())
 #        
         print "Fin video..."
-#        doStop()
+        doStop()
         myBroker.shutdown()
 
         
