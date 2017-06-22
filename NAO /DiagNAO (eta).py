@@ -301,7 +301,7 @@ def Accelero():
 #    print "Z = ", Z
     
     AngleX = memoryProxy.getData("Device/SubDeviceList/InertialSensor/AngleX/Sensor/Value")
-    AngleY = memoryProxy.getData("Device/SubDeviceList/InertialSensor/AngleX/Sensor/Value")
+    AngleY = memoryProxy.getData("Device/SubDeviceList/InertialSensor/AngleY/Sensor/Value")
     return AngleX, AngleY
 
     
@@ -311,22 +311,22 @@ def Accelero():
 def dorun(t):
     X         = 0.5
     Y         = 0.0
-    Theta     = 0.0
+    Omega     = 0.0
     Frequency = 0.7
     try:
-        motionProxy.moveToward(X, Y, Theta,[["Frequency", Frequency],
+        motionProxy.moveToward(X, Y, Omega,[["Frequency", Frequency],
                                             #BOTH FEET
                                             ["MaxStepX", 0.08],
                                             # LEFT FOOT
                                             ["LeftStepHeight", 0.0022],
                                             ["LeftMaxStepFrequency", 0.3],
                                             ["LeftTorsoWx", -1*almath.TO_RAD],
-                                            ["LeftTorsoWy", 7.0*almath.TO_RAD],
+                                            ["LeftTorsoWy", 3.0*almath.TO_RAD],
                                             # RIGHT FOOT
                                             ["RightStepHeight", 0.002],
                                             ["RightMaxStepFrequency", 0.3],
                                             ["RightTorsoWx", 1*almath.TO_RAD],
-                                            ["RightTorsoWy", 7.0*almath.TO_RAD]])
+                                            ["RightTorsoWy", 3.0*almath.TO_RAD]])
 
         
     except Exception, errorMsg:
@@ -340,49 +340,76 @@ def dorun(t):
         accelero = Accelero()
         AngX.append(accelero[0])
         AngY.append(accelero[1])
-        time.sleep(0.2)
+        time.sleep(0.5)
+        
+    motionProxy.moveToward(0, 0, 0)
+        
     maxAngX, maxAngY = max(AngX), max(AngY)
     print "maxAngX, maxAngY = ", maxAngX, ", ", maxAngY
-    print"running"
+    print">>>>>>>>>>>>>>>>>> Running"
 
-def doback():
-    
-     motionProxy.moveToward(-0.4, 0,0,[["Frequency", Frequency],
+def doback(t):
+    X         = -0.5
+    Y         = 0.0
+    Omega     = 0.0
+    Frequency = 0.7
+    try:
+        motionProxy.moveToward(X, Y, Omega,[["Frequency", Frequency],
                                             #BOTH FEET
                                             ["MaxStepX", 0.08],
                                             # LEFT FOOT
                                             ["LeftStepHeight", 0.0022],
                                             ["LeftMaxStepFrequency", 0.3],
                                             ["LeftTorsoWx", -1*almath.TO_RAD],
-                                            ["LeftTorsoWy", 7.0*almath.TO_RAD],
+                                            ["LeftTorsoWy", 3.0*almath.TO_RAD],
                                             # RIGHT FOOT
                                             ["RightStepHeight", 0.002],
                                             ["RightMaxStepFrequency", 0.3],
                                             ["RightTorsoWx", 1*almath.TO_RAD],
-                                            ["RightTorsoWy", 7.0*almath.TO_RAD]])
-     
-     time.sleep(t)
-     print"back"
+                                            ["RightTorsoWy", 3.0*almath.TO_RAD]])
+
+        
+    except Exception, errorMsg:
+        print str(errorMsg)
+        print "This example is not allowed on this robot."
+        exit()
+        
+    t0 = time.time()
+    AngX, AngY = [], []
+    while time.time()< (t0 + t):
+        accelero = Accelero()
+        AngX.append(accelero[0])
+        AngY.append(accelero[1])
+        time.sleep(0.5)
+        
+    motionProxy.moveToward(0, 0, 0)
+        
+    maxAngX, maxAngY = max(AngX), max(AngY)
+    print "maxAngX, maxAngY = ", maxAngX, ", ", maxAngY
+    print ">>>>>>>>>>>>>>>>>>>>> Backing"
     
 def doleft(angle):
     
     initRobotPosition = almath.Pose2D(motionProxy.getRobotPosition(False))
     
-    theta= angle
-#    motionProxy.setWalkTargetVelocity(0, 0, 0.5, 0.01)
-    motionProxy.moveToward(0, 0, theta,[["Frequency", Frequency],
+    #angle ne peut pas dépasser 3 radians dans ce cas la
+    omega = angle/3
+    motionProxy.moveToward(0, 0, omega,[["Frequency", Frequency],
                                             #BOTH FEET
                                             ["MaxStepX", 0.08],
                                             # LEFT FOOT
                                             ["LeftStepHeight", 0.0022],
                                             ["LeftMaxStepFrequency", 0.3],
                                             ["LeftTorsoWx", -1*almath.TO_RAD],
-                                            ["LeftTorsoWy", 7.0*almath.TO_RAD],
+                                            ["LeftTorsoWy", 3.0*almath.TO_RAD],
                                             # RIGHT FOOT
                                             ["RightStepHeight", 0.002],
                                             ["RightMaxStepFrequency", 0.3],
                                             ["RightTorsoWx", 1*almath.TO_RAD],
-                                            ["RightTorsoWy", 7.0*almath.TO_RAD]])
+                                            ["RightTorsoWy", 3.0*almath.TO_RAD]])
+                
+    time.sleep(3)
+    motionProxy.moveToward(0, 0, 0)
     #####################
     ## get robot position after move
     #####################
@@ -392,7 +419,7 @@ def doleft(angle):
     ## compute and print the robot motion
     #####################
     robotMove = almath.pose2DInverse(initRobotPosition)*endRobotPosition
-    print "virage gauche :", robotMove
+    print "Virage gauche :", robotMove
 
 
 
@@ -404,22 +431,26 @@ def doright(angle):
     
     initRobotPosition = almath.Pose2D(motionProxy.getRobotPosition(False))
     
-    theta= -angle
-    motionProxy.moveToward(0, 0, theta,[["Frequency", Frequency],
+    #angle ne peut pas dépasser 3 radians dans ce cas la
+    omega = -angle/3
+    motionProxy.moveToward(0, 0, omega,[["Frequency", Frequency],
                                             #BOTH FEET
                                             ["MaxStepX", 0.08],
                                             # LEFT FOOT
                                             ["LeftStepHeight", 0.0022],
                                             ["LeftMaxStepFrequency", 0.3],
                                             ["LeftTorsoWx", -1*almath.TO_RAD],
-                                            ["LeftTorsoWy", 7.0*almath.TO_RAD],
+                                            ["LeftTorsoWy", 3.0*almath.TO_RAD],
                                             # RIGHT FOOT
                                             ["RightStepHeight", 0.002],
                                             ["RightMaxStepFrequency", 0.3],
                                             ["RightTorsoWx", 1*almath.TO_RAD],
-                                            ["RightTorsoWy", 7.0*almath.TO_RAD]])
+                                            ["RightTorsoWy", 3.0*almath.TO_RAD]])
                 
-#    motionProxy.setWalkTargetVelocity(0, 0, -0.5, 0.01)
+    
+    time.sleep(3)
+    
+    motionProxy.moveToward(0, 0, 0)
     #####################
     ## get robot position after move
     #####################
@@ -429,11 +460,8 @@ def doright(angle):
     ## compute and print the robot motion
     #####################
     robotMove = almath.pose2DInverse(initRobotPosition)*endRobotPosition
-    print "virage droite :", robotMove
+    print "Virage droite :", robotMove
 
-
-    time.sleep(t)
-    print"turning right"
     
 def doStandUp():
     
@@ -459,7 +487,19 @@ def target_velocity():
     Y = 0.0
     Theta = 0.0
     Frequency =1.0 # max speed
-    motionProxy.setWalkTargetVelocity(X, Y, Theta, Frequency)
+    motionProxy.setWalkTargetVelocity(X, Y, Theta, [["Frequency", Frequency],
+                                            #BOTH FEET
+                                            ["MaxStepX", 0.08],
+                                            # LEFT FOOT
+                                            ["LeftStepHeight", 0.0022],
+                                            ["LeftMaxStepFrequency", 0.3],
+                                            ["LeftTorsoWx", -1*almath.TO_RAD],
+                                            ["LeftTorsoWy", 5.0*almath.TO_RAD],
+                                            # RIGHT FOOT
+                                            ["RightStepHeight", 0.002],
+                                            ["RightMaxStepFrequency", 0.3],
+                                            ["RightTorsoWx", 1*almath.TO_RAD],
+                                            ["RightTorsoWy", 5.0*almath.TO_RAD]])
 
     time.sleep(4.0)
     print "Straight Forward"
@@ -469,7 +509,19 @@ def target_velocity():
     Y = 0.0
     Theta = 0.0
     Frequency =0.0 # low speed
-    motionProxy.setWalkTargetVelocity(X, Y, Theta, Frequency)
+    motionProxy.setWalkTargetVelocity(X, Y, Theta, [["Frequency", Frequency],
+                                            #BOTH FEET
+                                            ["MaxStepX", 0.08],
+                                            # LEFT FOOT
+                                            ["LeftStepHeight", 0.0022],
+                                            ["LeftMaxStepFrequency", 0.3],
+                                            ["LeftTorsoWx", -1*almath.TO_RAD],
+                                            ["LeftTorsoWy", 5.0*almath.TO_RAD],
+                                            # RIGHT FOOT
+                                            ["RightStepHeight", 0.002],
+                                            ["RightMaxStepFrequency", 0.3],
+                                            ["RightTorsoWx", 1*almath.TO_RAD],
+                                            ["RightTorsoWy", 5.0*almath.TO_RAD]])
     
     time.sleep(4.0)
     print "Straight Backward"
@@ -482,7 +534,19 @@ def position_robot():
     X = 0.3
     Y = 0.1
     Theta = np.pi/2.0
-    motionProxy.post.moveTo(X, Y, Theta)
+    motionProxy.post.moveTo(X, Y, Theta, [["Frequency", Frequency],
+                                            #BOTH FEET
+                                            ["MaxStepX", 0.08],
+                                            # LEFT FOOT
+                                            ["LeftStepHeight", 0.0022],
+                                            ["LeftMaxStepFrequency", 0.3],
+                                            ["LeftTorsoWx", -1*almath.TO_RAD],
+                                            ["LeftTorsoWy", 5.0*almath.TO_RAD],
+                                            # RIGHT FOOT
+                                            ["RightStepHeight", 0.002],
+                                            ["RightMaxStepFrequency", 0.3],
+                                            ["RightTorsoWx", 1*almath.TO_RAD],
+                                            ["RightTorsoWy", 5.0*almath.TO_RAD]])
     # wait is useful because with post moveTo is not blocking function
     motionProxy.waitUntilMoveIsFinished()
 
@@ -504,13 +568,13 @@ def Test_Square_Left_Right():
     for i in range(4):
         dorun(6)
         BatteryMemory()
-        doleft(0.5)
+        doleft(np.pi/2)
     time.sleep(2)
     print ">>> carre droite"
     for j in range(4):
         dorun(6)
         BatteryMemory()
-        doright(0.5)
+        doright(np.pi/2)
     print "fin de test du carre"
     BatteryMemory()
 
