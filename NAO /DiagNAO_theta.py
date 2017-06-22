@@ -673,7 +673,7 @@ if __name__== "__main__":
     
     
         audioProxy.post.playFile("/home/nao/music/a.mp3")
-        tts.say('''j'voudrais faire un Slam
+        tts.post.say('''j'voudrais faire un Slam
 pour une grande dame que j'connais depuis tout petit
 j'voudrais faire un Slam
 pour celle qui voit ma vieille canne du lundi au samedi
