@@ -3,18 +3,20 @@
 
 import time
 import sys
-from naoqi import ALProxy, ALModule
+from naoqi import ALProxy, ALModule, ALBroker
 import motion
 import select
 import vision_showimages as vis
 import numpy as np
 import almath
 from PyQt4.QtGui import QWidget, QImage, QApplication, QPainter, QPushButton
+from optparse import OptionParser
 
 
-#robotIP = "172.20.12.126" #Rouge
+robotIP = "172.20.12.126" #Rouge
 #robotIP = "172.20.28.103" #Bleu
-robotIP = "172.20.12.49" 
+#robotIP = "172.20.12.49" 
+
 
 port = 9559
 CameraID = 0
@@ -40,7 +42,7 @@ except Exception, e:
 
 try :
     audio = ALProxy("ALAudioDevice", robotIP,port)
-    audio.setOutputVolume(50)
+    audio.setOutputVolume(20)
 except Exception, e: 
     print "Could not create proxy to ALaudioProxy"
     print "Error was: ", e
@@ -528,32 +530,144 @@ def Test_Articulations():
     postureProxy.goToPosture("Crouch", 2.0)
 
 def FSRPIED():
-    print [memoryProxy.getData("Device/SubDeviceList/LFoot/FSR/FrontLeft/Sensor/Value"),
+    print "Pied Gauche" , [memoryProxy.getData("Device/SubDeviceList/LFoot/FSR/FrontLeft/Sensor/Value"),
            memoryProxy.getData("Device/SubDeviceList/LFoot/FSR/FrontRight/Sensor/Value"),
            memoryProxy.getData("Device/SubDeviceList/LFoot/FSR/RearLeft/Sensor/Value"),
            memoryProxy.getData("Device/SubDeviceList/LFoot/FSR/RearRight/Sensor/Value")]
         
-    print [memoryProxy.getData("Device/SubDeviceList/RFoot/FSR/FrontLeft/Sensor/Value"),
+    print "Pied Droit" , [memoryProxy.getData("Device/SubDeviceList/RFoot/FSR/FrontLeft/Sensor/Value"),
            memoryProxy.getData("Device/SubDeviceList/RFoot/FSR/FrontRight/Sensor/Value"),
            memoryProxy.getData("Device/SubDeviceList/RFoot/FSR/RearLeft/Sensor/Value"),
            memoryProxy.getData("Device/SubDeviceList/RFoot/FSR/RearRight/Sensor/Value")]
-    print "RFoot Contact :" , memoryProxy.getData("rightFootContact")
-    print "LFoot Contact :" ,memoryProxy.getData ("leftFootContact")
-    print "Foot Contact :", memoryProxy.getData ("footContact")
+#    print "RFoot Contact :" , memoryProxy.getData("rightFootContact")
+#    print "LFoot Contact :" ,memoryProxy.getData ("leftFootContact")
+#    print "Foot Contact :", memoryProxy.getData ("footContact")
     
     
-    
+class HumanGreeterModule(ALModule):
+    """ A simple module able to react
+    to facedetection events
+
+    """
+    def __init__(self, name):
+        ALModule.__init__(self, name)
+        # No need for IP and port here because
+        # we have our Python broker connected to NAOqi broker
+
+        # Create a proxy to ALTextToSpeech for later use
+        self.tts = ALProxy("ALTextToSpeech")
+
+        # Subscribe to the FaceDetected event:
+        global memory
+        memory = ALProxy("ALMemory")
+        memory.subscribeToEvent("FaceDetected",
+            "HumanGreeter",
+            "onFaceDetected")
+        memory.subscribeToEvent("footContactChanged",
+                                "HumanGreeter",
+                                "Footcontact")
+        
+        memory.subscribeToEvent("HandLeftBackTouched",
+                                "HumanGreeter",
+                                "Maingauche")
+        memory.subscribeToEvent("HandtRightBackTouched",
+                                "HumanGreeter",
+                                "Maingauche")
+        memory.subscribeToEvent("BatteryChargeChanged",
+                               "HumanGreeter",
+                               "Battery")
+        
+    def Battery(self,eventName, percentage,subscriberIdentifier):
+        memory.unsubscribeToEvent("BatteryChargeChanged",
+                                "HumanGreeter")
+        self.tts.say("batterie perdu.")
+        self.tts.say(str(percentage)+"%")
+        memory.subscribeToEvent("BatteryChargeChanged",
+                                "HumanGreeter",
+                                "Battery")
+        
+    def Maingauche(self,*_args):
+        memory.unsubscribeToEvent("HandLeftBackTouched",
+                                "HumanGreeter")
+        self.tts.say('me touche pas lbras')
+        memory.subscribeToEvent("HandLeftBackTouched",
+                                "HumanGreeter",
+                                "Maingauche")
+        
+    def Footcontact(self,*_args):
+        self.tts.say("j'ai plus les pied sur terre.")
+        
+        
+    def onFaceDetected(self, *_args):
+        """ This will be called each time a face is
+        detected.
+
+        """
+        # Unsubscribe to the event when talking,
+        # to avoid repetitions
+        memory.unsubscribeToEvent("FaceDetected",
+            "HumanGreeter")
+
+        self.tts.say("Hello, you")
+
+        # Subscribe again to the event
+        memory.subscribeToEvent("FaceDetected",
+            "HumanGreeter",
+            "onFaceDetected")
+        
+
 if __name__== "__main__":
-    doInitialisation()
+#    doInitialisation()
     #test de la vision du NAO
     try:
-        FSRPIED()
-        dorun(3)  
-     
-        doback()
+        """ Main entry point
+    
+        """
+        parser = OptionParser()
+        parser.add_option("--pip",
+            help="Parent broker port. The IP address or your robot",
+            dest="pip")
+        parser.add_option("--pport",
+            help="Parent broker port. The port NAOqi is listening to",
+            dest="pport",
+            type="int")
+        parser.set_defaults(
+            pip=robotIP,
+            pport=9559)
+    
+        (opts, args_) = parser.parse_args()
+        pip   = opts.pip
+        pport = opts.pport
         
-        time.sleep(2)
-        FSRPIED()
+    #    print pip,pport
+        # We need this broker to be able to construct
+        # NAOqi modules and subscribe to other modules
+        # The broker must stay alive until the program exists
+        myBroker = ALBroker("myBroker",
+           "0.0.0.0",   # listen to anyone
+           0,           # find a free port and use it
+           pip,         # parent broker IP
+           pport)       # parent broker port
+    
+    
+        # Warning: HumanGreeter must be a global variable
+        # The name given to the constructor must be the name of the
+        # variable
+        global HumanGreeter
+        HumanGreeter = HumanGreeterModule("HumanGreeter")
+    
+    
+
+            
+        while True :
+            FSRPIED()
+            time.sleep(1)
+#        dorun(3)  
+#     
+#        doback()
+#        
+#        time.sleep(2)
+#        FSRPIED()
 #        print 'b0 :'
 #        b0 = BatteryMemory()
 #        #test de capteurs
@@ -596,12 +710,15 @@ if __name__== "__main__":
 #
 #        sys.exit(app.exec_())
 #        
-#        print "Fin video..."
-        doStop()
-        
+        print "Fin video..."
+#        doStop()
+        myBroker.shutdown()
 
         
     except Exception, e:
         print'erreur: ', e
+        print "Interrupted by user, shutting down"
+        myBroker.shutdown()
+        sys.exit(0)
        
-    doStop()
+#    doStop()
