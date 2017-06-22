@@ -527,49 +527,49 @@ if __name__== "__main__":
     #test de la vision du NAO
     try:
 
-#        
-#        print 'b0 :'
-#        b0 = BatteryMemory()
-#        #test de capteurs
-#        print "Test des capteurs frontaux du robot" 
-#        TrySensors()
-#        print "Fin capteurs..." 
-#
-#        print "Test de calcul de vitesse et position"
-#        target_velocity()
-#        position_robot()
-#        print "Fin vitesse / position ..." 
-#        
-#        print "Test de la fonction de parole du nao"
-#        TestTts("Test Micro")
-#        time.sleep(1.0)
-#        print "Fin parole..."
-#        
-#        print "Test de deplacement du robot"
-#        print "trajectoire: carre gauche puis carre droite"
-#        Test_Square_Left_Right()
-#        print "Fin deplacement..."
-#
-#        print "Test des articulations Tete / Bras"
-#        Test_Articulations()
-#        print "Fin articulations..."
-#        
-#        print "b1 :"
-#        b1 = BatteryMemory()
-#        print "Fin Batterie..."
-#        print "différence",(b0-b1)
-#        
-#        print "Test d'affichage en temps réel de la vision du robot"
-#        doStop()
-#        app = QApplication(sys.argv)
-#        myWidget = vis.ImageWidget(robotIP, port, CameraID)
-#        myWidget.show()
-#        boutton= QPushButton()
-#        boutton.show()
-#        boutton.clicked.connect(close)
-#
-#        sys.exit(app.exec_())
-#        
+        
+        print 'b0 :'
+        b0 = BatteryMemory()
+        #test de capteurs
+        print "Test des capteurs frontaux du robot" 
+        TrySensors()
+        print "Fin capteurs..." 
+
+        print "Test de calcul de vitesse et position"
+        target_velocity()
+        position_robot()
+        print "Fin vitesse / position ..." 
+        
+        print "Test de la fonction de parole du nao"
+        TestTts("Test Micro")
+        time.sleep(1.0)
+        print "Fin parole..."
+        
+        print "Test de deplacement du robot"
+        print "trajectoire: carre gauche puis carre droite"
+        Test_Square_Left_Right()
+        print "Fin deplacement..."
+
+        print "Test des articulations Tete / Bras"
+        Test_Articulations()
+        print "Fin articulations..."
+        
+        print "b1 :"
+        b1 = BatteryMemory()
+        print "Fin Batterie..."
+        print "différence",(b0-b1)
+        
+        print "Test d'affichage en temps réel de la vision du robot"
+        doStop()
+        app = QApplication(sys.argv)
+        myWidget = vis.ImageWidget(robotIP, port, CameraID)
+        myWidget.show()
+        boutton= QPushButton()
+        boutton.show()
+        boutton.clicked.connect(close)
+
+        sys.exit(app.exec_())
+        
         print "Fin video..."
         
 

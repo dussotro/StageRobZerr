@@ -14,7 +14,7 @@ from PyQt4.QtGui import QWidget, QImage, QApplication, QPainter, QPushButton
 
 #robotIP = "172.20.12.126" #Rouge
 #robotIP = "172.20.28.103" #Bleu
-robotIP = "172.20.12.49"
+robotIP = "172.20.12.49" 
 
 port = 9559
 CameraID = 0
@@ -309,25 +309,31 @@ def Accelero():
 # """Motion"""
 #==============================================================================
 def dorun(t):
-    motionProxy.setWalkTargetVelocity(0.6, 0, 0, 1)
+    motionProxy.setMotionConfig([["ENABLE_FOOT_CONTACT_PROTECTION", True]])
+    motionProxy.setWalkTargetVelocity(1, 0, 0, 1)
     t0 = time.time()
     AngX, AngY = [], []
     while time.time()< (t0 + t):
         accelero = Accelero()
         AngX.append(accelero[0])
         AngY.append(accelero[1])
-        time.sleep(0.2)
-#    motionProxy.moveTo (0.4, 0, 0)
+        FSRPIED()
+        if memoryProxy.getData("footContact") == 0:
+            print 'Foot contact lost'
+        else : 
+            print 'Foot contact ok'
+        time.sleep(0.05)
+#    motionProxy.moveTo (0.6, 0, 0)
 #    time.sleep(t)
-    maxAngX, maxAngY = max(AngX), max(AngY)
-    print "maxAngX, maxAngY = ", maxAngX, ", ", maxAngY
+#    maxAngX, maxAngY = max(AngX), max(AngY)
+#    print "maxAngX, maxAngY = ", maxAngX, ", ", maxAngY
     motionProxy.setWalkTargetVelocity(0.0, 0, 0, 1)
     print"running"
     
 
 def doback():
     
-     motionProxy.moveTo (-0.4, 0, 0)
+     motionProxy.moveTo (-0.6, 0, 0)
      
      time.sleep(t)
      print"back"
@@ -521,13 +527,33 @@ def Test_Articulations():
     
     postureProxy.goToPosture("Crouch", 2.0)
 
-
+def FSRPIED():
+    print [memoryProxy.getData("Device/SubDeviceList/LFoot/FSR/FrontLeft/Sensor/Value"),
+           memoryProxy.getData("Device/SubDeviceList/LFoot/FSR/FrontRight/Sensor/Value"),
+           memoryProxy.getData("Device/SubDeviceList/LFoot/FSR/RearLeft/Sensor/Value"),
+           memoryProxy.getData("Device/SubDeviceList/LFoot/FSR/RearRight/Sensor/Value")]
+        
+    print [memoryProxy.getData("Device/SubDeviceList/RFoot/FSR/FrontLeft/Sensor/Value"),
+           memoryProxy.getData("Device/SubDeviceList/RFoot/FSR/FrontRight/Sensor/Value"),
+           memoryProxy.getData("Device/SubDeviceList/RFoot/FSR/RearLeft/Sensor/Value"),
+           memoryProxy.getData("Device/SubDeviceList/RFoot/FSR/RearRight/Sensor/Value")]
+    print "RFoot Contact :" , memoryProxy.getData("rightFootContact")
+    print "LFoot Contact :" ,memoryProxy.getData ("leftFootContact")
+    print "Foot Contact :", memoryProxy.getData ("footContact")
+    
+    
+    
 if __name__== "__main__":
     doInitialisation()
     #test de la vision du NAO
     try:
-
-#        
+        FSRPIED()
+        dorun(3)  
+     
+        doback()
+        
+        time.sleep(2)
+        FSRPIED()
 #        print 'b0 :'
 #        b0 = BatteryMemory()
 #        #test de capteurs
@@ -570,7 +596,8 @@ if __name__== "__main__":
 #
 #        sys.exit(app.exec_())
 #        
-        print "Fin video..."
+#        print "Fin video..."
+        doStop()
         
 
         
