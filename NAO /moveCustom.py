@@ -1,11 +1,4 @@
-#!/usr/bin/env python3
 # -*- coding: utf-8 -*-
-"""
-Created on Thu Jun 22 13:41:39 2017
-
-@author: dussotro
-"""
-
 import time
 import sys
 from naoqi import ALProxy, ALModule
@@ -14,10 +7,14 @@ import select
 import vision_showimages as vis
 import numpy as np
 import almath
+import DiagNAO_eta as eta
 
-import DiagNAO (eta).py as eta
+robotIP = "172.20.28.103" #éta
 
-
+port = 9559
+CameraID = 0
+Frequency = 0.0 #low speed
+t=1.0
 
 try:
     motionProxy = ALProxy("ALMotion", robotIP, port)
@@ -83,10 +80,14 @@ def moveToEta(X, Y, Theta, Frequency):
     flag = False
     
     initRobotPosition = almath.Pose2D(motionProxy.getRobotPosition(False))
-    initRobotPosition = almath.transformFromPose2D(initRobotPosition)
+    initRobotPosition = list(almath.transformFromPose2D(initRobotPosition).toVector())
+    print(initRobotPosition)
     
-    xi, yi, thi = initRobotPosition[0][3],initRobotPosition[1][3], np.arctan(initRobotPosition[0][1]/initRobotPosition[0][0])
+    xi, yi, thi = initRobotPosition[3],initRobotPosition[7], np.arctan(initRobotPosition[1]/initRobotPosition[0])
     
+    vX = X/2
+    vY = 0.0
+    omega = Theta/5
     
     try:
         motionProxy.moveToward(vX, vY, omega, configEta)   
@@ -99,9 +100,9 @@ def moveToEta(X, Y, Theta, Frequency):
     while not flag:
         
         endRobotPosition = almath.Pose2D(motionProxy.getRobotPosition(False))
-        endRobotPosition = almath.transformFromPose2D(endRobotPosition)
+        endRobotPosition = list(almath.transformFromPose2D(endRobotPosition).toVector())
     
-        xf, yf, thf = endRobotPosition[0][3], endRobotPosition[1][3], np.arctan(endRobotPosition[0][1]/endRobotPosition[0][0])
+        xf, yf, thf = endRobotPosition[3], endRobotPosition[7], np.arctan(endRobotPosition[1]/endRobotPosition[0])
 
         if abs(xf - xi) > abs(X) and abs(yf - yi) > abs(Y) and abs(thf - thi) > abs(Theta):
             flag = True            
@@ -130,20 +131,23 @@ def moveTowardEta(U, V, Omega, Frequency):
     
 if __name__ == '__main__':
     eta.doInitialisation()
-
-    print "Test moveToEta"
-    moveToEta(1, 0, 0, 0.1)
     
-    time.sleep(2)
-    moveTowardEta(0.5, 0, 0, 0.1)
+    try :
+        
+       print "Test moveToEta"
+       moveToEta(1, 0, 0, 0.5)
+       
+       time.sleep(5)
+       moveTowardEta(0.5, 0, 0, 0.1)
+       
+       time.sleep(5)
+       
+       moveTowardEta(0.0, 0.0, 0.0, 0.0)
+#        pass
+    except Exception, e:
+        print "Value error: ", e
     
-    t0 = time.time()
-    while time.time() - t0 < 5:
-        continue
-    
-    moveTowardEta(0.0, 0.0, 0.0, 0.0)
-    
-    
+    eta.doStop()
     
     
     
