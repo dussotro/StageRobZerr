@@ -85,7 +85,7 @@ def moveToEta(X, Y, Theta, Frequency):
           ["RightStepHeight", 0.002],
           ["RightTorsoWx", 1*almath.TO_RAD],
           ["RightTorsoWy", 3.0*almath.TO_RAD]]
-    flag = False
+    flag, flagX, flagY, flagTh = False, False, False, False
     
     initRobotPosition = almath.Pose2D(motionProxy.getRobotPosition(False))
     initRobotPosition = list(almath.transformFromPose2D(initRobotPosition).toVector())
@@ -116,7 +116,8 @@ def moveToEta(X, Y, Theta, Frequency):
         print str(errorMsg)
         print "This example is not allowed on this robot."
         exit()
-          
+    
+    while not flag:          
         endRobotPosition = almath.Pose2D(motionProxy.getRobotPosition(False))
         endRobotPosition = list(almath.transformFromPose2D(endRobotPosition).toVector())
     
@@ -173,9 +174,9 @@ if __name__ == '__main__':
     eta.doInitialisation()
     
     try :
-        
-       print "Test moveToEta"
-       moveToEta(1, 0, 0, 1)
+        print "Test moveToEta"
+        #moveToEta(2, 0, 0, 1)
+        pass
     except Exception, e:
         print "Value error: ", e
     
