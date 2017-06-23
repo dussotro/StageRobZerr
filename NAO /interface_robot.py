@@ -1,3 +1,4 @@
+
 from PyQt4 import QtGui
 
 import sys
@@ -129,51 +130,51 @@ QtGui.QWidget.b_3_6.clicked.connect(QtGui.QWidget.page)
 QtGui.QWidget.b_3_6.move(42.5,20)
     
       
-    def page(QtGui.QWidget):
-    
-        QtGui.QWidget.w_1.hide()
-        QtGui.QWidget.w_2.hide()
-        QtGui.QWidget.w_3.hide()
-        
-        QtGui.QWidget.b_main_1.show()
-        QtGui.QWidget.b_main_2.show()
-        QtGui.QWidget.b_main_3.show()
-        QtGui.QWidget.b_main_4.show()
-        QtGui.QWidget.b_main_5.show()
+def page(Widget):
 
-    def test_marche(QtGui.QWidget):
+    Widget.w_1.hide()
+    Widget.w_2.hide()
+    Widget.w_3.hide()
     
-        QtGui.QWidget.b_main_1.hide()
-        QtGui.QWidget.b_main_2.hide()
-        QtGui.QWidget.b_main_3.hide()
-        QtGui.QWidget.b_main_4.hide()
-        QtGui.QWidget.w_1.show()
-    
-        QtGui.QWidget.w_2.hide()
-        QtGui.QWidget.w_3.hide()
-    
-    def test_articulation(QtGui.QWidget):
-    
-        QtGui.QWidget.b_main_1.hide()
-        QtGui.QWidget.b_main_2.hide()
-        QtGui.QWidget.b_main_3.hide()
-        QtGui.QWidget.b_main_4.hide()
-        QtGui.QWidget.w_2.show()
-    
-        QtGui.QWidget.w_1.hide()
-        QtGui.QWidget.w_3.hide()
-    
-    def test_parole(QtGui.QWidget):
-    
-        QtGui.QWidget.b_main_1.hide()
-        QtGui.QWidget.b_main_2.hide()
-        QtGui.QWidget.b_main_3.hide()
-        QtGui.QWidget.b_main_4.hide()
-        QtGui.QWidget.w_3.show()
-    
-        QtGui.QWidget.w_1.hide()
-        QtGui.QWidget.w_2.hide()
-    
+    Widget.b_main_1.show()
+    Widget.b_main_2.show()
+    Widget.b_main_3.show()
+    Widget.b_main_4.show()
+    Widget.b_main_5.show()
+
+def test_marche(Widget):
+
+    Widget.b_main_1.hide()
+    Widget.b_main_2.hide()
+    Widget.b_main_3.hide()
+    Widget.b_main_4.hide()
+    Widget.w_1.show()
+
+    Widget.w_2.hide()
+    Widget.w_3.hide()
+
+def test_articulation(Widget):
+
+    Widget.b_main_1.hide()
+    Widget.b_main_2.hide()
+    Widget.b_main_3.hide()
+    Widget.b_main_4.hide()
+    Widget.w_2.show()
+
+    Widget.w_1.hide()
+    Widget.w_3.hide()
+
+def test_parole(Widget):
+
+    Widget.b_main_1.hide()
+    Widget.b_main_2.hide()
+    QtGui.QWidget.b_main_3.hide()
+    QtGui.QWidget.b_main_4.hide()
+    QtGui.QWidget.w_3.show()
+
+    QtGui.QWidget.w_1.hide()
+    QtGui.QWidget.w_2.hide()
+
     
    
     
