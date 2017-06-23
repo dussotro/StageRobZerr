@@ -85,18 +85,30 @@ def moveToEta(X, Y, Theta, Frequency):
           ["RightStepHeight", 0.002],
           ["RightTorsoWx", 1*almath.TO_RAD],
           ["RightTorsoWy", 3.0*almath.TO_RAD]]
-    flag = False
+    flag, flagX, flagY, flagTh = False, False, False, False
     
     initRobotPosition = almath.Pose2D(motionProxy.getRobotPosition(False))
     initRobotPosition = list(almath.transformFromPose2D(initRobotPosition).toVector())
     print(initRobotPosition)
     
     xi, yi, thi = initRobotPosition[3],initRobotPosition[7], np.arctan(initRobotPosition[1]/initRobotPosition[0])
-    
-    vX =  0.8
-    vY =  0.0 
-    omega = 0.05
-    
+
+        
+    if X > 0:
+        vX = np.log(1+X)/np.log(11)
+    else :
+        vX = - np.log(1-X)/(2*np.log(11))
+    vX = max(0.4, vX)
+    if Y > 0:
+        vY = np.log(Y + 1)/(5*np.log(3))
+    else:
+        vY = -np.log(-Y + 1)/(5*np.log(3))
+    vY = max(0.05, vY)
+    if Theta > 0:
+        omega = np.log(abs(Theta) + 1)/np.log(4.14)
+    else :
+        omega = - np.log(abs(Theta) + 1)/np.log(4.14)
+    omega = max(0.05, omega)
     try:
         motionProxy.moveToward(vX, vY, omega, configEta)   
 
@@ -105,24 +117,36 @@ def moveToEta(X, Y, Theta, Frequency):
         print "This example is not allowed on this robot."
         exit()
     
-    while not flag:
-        
+    while not flag:          
         endRobotPosition = almath.Pose2D(motionProxy.getRobotPosition(False))
         endRobotPosition = list(almath.transformFromPose2D(endRobotPosition).toVector())
     
         xf, yf, thf = endRobotPosition[3], endRobotPosition[7], np.arctan(endRobotPosition[1]/endRobotPosition[0])
         print abs(xf - xi)
-        if abs(xf - xi) > abs(X) or abs(yf - yi) > abs(Y) or abs(thf - thi) > abs(Theta):
+        
+        if abs(xf - xi) > abs(X) :
+            vX = 0
+            flagX = True
+        if abs(yf - yi) > abs(Y) :
+            vY = 0
+            flagY = True
+        if abs(thf - thi) > abs(Theta) :
+            omega = 0
+            flagTh = True
+            
+        if flagX and flagY and flagTh:
             flag = True            
-    
+        
+        motionProxy.moveToward(vX, vY, omega, configEta)
+        
     motionProxy.moveToward(0.0, 0.0, 0.0)
     
     
 def moveTowardEta(U, V, Omega, Frequency):
     """
     In :
-        X -> Distance à parcourir en X (face)
-        Y -> Distance à parcourir en Y (cote)
+        U -> Vitesse en X (face)
+        Y -> Vitesse en Y (cote)
         Theta -> Angle à parcourir    
     
     """   
@@ -150,17 +174,9 @@ if __name__ == '__main__':
     eta.doInitialisation()
     
     try :
-        
-       print "Test moveToEta"
-       moveToEta(1, 0, 0, 1.57)
-       
-       time.sleep(5)
-       moveTowardEta(0.5, 0, 0, 0.1)
-       
-       time.sleep(5)
-       
-       moveTowardEta(0.0, 0.0, 0.0, 0.0)
-#        pass
+        print "Test moveToEta"
+        #moveToEta(2, 0, 0, 1)
+        pass
     except Exception, e:
         print "Value error: ", e
     
