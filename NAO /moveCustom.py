@@ -41,7 +41,7 @@ except Exception, e:
     print "Error was: ", e
 try :
     tts = ALProxy("ALTextToSpeech", robotIP, port)
-    tts.setLanguage("French")
+    tts.setLanguage("English")
 except Exception, e: 
     print "Could not create proxy to ALTextToSpeech"
     print "Error was: ", e
@@ -69,22 +69,37 @@ def moveToEta(X, Y, Theta, Frequency):
         Y -> Distance à parcourir en Y (cote)
         Theta -> Angle à parcourir    
         Frequency -> Vitesse du robot (entre 0 et 1)
-    """    
+    """ 
+    
+#    # A small step forwards and anti-clockwise with the left foot
+#    legName = ["LLeg", "RLeg"]
+#    Xl       = 0.04
+#    Yl       = 0.0
+#    Thetal   = 0.0
+#    footSteps = [[Xl, Yl, Thetal], [Xl, Yl, Thetal]]
+#    fractionMaxSpeed = [1.0, 1.0]
+#    clearExisting = False
+#    motionProxy.setFootStepsWithSpeed(legName, footSteps, fractionMaxSpeed, clearExisting)
+#
+#    motionProxy.waitUntilMoveIsFinished()
+#    
+    
     
     configEta = [["Frequency", Frequency],
           #BOTH FEET
           ["MaxStepX", 0.08],
-          ["MaxStepFrequency", 0.5],
+          ["MaxStepFrequency", 1.0],
           
           # LEFT FOOT
-          ["LeftStepHeight", 0.0022],
-          ["LeftTorsoWx", -1*almath.TO_RAD],
+          ["LeftStepHeight", 0.001],
+          ["LeftTorsoWx", -2*almath.TO_RAD],
           ["LeftTorsoWy", 3.0*almath.TO_RAD],
           
           # RIGHT FOOT
-          ["RightStepHeight", 0.002],
-          ["RightTorsoWx", 1*almath.TO_RAD],
+          ["RightStepHeight", 0.001],
+          ["RightTorsoWx", 2*almath.TO_RAD],
           ["RightTorsoWy", 3.0*almath.TO_RAD]]
+    
     flag, flagX, flagY, flagTh = False, False, False, False
     
     initRobotPosition = almath.Pose2D(motionProxy.getRobotPosition(False))
@@ -96,28 +111,34 @@ def moveToEta(X, Y, Theta, Frequency):
         
     if X > 0:
         vX = np.log(1+X)/np.log(11)
+        vX = max(0.4, vX)
     else :
         vX = - np.log(1-X)/(2*np.log(11))
-    vX = max(0.4, vX)
+        vX = min(-0.4, vX)
+    
     if Y > 0:
         vY = np.log(Y + 1)/(5*np.log(3))
+        vY = max(0.05, vY)
     else:
         vY = -np.log(-Y + 1)/(5*np.log(3))
-    vY = max(0.05, vY)
+        vY = min(-0.05, vY)
+    
     if Theta > 0:
         omega = np.log(abs(Theta) + 1)/np.log(4.14)
+        
     else :
         omega = - np.log(abs(Theta) + 1)/np.log(4.14)
-    omega = max(0.05, omega)
+        omega = min(-0.05, omega)
     try:
-        motionProxy.moveToward(vX, vY, omega, configEta)   
-
+        motionProxy.moveToward(vX, vY, omega, configEta)  
+        pass
     except Exception, errorMsg:
         print str(errorMsg)
         print "This example is not allowed on this robot."
         exit()
     
-    while not flag:          
+    while not flag:
+        print 'no flag raised'          
         endRobotPosition = almath.Pose2D(motionProxy.getRobotPosition(False))
         endRobotPosition = list(almath.transformFromPose2D(endRobotPosition).toVector())
     
@@ -125,19 +146,21 @@ def moveToEta(X, Y, Theta, Frequency):
         print abs(xf - xi)
         
         if abs(xf - xi) > abs(X) :
+            print 'FLAG X'
             vX = 0
             flagX = True
         if abs(yf - yi) > abs(Y) :
+            print 'FLAG Y'
             vY = 0
             flagY = True
         if abs(thf - thi) > abs(Theta) :
+            print 'FLAG THETA'
             omega = 0
             flagTh = True
             
         if flagX and flagY and flagTh:
             flag = True            
-        
-        motionProxy.moveToward(vX, vY, omega, configEta)
+        motionProxy.moveToward(vX, vY, omega, configEta)  
         
     motionProxy.moveToward(0.0, 0.0, 0.0)
     
@@ -175,8 +198,8 @@ if __name__ == '__main__':
     
     try :
         print "Test moveToEta"
-        #moveToEta(2, 0, 0, 1)
-        pass
+        moveToEta(1, 0, 0, 1)
+        #pass
     except Exception, e:
         print "Value error: ", e
     

@@ -50,7 +50,7 @@ except Exception, e:
     print "Error was: ", e
 try :
     tts = ALProxy("ALTextToSpeech", robotIP, port)
-    tts.setLanguage("French")
+    tts.setLanguage("English")
 except Exception, e: 
     print "Could not create proxy to ALTextToSpeech"
     print "Error was: ", e
