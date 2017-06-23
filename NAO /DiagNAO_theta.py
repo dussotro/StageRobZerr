@@ -13,7 +13,7 @@ from PyQt4.QtGui import QWidget, QImage, QApplication, QPainter, QPushButton
 from optparse import OptionParser
 
 
-robotIP = "172.20.12.126" #Rouge
+robotIP = "172.20.27.244" #Rouge
 #robotIP = "172.20.28.103" #Bleu
 #robotIP = "172.20.12.49" 
 #robotIP = "172,20,11,237"
@@ -673,7 +673,7 @@ if __name__== "__main__":
     
     
         audioProxy.post.playFile("/home/nao/music/a.mp3")
-        tts.post.say('''j'voudrais faire un Slam
+        tts.say('''j'voudrais faire un Slam
 pour une grande dame que j'connais depuis tout petit
 j'voudrais faire un Slam
 pour celle qui voit ma vieille canne du lundi au samedi
@@ -683,7 +683,7 @@ j'voudrais faire un Slam
 pour cette banlieue nord de paname qu'on appelle saint denis
 ''') 
 
-        time.sleep(50)
+        time.sleep(3)
         audioProxy.post.stopAll()            
 #        dorun(7)  
 #     
