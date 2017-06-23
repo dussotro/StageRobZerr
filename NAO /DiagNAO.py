@@ -12,9 +12,9 @@ import almath
 from PyQt4.QtGui import QWidget, QImage, QApplication, QPainter, QPushButton
 
 
-#robotIP = "172.20.12.126" 
-#robotIP = "172.20.28.103" 
-robotIP = "172.20.28.103" #éta
+#robotIP = "172.20.12.126" #Rouge
+#robotIP = "172.20.28.103" #Bleu
+robotIP = "172.20.11.237"
 
 port = 9559
 CameraID = 0
@@ -81,7 +81,7 @@ def doInitialisation():
     postureProxy.goToPosture("StandInit", 0.5)
     
 
-#class Battery(ALModule):
+#class Myevent(ALModule):
 #    """ Mandatory docstring.
 #        comment needed to create a new python module
 #    """
@@ -90,7 +90,7 @@ def doInitialisation():
 #        # No need for IP and port here because
 #        # we have our Python broker connected to NAOqi broker
 #        # Create a proxy to ALTextToSpeech for later use
-#        self.battery = BatteryProxy
+#        self.tts = BatteryProxy
 #        self.level = 0
 #
 #        # Subscribe to the BatteryChange event:
@@ -309,7 +309,20 @@ def Accelero():
 # """Motion"""
 #==============================================================================
 def dorun(t):
-    motionProxy.setWalkTargetVelocity(0.6, 0, 0, 1)
+    X = 0.5
+    Y = 0.0
+    Theta = 0.0
+#    Frequency =0.9 # low speed
+    motionProxy.moveToward(X, Y, Theta,[["Frequency", 0.4],
+                                        ["MaxStepX", 0.08],
+                                        ["RightMaxStepFrequency", 0.3],
+                                        ["RightStepHeight", 0.002],
+                                        ["RightTorsoWx", 8.0*almath.TO_RAD],
+                                        ["RightTorsoWy", 5.0*almath.TO_RAD],
+                                        ["LeftMaxStepFrequency", 0.3],
+                                        ["LeftStepHeight", 0.002],
+                                        ["LeftTorsoWx", -8.0*almath.TO_RAD],
+                                        ["LeftTorsoWy", 5.0*almath.TO_RAD]  ] )
     t0 = time.time()
     AngX, AngY = [], []
     while time.time()< (t0 + t):
@@ -426,7 +439,8 @@ def position_robot():
     Y = 0.1
     Theta = np.pi/2.0
     motionProxy.post.moveTo(X, Y, Theta)
-    # wait is useful because with post moveTo is not blocking function
+    # wait is useful because with post moveprint " left_foot:",left_foot
+#    To is not blocking function
     motionProxy.waitUntilMoveIsFinished()
 
     #####################
@@ -520,44 +534,347 @@ def Test_Articulations():
     time.sleep(2)
     
     postureProxy.goToPosture("Crouch", 2.0)
+    
+#####################################################################
+# mes modifications 
+#############################################################
 
+    
+def sumfsr(a, b):
+    result = []
+    for i in range(len(a)):
+        result.append(a[i] + b[i])
+    return result
+
+def rempfsr(a, b):
+    result = []
+    for i in range(len(a)):
+        a[i] = b[i]
+        
+        result.append(a[i])
+    return result
+
+
+def fsr():
+   left_foot= [ memoryProxy.getData("Device/SubDeviceList/LFoot/FSR/FrontLeft/Sensor/Value"),
+    memoryProxy.getData("Device/SubDeviceList/LFoot/FSR/FrontRight/Sensor/Value"),
+    memoryProxy.getData("Device/SubDeviceList/LFoot/FSR/RearLeft/Sensor/Value"),
+    memoryProxy.getData("Device/SubDeviceList/LFoot/FSR/RearRight/Sensor/Value")]
+    
+   right_foot= [ memoryProxy.getData("Device/SubDeviceList/RFoot/FSR/FrontLeft/Sensor/Value"),
+    memoryProxy.getData("Device/SubDeviceList/RFoot/FSR/FrontRight/Sensor/Value"),
+    memoryProxy.getData("Device/SubDeviceList/RFoot/FSR/RearLeft/Sensor/Value"),
+    memoryProxy.getData("Device/SubDeviceList/RFoot/FSR/RearRight/Sensor/Value")]
+   
+   valeur_left = [0.07025,0.07025,-0.03025,-0.02965]
+   valeur_right = [0.07025,0.07025,-0.03025,-0.02965]
+   
+   left_foot = rempfsr(left_foot , valeur_left)
+   right_foot = rempfsr(right_foot , valeur_right)
+    
+   
+   print " left_foot:",left_foot
+   print " right_foot:",right_foot
+   
+
+# fait bouger la maine
+def userArmArticular(motionProxy):
+    # Arms motion from user have always the priority than walk arms motion
+    JointNames = ["LShoulderPitch", "LShoulderRoll", "LElbowYaw", "LElbowRoll"]
+    Arm1 = [-40,  25, 0, -40]
+    Arm1 = [ x * motion.TO_RAD for x in Arm1]
+
+    Arm2 = [-40,  50, 0, -80]
+    Arm2 = [ x * motion.TO_RAD for x in Arm2]
+
+    pFractionMaxSpeed = 0.6
+
+    motionProxy.angleInterpolationWithSpeed(JointNames, Arm1, pFractionMaxSpeed)
+    motionProxy.angleInterpolationWithSpeed(JointNames, Arm2, pFractionMaxSpeed)
+    motionProxy.angleInterpolationWithSpeed(JointNames, Arm1, pFractionMaxSpeed)
+    
+def userArmArticular_r(motionProxy):
+    # Arms motion from user have always the priority than walk arms motion
+    JointNames = ["RShoulderPitch", "RShoulderRoll", "RElbowYaw", "RElbowRoll"]
+    Arm1 = [-40,  25, 0, -40]
+    Arm1 = [ x * motion.TO_RAD for x in Arm1]
+
+    Arm2 = [-40,  50, 0, -80]
+    Arm2 = [ x * motion.TO_RAD for x in Arm2]
+
+    pFractionMaxSpeed = 0.6
+
+    motionProxy.angleInterpolationWithSpeed(JointNames, Arm1, pFractionMaxSpeed)
+    motionProxy.angleInterpolationWithSpeed(JointNames, Arm2, pFractionMaxSpeed)
+    motionProxy.angleInterpolationWithSpeed(JointNames, Arm1, pFractionMaxSpeed)
+   
+#def run():
+##    x = 0.4
+##    y = 0.0
+##    theta = 0
+##    motionProxy.moveTo (x, y, theta)
+#
+#    X = 0.5
+#    Y = 0.0
+#    Theta = 0.0
+##    Frequency =0.9 # low speed
+#    motionProxy.moveToward(X, Y, Theta,[["Frequency", 0.4],
+#                                        ["MaxStepX", 0.08],
+#                                        ["RightMaxStepFrequency", 0.3],
+#                                        ["RightStepHeight", 0.002],
+#                                        ["RightTorsoWx", 7.0*almath.TO_RAD],
+#                                        ["RightTorsoWy", 5.0*almath.TO_RAD],
+#                                        ["LeftMaxStepFrequency", 0.3],
+#                                        ["LeftStepHeight", 0.002],
+#                                        ["LeftTorsoWx", -7.0*almath.TO_RAD],
+#                                        ["LeftTorsoWy", 5.0*almath.TO_RAD]  ] )
+#
+#    time.sleep(8.0)
+#    motionProxy.moveToward(0, 0, 0)
+#    print "Straight Forward"
+#    print "walk Speed X :",motionProxy.getRobotVelocity()[0]," m/s"
+    
+def gyroscope():
+    
+    a = memoryProxy.getData("Device/SubDeviceList/InertialSensor/GyroscopeX/Sensor/Value")
+    b = memoryProxy.getData("Device/SubDeviceList/InertialSensor/GyroscopeY/Sensor/Value")
+    c = memoryProxy.getData("Device/SubDeviceList/InertialSensor/GyroscopeZ/Sensor/Value")
+    print "a", a
+    print "b", b
+    print "c", c
+    
+    
+def steps():
+    footStepsList = []
+
+    # 1) Step forward with your left foot
+    footStepsList.append([["LLeg"], [[0.06, 0.1, 0.0]]])
+
+    # 2) Sidestep to the left with your left foot
+    footStepsList.append([["LLeg"], [[0.00, 0.16, 0.0]]])
+
+    # 3) Move your right foot to your left foot
+    footStepsList.append([["RLeg"], [[0.00, -0.1, 0.0]]])
+
+    # 4) Sidestep to the left with your left foot
+    footStepsList.append([["LLeg"], [[0.00, 0.16, 0.0]]])
+
+    # 5) Step backward & left with your right foot
+    footStepsList.append([["RLeg"], [[-0.04, -0.1, 0.0]]])
+
+    # 6)Step forward & right with your right foot
+    footStepsList.append([["RLeg"], [[0.00, -0.16, 0.0]]])
+
+    # 7) Move your left foot to your right foot
+    footStepsList.append([["LLeg"], [[0.00, 0.1, 0.0]]])
+
+    # 8) Sidestep to the right with your right foot
+    footStepsList.append([["RLeg"], [[0.00, -0.16, 0.0]]])
+
+    ###############################
+    # Send Foot step
+    ###############################
+    stepFrequency = 0.8
+    clearExisting = False
+    nbStepDance = 2 # defined the number of cycle to make
+
+    for j in range( nbStepDance ):
+        for i in range( len(footStepsList) ):
+            motionProxy.setFootStepsWithSpeed(
+                footStepsList[i][0],
+                footStepsList[i][1],
+                [stepFrequency],
+                clearExisting)
+            
+
+
+#footMove = almath.Pose2D (motionProxy.getRobotPosition(False))
+#isLeftSupport = False
+#minFootSeparation = 0.088
+#minStepX = - 0.04
+#maxStepX = 0.08
+#maxStepY = 0.16
+#maxStepTheta = 0.35
+#def clipFootStepOnGaitConfig(footMove, isLeftSupport):
+#  ''' Clip the foot move so that it does not exceed the maximum
+#      size of steps.
+#      footMove is an almath.Pose2D (x, y, theta position).
+#      isLeftSupport must be set to True if the move is on the right leg
+#      (the robot is supporting itself on the left leg).
+#  '''
+#
+#  def clipFloat(minValue, maxValue, value):
+#    ''' Clip value between two extremes. '''
+#    clipped = value
+#    if (clipped < minValue):
+#      clipped = minValue
+#    if (clipped > maxValue):
+#      clipped = maxValue
+#    return clipped
+#
+#  # Clip X.
+#  
+#  clippedX = clipFloat(minStepX, maxStepX, footMove.x)
+#  footMove.x = clippedX
+#
+#  # Clip Y.
+#  if not isLeftSupport:
+#    clippedY = clipFloat(minFootSeparation, maxStepY, footMove.y)
+#  else:
+#    clippedY = clipFloat(-maxStepY, - minFootSeparation, footMove.y)
+#  footMove.y = clippedY
+#
+#  # Clip Theta.
+#  clippedTheta = clipFloat(-maxStepTheta, maxStepTheta, footMove.theta)
+#  footMove.theta = clippedTheta
+#  
+#def test():
+#    
+#    motionProxy.moveInit()
+#    motionProxy.setWalkTargetVelocity(1.0, 0.0, 0.0, 1.0, motionProxy.getMoveConfig("Default"),
+#                                                motionProxy.getMoveConfig("Min"))
+#time.sleep(3.0)
+
+
+def towalk():
+    x  = 1.0
+    y  = 0.0
+    theta  = 0.0
+    moveConfig = [["Frequency", 1.0]]
+    motionProxy.moveToward(x, y, theta, moveConfig)
+    # If we don't send another command, he will walk forever
+    # Lets make him slow down (step length) and turn after 10 seconds
+    time.sleep(10)
+    x = 0.5
+    theta = 0.6
+    motionProxy.moveToward(x, y, theta, moveConfig)
+    # Lets make him slow down(frequency) after 5 seconds
+    time.sleep(5)
+    moveConfig = [["Frequency", 0.5]]
+    motionProxy.moveToward(x, y, theta, moveConfig)
+    # After another 10 seconds, we'll make him stop
+    time.sleep(10)
+    motionProxy.moveToward(0.0, 0.0, 0.0)
+    
+    
+def testtowalk():
+    
+    for i in range(2):
+        x  = 1.0
+        y  = 0.0
+        theta  = 0.0
+        moveConfig = [["Frequency", 1.0]]
+        motionProxy.moveToward(x, y, theta, moveConfig)
+        # If we don't send another command, he will walk forever
+        # Lets make him slow down (step length) and turn after 10 seconds
+        time.sleep(10)
+        x = 0.5
+        theta = 0.6
+        motionProxy.moveToward(x, y, theta, moveConfig)
+        # Lets make him slow down(frequency) after 5 seconds
+        time.sleep(5)
+    
+    
+#    moveConfig = [["Frequency", 0.5]]
+#    motionProxy.moveToward(x, y, theta, moveConfig)
+    # After another 10 seconds, we'll make him stop
+    time.sleep(10)
+    motionProxy.moveToward(0.0, 0.0, 0.0)
+
+
+class HumanGreeterModule(ALModule):
+    """ A simple module able to react
+    to facedetection events
+
+    """
+    def __init__(self, name):
+        ALModule.__init__(self, name)
+        # No need for IP and port here because
+        # we have our Python broker connected to NAOqi broker
+
+        # Create a proxy to ALTextToSpeech for later use
+        self.tts = ALProxy("ALTextToSpeech")
+
+        # Subscribe to the FaceDetected event:
+        global memory
+        memory = ALProxy("ALMemory")
+        memory.subscribeToEvent("FaceDetected",
+            "HumanGreeter",
+            "onFaceDetected")
+
+    def onFaceDetected(self, *_args):
+        """ This will be called each time a face is
+        detected.
+
+        """
+        # Unsubscribe to the event when talking,
+        # to avoid repetitions
+        memory.unsubscribeToEvent("FaceDetected",
+            "HumanGreeter")
+
+        self.tts.say("Hello, you")
+
+        # Subscribe again to the event
+        memory.subscribeToEvent("FaceDetected",
+            "HumanGreeter",
+            "onFaceDetected")
+        
 
 if __name__== "__main__":
     doInitialisation()
     #test de la vision du NAO
     try:
+#        clipFootStepOnGaitConfig(footMove, isLeftSupport)
+##        test()
+#        
+#        userArmArticular(motionProxy)
+#        gyroscope()
+#        time.sleep(2)
+#        fsr()
+#        time.sleep(2)
+        towalk()
+#        
+#        run()
+#        dorun(6)
+#        time.sleep(2)
+#        steps()
+#        time.sleep(1)
+#        userArmArticular(motionProxy)
+#        time.sleep(1)
+#        userArmArticular_r(motionProxy)
+        time.sleep(5)
 
         
-        print 'b0 :'
-        b0 = BatteryMemory()
-        #test de capteurs
-        print "Test des capteurs frontaux du robot" 
-        TrySensors()
-        print "Fin capteurs..." 
-
-        print "Test de calcul de vitesse et position"
-        target_velocity()
-        position_robot()
-        print "Fin vitesse / position ..." 
-        
-        print "Test de la fonction de parole du nao"
-        TestTts("Test Micro")
-        time.sleep(1.0)
-        print "Fin parole..."
-        
-        print "Test de deplacement du robot"
-        print "trajectoire: carre gauche puis carre droite"
-        Test_Square_Left_Right()
-        print "Fin deplacement..."
-
-        print "Test des articulations Tete / Bras"
-        Test_Articulations()
-        print "Fin articulations..."
-        
-        print "b1 :"
-        b1 = BatteryMemory()
-        print "Fin Batterie..."
-        print "différence",(b0-b1)
+#        print 'b0 :'
+#        b0 = BatteryMemory()
+#        #test de capteurs
+#        print "Test des capteurs frontaux du robot" 
+#        TrySensors()
+#        print "Fin capteurs..." 
+#
+#        print "Test de calcul de vitesse et position"
+#        target_velocity()
+#        position_robot()
+#        print "Fin vitesse / position ..." 
+#        
+#        print "Test de la fonction de parole du nao"
+#        TestTts("Test Micro")
+#        time.sleep(1.0)
+#        print "Fin parole..."
+#        
+#        print "Test de deplacement du robot"
+#        print "trajectoire: carre gauche puis carre droite"
+#        Test_Square_Left_Right()
+#        print "Fin deplacement..."
+#
+#        print "Test des articulations Tete / Bras"
+#        Test_Articulations()
+#        print "Fin articulations..."
+#        
+#        print "b1 :"
+#        b1 = BatteryMemory()
+#        print "Fin Batterie..."
+#        print "différence",(b0-b1)
         
         print "Test d'affichage en temps réel de la vision du robot"
         doStop()
@@ -569,8 +886,9 @@ if __name__== "__main__":
         boutton.clicked.connect(close)
 
         sys.exit(app.exec_())
-        
+#        
         print "Fin video..."
+        doStop()
         
 
         
