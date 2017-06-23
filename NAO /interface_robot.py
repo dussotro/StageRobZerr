@@ -1,3 +1,4 @@
+
 from PyQt4 import QtGui
 
 import sys
@@ -10,6 +11,7 @@ class Test(QtGui.QWidget):
         self.initUI()
     
 
+<<<<<<< HEAD
     def initUI(self):   
         self.b_main_1=QtGui.QLabel(self)
         self.b_main_1.setText('Bienvenue')
@@ -189,6 +191,99 @@ app = QtGui.QApplication(sys.argv)
 t = Test()        
 
 #app = QApplication(sys.argv)  
+=======
+QtGui.QWidget.b_2_3 = QtGui.QPushButton('marche arriere ', QtGui.QWidget.w_2)
+QtGui.QWidget.b_2_3.move(800, 330)
+QtGui.QWidget.b_2_3.clicked.connect()
+
+QtGui.QWidget.b_2_4 = QtGui.QPushButton('tourne a gauche ', QtGui.QWidget.w_2)
+QtGui.QWidget.b_2_4.move(800, 350)
+QtGui.QWidget.b_2_4.clicked.connect()
+
+QtGui.QWidget.b_2_5 = QtGui.QPushButton('tourne a droite', QtGui.QWidget.w_2)
+QtGui.QWidget.b_2_5.move(800, 370)
+QtGui.QWidget.b_2_5.clicked.connect()
+
+QtGui.QWidget.b_2_6= QtGui.QPushButton(QtGui.QWidget.w_2)
+QtGui.QWidget.b_2_6.setText("retour")
+QtGui.QWidget.b_2_6.clicked.connect(QtGui.QWidget.page)
+QtGui.QWidget.b_2_6.move(42.5,20)
+
+"""definition des texte et creation des bouttons pour widget 3"""
+
+QtGui.QWidget.b_3_1 = QtGui.QLabel(QtGui.QWidget.w_3)
+QtGui.QWidget.b_3_1.setText("testez la mouvement de votre robot")
+QtGui.QWidget.b_3_1.move(579,290)
+
+QtGui.QWidget.b_3_2 = QtGui.QPushButton('marche avant ', QtGui.QWidget.w_3)
+QtGui.QWidget.b_3_2.move(800, 310)
+QtGui.QWidget.b_3_2.clicked.connect()
+
+QtGui.QWidget.b_3_3 = QtGui.QPushButton('marche arriere ', QtGui.QWidget.w_3)
+QtGui.QWidget.b_3_3.move(800, 330)
+QtGui.QWidget.b_3_3.clicked.connect()
+
+QtGui.QWidget.b_3_4 = QtGui.QPushButton('tourne a gauche ', QtGui.QWidget.w_3)
+QtGui.QWidget.b_3_4.move(800, 350)
+QtGui.QWidget.b_3_4.clicked.connect()
+
+QtGui.QWidget.b_3_5 = QtGui.QPushButton('tourne a droite', QtGui.QWidget.w_3)
+QtGui.QWidget.b_3_5.move(800, 370)
+QtGui.QWidget.b_3_5.clicked.connect()
+
+QtGui.QWidget.b_3_6= QtGui.QPushButton(QtGui.QWidget.w_1)
+QtGui.QWidget.b_3_6.setText("retour")
+QtGui.QWidget.b_3_6.clicked.connect(QtGui.QWidget.page)
+QtGui.QWidget.b_3_6.move(42.5,20)
+    
+      
+def page(Widget):
+
+    Widget.w_1.hide()
+    Widget.w_2.hide()
+    Widget.w_3.hide()
+    
+    Widget.b_main_1.show()
+    Widget.b_main_2.show()
+    Widget.b_main_3.show()
+    Widget.b_main_4.show()
+    Widget.b_main_5.show()
+
+def test_marche(Widget):
+
+    Widget.b_main_1.hide()
+    Widget.b_main_2.hide()
+    Widget.b_main_3.hide()
+    Widget.b_main_4.hide()
+    Widget.w_1.show()
+
+    Widget.w_2.hide()
+    Widget.w_3.hide()
+
+def test_articulation(Widget):
+
+    Widget.b_main_1.hide()
+    Widget.b_main_2.hide()
+    Widget.b_main_3.hide()
+    Widget.b_main_4.hide()
+    Widget.w_2.show()
+
+    Widget.w_1.hide()
+    Widget.w_3.hide()
+
+def test_parole(Widget):
+
+    Widget.b_main_1.hide()
+    Widget.b_main_2.hide()
+    QtGui.QWidget.b_main_3.hide()
+    QtGui.QWidget.b_main_4.hide()
+    QtGui.QWidget.w_3.show()
+
+    QtGui.QWidget.w_1.hide()
+    QtGui.QWidget.w_2.hide()
+
+    
+>>>>>>> 944e8aff08d67bb14007df5f51ef4f2c5ca4b586
    
     
     

@@ -58,7 +58,20 @@ except Exception, e:
     print "Could not create proxy to AlBattery"
     print "Error was: ", e
 
-
+configEta = [["Frequency", 1.0],
+          #BOTH FEET
+          ["MaxStepX", 0.08],
+          ["MaxStepFrequency", 0.4],
+          
+          # LEFT FOOT
+          ["LeftStepHeight", 0.0012],
+          ["LeftTorsoWx", -2*almath.TO_RAD],
+          ["LeftTorsoWy", 3.0*almath.TO_RAD],
+          
+          # RIGHT FOOT
+          ["RightStepHeight", 0.0012],
+          ["RightTorsoWx", 2*almath.TO_RAD],
+          ["RightTorsoWy", 3.0*almath.TO_RAD]]
 
 
 
@@ -82,33 +95,17 @@ def moveToEta(X, Y, Theta, Frequency):
 #    motionProxy.setFootStepsWithSpeed(legName, footSteps, fractionMaxSpeed, clearExisting)
 #
 #    motionProxy.waitUntilMoveIsFinished()
-#    
     
-    
-    configEta = [["Frequency", Frequency],
-          #BOTH FEET
-          ["MaxStepX", 0.08],
-          ["MaxStepFrequency", 1.0],
-          
-          # LEFT FOOT
-          ["LeftStepHeight", 0.001],
-          ["LeftTorsoWx", -2*almath.TO_RAD],
-          ["LeftTorsoWy", 3.0*almath.TO_RAD],
-          
-          # RIGHT FOOT
-          ["RightStepHeight", 0.001],
-          ["RightTorsoWx", 2*almath.TO_RAD],
-          ["RightTorsoWy", 3.0*almath.TO_RAD]]
+
     
     flag, flagX, flagY, flagTh = False, False, False, False
     
     initRobotPosition = almath.Pose2D(motionProxy.getRobotPosition(False))
     initRobotPosition = list(almath.transformFromPose2D(initRobotPosition).toVector())
     print(initRobotPosition)
-    
+
     xi, yi, thi = initRobotPosition[3],initRobotPosition[7], np.arctan(initRobotPosition[1]/initRobotPosition[0])
 
-        
     if X > 0:
         vX = np.log(1+X)/np.log(11)
         vX = max(0.4, vX)
@@ -118,14 +115,13 @@ def moveToEta(X, Y, Theta, Frequency):
     
     if Y > 0:
         vY = np.log(Y + 1)/(5*np.log(3))
-        vY = max(0.05, vY)
+        vY = max(0.05, vY) 
     else:
         vY = -np.log(-Y + 1)/(5*np.log(3))
-        vY = min(-0.05, vY)
+        vY = min(-0.05, vY) 
     
     if Theta > 0:
         omega = np.log(abs(Theta) + 1)/np.log(4.14)
-        
     else :
         omega = - np.log(abs(Theta) + 1)/np.log(4.14)
         omega = min(-0.05, omega)
@@ -151,7 +147,7 @@ def moveToEta(X, Y, Theta, Frequency):
             flagX = True
         if abs(yf - yi) > abs(Y) :
             print 'FLAG Y'
-            vY = 0
+            vY = 0.2
             flagY = True
         if abs(thf - thi) > abs(Theta) :
             print 'FLAG THETA'
@@ -166,6 +162,7 @@ def moveToEta(X, Y, Theta, Frequency):
     
     
 def moveTowardEta(U, V, Omega, Frequency):
+    
     """
     In :
         U -> Vitesse en X (face)
@@ -173,22 +170,7 @@ def moveTowardEta(U, V, Omega, Frequency):
         Theta -> Angle à parcourir    
     
     """   
-    
-    
-    configEta = [["Frequency", Frequency],
-          #BOTH FEET
-          ["MaxStepX", 0.08],
-          ["MaxStepFrequency", 0.5],
-          
-          # LEFT FOOT
-          ["LeftStepHeight", 0.0022],
-          ["LeftTorsoWx", -1*almath.TO_RAD],
-          ["LeftTorsoWy", 3.0*almath.TO_RAD],
-          
-          # RIGHT FOOT
-          ["RightStepHeight", 0.002],
-          ["RightTorsoWx", 1*almath.TO_RAD],
-          ["RightTorsoWy", 3.0*almath.TO_RAD]]
+
     
     motionProxy.moveToward(U, V, Omega, configEta)
     
@@ -197,31 +179,18 @@ if __name__ == '__main__':
     eta.doInitialisation()
     
     try :
-        print "Test moveToEta"
-        moveToEta(1, 0, 0, 1)
-        #pass
+        print ">>>>>>>>>>>>>> Test moveToEta"
+        moveToEta(0.5, 0, 0, 1.0)
+        time.sleep(3)
+               
+        print '>>>>>>>>>>>>>> Deuxieme étape'  
+        
+        moveTowardEta(-1,0,0,1.0)
+        time.sleep(7)
+        
+        print '>>>>>>>>>>>>>> Fin'
+        
     except Exception, e:
         print "Value error: ", e
     
     eta.doStop()
-    
-    
-    
-    
-    
-    
-    
-    
-    
-    
-    
-    
-    
-    
-    
-    
-    
-    
-    
-    
-    
