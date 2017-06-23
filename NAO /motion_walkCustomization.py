@@ -41,31 +41,33 @@ def main(robotIP = "127.0.0.1"):
     # TARGET VELOCITY
     X         = 1.0
     Y         = 0.0
-    Theta     = 0.0
+    Theta     = 1
     Frequency = 1.0
 
     # Defined a limp walk
-    motionProxy.setWalkTargetVelocity(X, Y, Theta, Frequency,
+    motionProxy.setWalkTargetVelocity(X, Y, 0, Frequency,
         [ # LEFT FOOT
-        ["StepHeight", 0.02],
-        ["MaxStepX", 0.2],
-        ["MaxStepFrequency", 0.8],
+        ["StepHeight", 0.015],
+        ["MaxStepX", 0.35],
+        ["MaxStepFrequency", 1],
         ["TorsoWx", 2.5*almath.TO_RAD],
-        ["TorsoWy", 4.0*almath.TO_RAD] ],
+        ["TorsoWy", 3*almath.TO_RAD] ],
          
         [ # RIGHT FOOT
-        ["StepHeight", 0.02],
-        ["MaxStepX", 0.2],
-        ["MaxStepFrequency", 0.8],
+        ["StepHeight", 0.015],
+        ["MaxStepX", 0.35],
+        ["MaxStepFrequency", 1],
         ["TorsoWx", -2.5*almath.TO_RAD],
-        ["TorsoWy", 4.0*almath.TO_RAD] ] )
+        ["TorsoWy", 3*almath.TO_RAD] ] )
 
-    time.sleep(3.0)
-
-    motionProxy.setWalkTargetVelocity(-X, Y, Theta, Frequency)
-
-    time.sleep(5.5)
-
+    time.sleep(10.0)
+    motionProxy.setWalkTargetVelocity(0, 0, Theta, Frequency)
+    time.sleep(3)
+    
+    motionProxy.setWalkTargetVelocity(X, Y, 0, Frequency)
+    time.sleep(3)
+    motionProxy.setWalkTargetVelocity(-X, Y, 0, Frequency)
+    time.sleep(5)
     # stop walk in the next double support
     motionProxy.stopMove()
 
