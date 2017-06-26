@@ -91,7 +91,7 @@ def doInitialisation():
     # Set NAO in Stiffness On
     StiffnessOn(motionProxy)
     # Send NAO to Pose Init
-    postureProxy.goToPosture("StandInit", 0.5)
+    postureProxy.goToPosture("Crouch", 0.5)
     
     
 

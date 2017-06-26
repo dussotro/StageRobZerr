@@ -10,8 +10,10 @@ configuration spécifique à Eta.
 Ces paramètres sont définis et modifiable dans le fichier :
 	moveCustom.py
 
-Vous avez le droit de modifier ces paramètres, ce ne sont pas forcément les meilleurs.
-Ce sont juste des paramètres qui permettent de faire fonctionner le robot approximativement.
+Vous avez le droit de modifier ces paramètres, ce ne sont pas forcément les 
+meilleurs.
+Ce sont juste des paramètres qui permettent de faire fonctionner le robot 
+approximativement.
 
 Les fonctions concernant Eta sont:
 	moveToEta()
