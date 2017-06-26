@@ -309,21 +309,37 @@ def Accelero():
 #==============================================================================
 # """Motion"""
 #==============================================================================
+
+
+
+config_robo = [["Frequency", 0.7],
+               ["MaxStepX", 0.08],
+               ["RightMaxStepFrequency", 0.3],
+               ["RightStepHeight", 0.0018],
+               ["RightTorsoWx", 1.0],
+               ["RightTorsoWy", 1.0*almath.TO_RAD],
+               ["LeftMaxStepFrequency", 0.3],
+               ["LeftStepHeight", 0.0018],
+               ["LeftTorsoWx", -1.0],
+               ["LeftTorsoWy", 1.0*almath.TO_RAD]  ]
+config_robo_back = [["Frequency", 0.4],
+               ["MaxStepX", 0.04],
+               ["RightMaxStepFrequency", 0.1],
+               ["RightStepHeight", 0.0018],
+               ["RightTorsoWx",3*almath.TO_RAD],
+               ["RightTorsoWy", 1.0*almath.TO_RAD],
+               ["LeftMaxStepFrequency", 0.1],
+               ["LeftStepHeight", 0.0018],
+               ["LeftTorsoWx", -3*almath.TO_RAD],
+               ["LeftTorsoWy", 1.0*almath.TO_RAD]  ]
+
+
 def dorun(t):
     X = 0.9
     Y = 0.0
     Theta = 0.0
-#    Frequency =0.9 # low speed
-    motionProxy.moveToward(X, Y, Theta,[["Frequency", 0.4],
-                                        ["MaxStepX", 0.08],
-                                        ["RightMaxStepFrequency", 0.3],
-                                        ["RightStepHeight", 0.0018],
-                                        ["RightTorsoWx", 3.0*almath.TO_RAD],
-                                        ["RightTorsoWy", 1.0*almath.TO_RAD],
-                                        ["LeftMaxStepFrequency", 0.3],
-                                        ["LeftStepHeight", 0.0018],
-                                        ["LeftTorsoWx", -3.0*almath.TO_RAD],
-                                        ["LeftTorsoWy", 1.0*almath.TO_RAD]  ] )
+#    Frequency =0.4 # low speed
+    motionProxy.moveToward(X, Y, Theta, config_robo)
     
     t0 = time.time()
     AngX, AngY = [], []
@@ -342,10 +358,14 @@ def dorun(t):
 
 def doback():
     
-     motionProxy.moveTo (-0.4, 0, 0)
+    X = 0.9
+    Y = 0.0
+    Theta = 0.0
+#    Frequency =0.9 # low speed
+    motionProxy.moveToward(X, Y, Theta, config_robo_back)
      
-     time.sleep(t)
-     print"back"
+    time.sleep(t)
+    print"back"
     
 def doleft(angle):
     
@@ -417,16 +437,7 @@ def target_velocity():
     Y = 0.0
     Theta = 0.0
     Frequency =0.4 # max speed
-    motionProxy.moveToward(X, Y, Theta,[["Frequency", 0.4],
-                                        ["MaxStepX", 0.08],
-                                        ["RightMaxStepFrequency", 0.3],
-                                        ["RightStepHeight", 0.0018],
-                                        ["RightTorsoWx", 3.0*almath.TO_RAD],
-                                        ["RightTorsoWy", 1.0*almath.TO_RAD],
-                                        ["LeftMaxStepFrequency", 0.3],
-                                        ["LeftStepHeight", 0.0018],
-                                        ["LeftTorsoWx", -3.0*almath.TO_RAD],
-                                        ["LeftTorsoWy", 1.0*almath.TO_RAD]  ] )
+    motionProxy.moveToward(X, Y, Theta, config_robo)
 
     time.sleep(4.0)
     print "Straight Forward"
@@ -550,12 +561,12 @@ def Test_Articulations():
 # mes modifications 
 #############################################################
 
-def rempfsr(a, b):
-    result = []
-    for i in range(len(a)):
-        a[i] = b[i]
-        result.append(a[i])
-    return result
+#def rempfsr(a, b):
+#    result = []
+#    for i in range(len(a)):
+#        a[i] = b[i]
+#        result.append(a[i])
+#    return result
 
 def fsr():
    left_foot= [ memoryProxy.getData("Device/SubDeviceList/LFoot/FSR/FrontLeft/Sensor/Value"),
@@ -571,8 +582,8 @@ def fsr():
    valeur_left = [0.07025,0.07025,-0.03025,-0.02965]
    valeur_right = [0.07025,0.07025,-0.03025,-0.02965]
    
-   left_foot = rempfsr(left_foot , valeur_left)
-   right_foot = rempfsr(right_foot , valeur_right)
+#   left_foot = rempfsr(left_foot , valeur_left)
+#   right_foot = rempfsr(right_foot , valeur_right)
     
    
    print " left_foot:",left_foot
@@ -783,7 +794,7 @@ class HumanGreeterModule(ALModule):
         memory.subscribeToEvent("HandLeftBackTouched",
                                 "HumanGreeter",
                                 "Maingauche")
-        memory.subscribeToEvent("HandtRightBackTouched",
+        memory.subscribeToEvent("HandRightBackTouched",
                                 "HumanGreeter",
                                 "Maindroite")
 
@@ -940,8 +951,8 @@ if __name__== "__main__":
 ##        
 #        print "Fin video..."
 #        doStop()
-#        myBroker.shutdown()
-#        
+        myBroker.shutdown()
+        
 
         
     except Exception, e:
