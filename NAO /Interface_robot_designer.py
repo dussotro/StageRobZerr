@@ -69,6 +69,13 @@ class UiTest(QtGui.QMainWindow):
         self.ui.Bouton_battery.clicked.connect(self.Battery)
         self.ui.Bouton_sensors.clicked.connect(self.Sensors)
         self.ui.Bouton_Stop.clicked.connect(self.Stop)
+        self.ui.Bouton_Tete.clicked.connect(self.Tete)
+        self.ui.Bouton_Total.clicked.connect(self.Total)
+        self.ui.Bouton_main.clicked.connect(self.Main)
+        self.ui.Bouton_Epaule.clicked.connect(self.Epaule)
+        self.ui.Bouton_Poignet.clicked.connect(self.Poignet)
+        self.ui.Bouton_Coude.clicked.connect(self.Coude)
+        
         DiagNAO.doInitialisation()
         self.battery_init = DiagNAO.BatteryMemory()
         
@@ -82,9 +89,26 @@ class UiTest(QtGui.QMainWindow):
     def Sensors (self):
         self.ui.label_Gsens.setText(str(round(DiagNAO.TrySensors()[0],1)))
         self.ui.label_Dsens.setText(str(round(DiagNAO.TrySensors()[1],1)))
+    def Tete(self):
+        DiagNAO.Tete()
+        
+    def Total(self):
+        DiagNAO.Test_Articulations()
     
     def Stop(self):
         DiagNAO.doStop()
+        
+    def Main(self):
+        DiagNAO.Main()
+        
+    def Epaule(self):
+        DiagNAO.Epaule()
+    
+    def Coude(self):
+        DiagNAO.Coudes()
+    
+    def Poignet(self):
+        DiagNAO.Poignet()
             
         
         

@@ -17,66 +17,11 @@
    <string>MainWindow</string>
   </property>
   <widget class="QWidget" name="centralwidget">
-   <widget class="QWidget" name="verticalLayoutWidget">
-    <property name="geometry">
-     <rect>
-      <x>10</x>
-      <y>20</y>
-      <width>546</width>
-      <height>80</height>
-     </rect>
-    </property>
-    <layout class="QVBoxLayout" name="verticalLayout">
-     <item>
-      <layout class="QHBoxLayout" name="horizontalLayout">
-       <item>
-        <widget class="QPushButton" name="Button1">
-         <property name="text">
-          <string>1</string>
-         </property>
-        </widget>
-       </item>
-       <item>
-        <widget class="QPushButton" name="pushButton_2">
-         <property name="text">
-          <string>2</string>
-         </property>
-        </widget>
-       </item>
-       <item>
-        <widget class="QPushButton" name="pushButton_3">
-         <property name="text">
-          <string>3</string>
-         </property>
-        </widget>
-       </item>
-      </layout>
-     </item>
-     <item>
-      <layout class="QHBoxLayout" name="horizontalLayout_2">
-       <item>
-        <widget class="QPushButton" name="Bouton_sensors">
-         <property name="text">
-          <string>Sensors</string>
-         </property>
-        </widget>
-       </item>
-       <item>
-        <widget class="QPushButton" name="Bouton_battery">
-         <property name="text">
-          <string>Battery</string>
-         </property>
-        </widget>
-       </item>
-      </layout>
-     </item>
-    </layout>
-   </widget>
    <widget class="QPushButton" name="Bouton_square">
     <property name="geometry">
      <rect>
-      <x>0</x>
-      <y>170</y>
+      <x>100</x>
+      <y>110</y>
       <width>95</width>
       <height>31</height>
      </rect>
@@ -97,8 +42,8 @@
    <widget class="QWidget" name="formLayoutWidget">
     <property name="geometry">
      <rect>
-      <x>110</x>
-      <y>200</y>
+      <x>50</x>
+      <y>180</y>
       <width>201</width>
       <height>110</height>
      </rect>
@@ -108,13 +53,6 @@
       <widget class="QLabel" name="label">
        <property name="text">
         <string>Battery : </string>
-       </property>
-      </widget>
-     </item>
-     <item row="0" column="1">
-      <widget class="QLabel" name="label_battery">
-       <property name="text">
-        <string/>
        </property>
       </widget>
      </item>
@@ -153,19 +91,130 @@
        </property>
       </widget>
      </item>
+     <item row="0" column="1">
+      <widget class="QLabel" name="label_battery">
+       <property name="text">
+        <string/>
+       </property>
+      </widget>
+     </item>
     </layout>
    </widget>
    <widget class="QPushButton" name="Bouton_Stop">
     <property name="geometry">
      <rect>
-      <x>370</x>
-      <y>200</y>
-      <width>177</width>
+      <x>480</x>
+      <y>160</y>
+      <width>131</width>
       <height>31</height>
      </rect>
     </property>
     <property name="text">
      <string>Quitter</string>
+    </property>
+   </widget>
+   <widget class="QPushButton" name="Bouton_Tete">
+    <property name="geometry">
+     <rect>
+      <x>220</x>
+      <y>110</y>
+      <width>177</width>
+      <height>31</height>
+     </rect>
+    </property>
+    <property name="text">
+     <string>Tete</string>
+    </property>
+   </widget>
+   <widget class="QPushButton" name="Bouton_Total">
+    <property name="geometry">
+     <rect>
+      <x>450</x>
+      <y>110</y>
+      <width>151</width>
+      <height>31</height>
+     </rect>
+    </property>
+    <property name="text">
+     <string>Total</string>
+    </property>
+   </widget>
+   <widget class="QPushButton" name="Bouton_Epaule">
+    <property name="geometry">
+     <rect>
+      <x>250</x>
+      <y>160</y>
+      <width>95</width>
+      <height>31</height>
+     </rect>
+    </property>
+    <property name="text">
+     <string>Epaule</string>
+    </property>
+   </widget>
+   <widget class="QPushButton" name="Bouton_Coude">
+    <property name="geometry">
+     <rect>
+      <x>370</x>
+      <y>170</y>
+      <width>95</width>
+      <height>31</height>
+     </rect>
+    </property>
+    <property name="text">
+     <string>Coude</string>
+    </property>
+   </widget>
+   <widget class="QPushButton" name="Bouton_Poignet">
+    <property name="geometry">
+     <rect>
+      <x>270</x>
+      <y>220</y>
+      <width>95</width>
+      <height>31</height>
+     </rect>
+    </property>
+    <property name="text">
+     <string>Poignet</string>
+    </property>
+   </widget>
+   <widget class="QPushButton" name="Bouton_battery">
+    <property name="geometry">
+     <rect>
+      <x>250</x>
+      <y>60</y>
+      <width>131</width>
+      <height>31</height>
+     </rect>
+    </property>
+    <property name="text">
+     <string>Battery</string>
+    </property>
+   </widget>
+   <widget class="QPushButton" name="Bouton_sensors">
+    <property name="geometry">
+     <rect>
+      <x>400</x>
+      <y>70</y>
+      <width>141</width>
+      <height>31</height>
+     </rect>
+    </property>
+    <property name="text">
+     <string>Sensors</string>
+    </property>
+   </widget>
+   <widget class="QPushButton" name="Bouton_main">
+    <property name="geometry">
+     <rect>
+      <x>60</x>
+      <y>60</y>
+      <width>171</width>
+      <height>31</height>
+     </rect>
+    </property>
+    <property name="text">
+     <string>Mains</string>
     </property>
    </widget>
   </widget>
@@ -218,8 +267,8 @@
    <slot>close()</slot>
    <hints>
     <hint type="sourcelabel">
-     <x>85</x>
-     <y>66</y>
+     <x>-1</x>
+     <y>-1</y>
     </hint>
     <hint type="destinationlabel">
      <x>359</x>

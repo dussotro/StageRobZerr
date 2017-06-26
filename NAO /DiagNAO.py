@@ -15,6 +15,7 @@ from PyQt4.QtGui import QWidget, QImage, QApplication, QPainter, QPushButton
 robotIP = "172.20.27.244" #Rouge
 #robotIP = "172.20.28.103" #Bleu
 #robotIP = "172.20.11.237"# gamma 
+#robotIP = "172.20.28.103"
 
 port = 9559
 CameraID = 0
@@ -266,7 +267,7 @@ def showNaoImage():
     
     # This records a 320*240 MJPG video at 10 fps.
     # Note MJPG can't be recorded with a framerate lower than 3 fps.
-    videoRecorderProxy.setResolution(1)
+    videoRecorderProxy.setResolution(1) 
     videoRecorderProxy.setFrameRate(10)
     videoRecorderProxy.setVideoFormat("MJPG")
     videoRecorderProxy.startRecording("./", "test")
@@ -285,9 +286,13 @@ def showNaoImage():
 # """Sensors"""
 #==============================================================================
 def TrySensors():
-
-    Left = memoryProxy.getData("Device/SubDeviceList/US/Left/Sensor/Value")
-    Right = memoryProxy.getData("Device/SubDeviceList/US/Right/Sensor/Value") 
+    SLeft = [memoryProxy.getData("Device/SubDeviceList/US/Left/Sensor/Value")]
+    SRight = [memoryProxy.getData("Device/SubDeviceList/US/Right/Sensor/Value")]
+    for i in range (50):
+        SLeft.append(memoryProxy.getData("Device/SubDeviceList/US/Left/Sensor/Value"))
+        SRight.append(memoryProxy.getData("Device/SubDeviceList/US/Right/Sensor/Value"))
+    Left = np.mean(SLeft)
+    Right = np.mean(SRight)
 #    print 'Left :', Left
 #    print 'Right:', Right
     return Left, Right
@@ -414,7 +419,7 @@ def doStandUp():
 def doStop():
     
     motionProxy.setWalkTargetVelocity(0, 0, 0, Frequency)
-    postureProxy.goToPosture("Crouch", 0.3)
+    postureProxy.goToPosture("Crouch", 0.5)
     Accelero()
     motionProxy.setStiffnesses("Body", 0.0)
     motionProxy.rest()
@@ -502,7 +507,7 @@ def BatteryMemory():
     b = memoryProxy.getData ("Device/SubDeviceList/Battery/Charge/Sensor/Status")
     s = []
     t0 = time.time()
-    while time.time() - t0 < 2:
+    while time.time() - t0 < 1:
         s.append(c)
         c = memoryProxy.getData ("Device/SubDeviceList/Battery/Charge/Sensor/Value")
     #print "Percentage = ", percentage    
@@ -554,11 +559,134 @@ def Test_Articulations():
             listValStandInit = sumList(listValStandInit, tab[i][j])
             configRob(listValStandInit[0], listValStandInit[1], listValStandInit[2], listValStandInit[3], listValStandInit[4], listValStandInit[5], listValStandInit[6], listValStandInit[7], listValStandInit[8], listValStandInit[9], listValStandInit[10])
     time.sleep(2)
+    motionProxy.openHand('RHand')
+    motionProxy.openHand('LHand')
+    time.sleep(1)
+    motionProxy.closeHand('RHand')
+    motionProxy.closeHand('LHand')
     
     postureProxy.goToPosture("Crouch", 2.0)
     
 def Tete():
-    print('rien')
+    names = ['HeadYaw']
+    angles = [-2.0857]
+    motionProxy.setAngles(names,angles,.6)
+    time.sleep(2)
+    names = ['HeadYaw']
+    angles = [+2.0857]
+    motionProxy.setAngles(names,angles,.6)
+    time.sleep(2)
+    names = ['HeadYaw']
+    angles = [0]
+    motionProxy.setAngles(names,angles,.6)
+    time.sleep(2)
+    names = ['HeadPitch']
+    angles = [-0.671951]
+    motionProxy.setAngles(names,angles,.6)
+    time.sleep(2)
+    names = ['HeadPitch']
+    angles = [0.515047]
+    motionProxy.setAngles(names,angles,.6)
+    time.sleep(2)
+    names = ['HeadPitch']
+    angles = [0]
+    motionProxy.setAngles(names,angles,.6)
+    time.sleep(2)
+    postureProxy.goToPosture("StandZero", 2.0)
+    
+
+def Epaule():
+    names = ['LShoulderPitch']
+    angles = [2.0857]
+    motionProxy.setAngles(names,angles,.2)
+#    time.sleep(2)
+    names = ['RShoulderPitch']
+    angles = [2.0857]
+    motionProxy.setAngles(names,angles,.2)
+    time.sleep(4)
+    names = ['LShoulderPitch']
+    angles = [-2.0857]
+    motionProxy.setAngles(names,angles,.2)
+#    time.sleep(2)
+    names = ['RShoulderPitch']
+    angles = [-2.0857]
+    motionProxy.setAngles(names,angles,.2)
+    time.sleep(4)
+    names = ['LShoulderPitch']
+    angles = [0]
+    motionProxy.setAngles(names,angles,.2)
+#    time.sleep(2)  
+    names = ['RShoulderPitch']
+    angles = [0]
+    motionProxy.setAngles(names,angles,.2)
+    time.sleep(4)
+    postureProxy.goToPosture("StandZero", 2.0)
+    
+    
+def Coudes():
+    names = ['LElbowRoll']
+    angles = [-1.5446 ]
+    motionProxy.setAngles(names,angles,.5)
+#    time.sleep(2)
+    names = ['RElbowRoll']
+    angles = [+1.5446 ]
+    motionProxy.setAngles(names,angles,.5)
+    time.sleep(2)
+    names = ['LElbowRoll']
+    angles = [-0.0349]
+    motionProxy.setAngles(names,angles,.5)
+#    time.sleep(2)
+    names = ['RElbowRoll']
+    angles = [+0.0349]
+    motionProxy.setAngles(names,angles,.5)
+    time.sleep(2)
+    names = ['LElbowRoll']
+    angles = [0]
+    motionProxy.setAngles(names,angles,.5)
+#    time.sleep(2)  
+    names = ['RElbowRoll']
+    angles = [0]
+    motionProxy.setAngles(names,angles,.5)
+    time.sleep(2)
+    
+    names = ['LElbowYaw','RElbowYaw']
+    angles = [-2.0857 ,2.0857]
+    motionProxy.setAngles(names,angles,.2)
+    time.sleep(1)
+    names = ['LElbowYaw','RElbowYaw']
+    angles = [-2.0857 ,-2.0857]
+    motionProxy.setAngles(names,angles,.2)
+    time.sleep(1)
+    names = ['LElbowYaw','RElbowYaw']
+    angles = [0 ,0]
+    motionProxy.setAngles(names,angles,.2)
+    time.sleep(1)
+    postureProxy.goToPosture("StandZero", 2.0)  
+    
+    
+def Poignet():
+    names  = ['LWristYaw','RWristYaw']
+    angles = [ -1.8238, +1.8238]
+    motionProxy.setAngles(names,angles,.2)
+    time.sleep(2)
+    names  = ['LWristYaw','RWristYaw']
+    angles = [ +1.8238, -1.8238]
+    motionProxy.setAngles(names,angles,.2)
+    time.sleep(2)
+    names  = ['LWristYaw','RWristYaw']
+    angles = [ 0, 0]
+    motionProxy.setAngles(names,angles,.2)
+    time.sleep(2)
+    postureProxy.goToPosture("StandZero", 2.0)
+    
+    
+def Main():
+    motionProxy.openHand('RHand')
+    motionProxy.openHand('LHand')
+    time.sleep(1)
+    motionProxy.closeHand('RHand')
+    motionProxy.closeHand('LHand')
+    
 #####################################################################
 # mes modifications 
 #############################################################
