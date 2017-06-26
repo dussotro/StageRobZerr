@@ -1,0 +1,2 @@
+echo "start" > cmd
+python nao_grab_cam.py > /dev/null &

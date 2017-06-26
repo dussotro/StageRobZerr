@@ -1,0 +1,3 @@
++   eth0 IPv4 alphanao                                      _naoqi._tcp          local
++   eth0 IPv4 zetanao                                       _naoqi._tcp          local
++   eth0 IPv4 gammanao                                      _naoqi._tcp          local
