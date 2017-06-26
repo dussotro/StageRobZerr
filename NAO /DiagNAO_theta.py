@@ -579,9 +579,9 @@ class HumanGreeterModule(ALModule):
         memory.subscribeToEvent("HandLeftBackTouched",
                                 "HumanGreeter",
                                 "Maingauche")
-        memory.subscribeToEvent("HandtRightBackTouched",
+        memory.subscribeToEvent("HandRightBackTouched",
                                 "HumanGreeter",
-                                "Maingauche")
+                                "MainDroite")
 #        memory.subscribeToEvent("BatteryChargeChanged",
 #                               "HumanGreeter",
 #                               "Battery")
@@ -598,11 +598,17 @@ class HumanGreeterModule(ALModule):
     def Maingauche(self,*_args):
         memory.unsubscribeToEvent("HandLeftBackTouched",
                                 "HumanGreeter")
-        self.tts.say('me touche pas lbras')
+        self.tts.say('me touche pas lbras gauche')
         memory.subscribeToEvent("HandLeftBackTouched",
                                 "HumanGreeter",
                                 "Maingauche")
-        
+    def MainDroite(self,*_args):
+        memory.unsubscribeToEvent("HandRightBackTouched",
+                                "HumanGreeter")
+        self.tts.say('me touche pas lbras droit')
+        memory.subscribeToEvent("HandRightBackTouched",
+                                "HumanGreeter",
+                                "MainDroite")
     def Footcontact(self,*_args):
         memory.unsubscribeToEvent("footContactChanged",
                                 "HumanGreeter")
@@ -672,19 +678,21 @@ if __name__== "__main__":
         HumanGreeter = HumanGreeterModule("HumanGreeter")
     
     
-        audioProxy.post.playFile("/home/nao/music/a.mp3")
-        tts.say('''j'voudrais faire un Slam
-pour une grande dame que j'connais depuis tout petit
-j'voudrais faire un Slam
-pour celle qui voit ma vieille canne du lundi au samedi
-j'voudrais faire un Slam
-pour une vieille femme dans laquelle j'ai grandi
-j'voudrais faire un Slam
-pour cette banlieue nord de paname qu'on appelle saint denis
-''') 
+#        audioProxy.post.playFile("/home/nao/music/a.mp3")
+#        tts.say('''j'voudrais faire un Slam
+#pour une grande dame que j'connais depuis tout petit
+#j'voudrais faire un Slam
+#pour celle qui voit ma vieille canne du lundi au samedi
+#j'voudrais faire un Slam
+#pour une vieille femme dans laquelle j'ai grandi
+#j'voudrais faire un Slam
+#pour cette banlieue nord de paname qu'on appelle saint denis
+#''') 
 
-        time.sleep(3)
-        audioProxy.post.stopAll()            
+        time.sleep(30)
+#        audioProxy.post.stopAll()      
+
+     
 #        dorun(7)  
 #     
 #        doback()
