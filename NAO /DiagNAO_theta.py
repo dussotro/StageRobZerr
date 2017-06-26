@@ -678,7 +678,7 @@ if __name__== "__main__":
         HumanGreeter = HumanGreeterModule("HumanGreeter")
     
     
-#        audioProxy.post.playFile("/home/nao/music/a.mp3")
+        audioProxy.post.playFile("/home/nao/music/a.mp3")
 #        tts.say('''j'voudrais faire un Slam
 #pour une grande dame que j'connais depuis tout petit
 #j'voudrais faire un Slam
@@ -688,9 +688,11 @@ if __name__== "__main__":
 #j'voudrais faire un Slam
 #pour cette banlieue nord de paname qu'on appelle saint denis
 #''') 
-
-        time.sleep(30)
-#        audioProxy.post.stopAll()      
+        tts.say('''Dis moi, pourquoi tu fais ça
+                Pourquoi tu veux pas sortir avec moi? 
+                Vanessa.. .''')
+        time.sleep(3)
+        audioProxy.post.stopAll()      
 
      
 #        dorun(7)  

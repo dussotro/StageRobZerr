@@ -12,9 +12,9 @@ import almath
 from PyQt4.QtGui import QWidget, QImage, QApplication, QPainter, QPushButton
 
 
-#robotIP = "172.20.12.126" #Rouge
+robotIP = "172.20.27.244" #Rouge
 #robotIP = "172.20.28.103" #Bleu
-robotIP = "172.20.11.237"# gamma 
+#robotIP = "172.20.11.237"# gamma 
 
 port = 9559
 CameraID = 0
@@ -72,7 +72,7 @@ def StiffnessOn(proxy):
     pStiffnessLists = 1.0
     pTimeLists = 1.0
     proxy.stiffnessInterpolation(pNames, pStiffnessLists, pTimeLists)
-
+    
 def doInitialisation():
     print">>>>>> Initialisation"
     # Set NAO in Stiffness On
@@ -288,9 +288,9 @@ def TrySensors():
 
     Left = memoryProxy.getData("Device/SubDeviceList/US/Left/Sensor/Value")
     Right = memoryProxy.getData("Device/SubDeviceList/US/Right/Sensor/Value") 
-    print 'Left :', Left
-    print 'Right:', Right
-    
+#    print 'Left :', Left
+#    print 'Right:', Right
+    return Left, Right
 
 def Accelero():
     X = memoryProxy.getData("Device/SubDeviceList/InertialSensor/AccelerometerX/Sensor/Value")
@@ -545,6 +545,8 @@ def Test_Articulations():
     
     postureProxy.goToPosture("Crouch", 2.0)
     
+def Tete():
+    print('rien')
 #####################################################################
 # mes modifications 
 #############################################################
