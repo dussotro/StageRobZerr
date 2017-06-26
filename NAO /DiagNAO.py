@@ -308,40 +308,52 @@ def Accelero():
 #==============================================================================
 # """Motion"""
 #==============================================================================
+config_robo_back = [["Frequency", 0.4],
+               ["MaxStepX", 0.04],
+               ["RightMaxStepFrequency", 0.3],
+               ["RightStepHeight", 0.0018],
+               ["RightTorsoWx",3*almath.TO_RAD],
+               ["RightTorsoWy", 1.0*almath.TO_RAD],
+               ["LeftMaxStepFrequency", 0.1],
+               ["LeftStepHeight", 0.0018],
+               ["LeftTorsoWx", -3*almath.TO_RAD],
+               ["LeftTorsoWy", 1.0*almath.TO_RAD]  ]
+config_robo = [["Frequency", 0.4],
+               ["MaxStepX", 0.04],
+               ["RightMaxStepFrequency", 0.3],
+               ["RightStepHeight", 0.0018],
+               ["RightTorsoWx",3*almath.TO_RAD],
+               ["RightTorsoWy", 1.0*almath.TO_RAD],
+               ["LeftMaxStepFrequency", 0.1],
+               ["LeftStepHeight", 0.0018],
+               ["LeftTorsoWx", -3*almath.TO_RAD],
+               ["LeftTorsoWy", 1.0*almath.TO_RAD]  ]
+
 def dorun(t):
-    X = 0.9
+    X = -0.9
     Y = 0.0
     Theta = 0.0
 #    Frequency =0.9 # low speed
-    motionProxy.moveToward(X, Y, Theta,[["Frequency", 0.4],
-                                        ["MaxStepX", 0.08],
-                                        ["RightMaxStepFrequency", 0.3],
-                                        ["RightStepHeight", 0.0018],
-                                        ["RightTorsoWx", 3.0*almath.TO_RAD],
-                                        ["RightTorsoWy", 1.0*almath.TO_RAD],
-                                        ["LeftMaxStepFrequency", 0.3],
-                                        ["LeftStepHeight", 0.0018],
-                                        ["LeftTorsoWx", -3.0*almath.TO_RAD],
-                                        ["LeftTorsoWy", 1.0*almath.TO_RAD]  ] )
-    
-    t0 = time.time()
-    AngX, AngY = [], []
-    while time.time()< (t0 + t):
-        accelero = Accelero()
-        AngX.append(accelero[0])
-        AngY.append(accelero[1])
-        time.sleep(0.2)
-#    motionProxy.moveTo (0.4, 0, 0)
-#    time.sleep(t)
-    maxAngX, maxAngY = max(AngX), max(AngY)
-    print "maxAngX, maxAngY = ", maxAngX, ", ", maxAngY
-    motionProxy.setWalkTargetVelocity(0.0, 0, 0, 1)
-    print"running"
-    
+    motionProxy.moveToward(X, Y, Theta, config_robo )
+#    
+#    t0 = time.time()
+#    AngX, AngY = [], []
+#    while time.time()< (t0 + t):
+#        accelero = Accelero()
+#        AngX.append(accelero[0])
+#        AngY.append(accelero[1])
+#        time.sleep(0.2)
+##    motionProxy.moveTo (0.4, 0, 0)
+##    time.sleep(t)
+#    maxAngX, maxAngY = max(AngX), max(AngY)
+#    print "maxAngX, maxAngY = ", maxAngX, ", ", maxAngY
+#    motionProxy.setWalkTargetVelocity(0.0, 0, 0, 1)
+#    print"running"
+#    
 
 def doback():
     
-     motionProxy.moveTo (-0.4, 0, 0)
+     motionProxy.moveToward(X, Y, Theta, config_robo_back )
      
      time.sleep(t)
      print"back"
@@ -801,33 +813,33 @@ if __name__== "__main__":
     doInitialisation()
     #test de la vision du NAO
     try:
-
-        fsr()
-        time.sleep(1)
-        
-        tts.say("bonjour")
-        
-        gyroscope()
-        time.sleep(1)
-        
-        userArmArticular_r(motionProxy)
-        time.sleep(1)
-        
-        steps()
-        time.sleep(1)
-        
-        userArmArticular(motionProxy)
-        time.sleep(1)
+#
+#        fsr()
+#        time.sleep(1)
+#        
+#        tts.say("bonjour")
+#        
+#        gyroscope()
+#        time.sleep(1)
+#        
+#        userArmArticular_r(motionProxy)
+#        time.sleep(1)
+#        
+#        steps()
+#        time.sleep(1)
+#        
+#        userArmArticular(motionProxy)
+#        time.sleep(1)
         
         dorun(6)
         time.sleep(6)
         
-        doback()
-        time.sleep(1)
-        
-        doleft(np.pi/2)
-        time.sleep(6)
-        
+#        doback()
+#        time.sleep(1)
+#        
+#        doleft(np.pi/2)
+#        time.sleep(6)
+#        
         
 
         
