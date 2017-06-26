@@ -50,17 +50,15 @@ def main(robotIP = "127.0.0.1"):
         ["StepHeight", 0.015],
         ["MaxStepX", 0.35],
         ["MaxStepFrequency", 1],
-        ["TorsoWx", 2.5*almath.TO_RAD],
         ["TorsoWy", 3*almath.TO_RAD] ],
          
         [ # RIGHT FOOT
         ["StepHeight", 0.015],
         ["MaxStepX", 0.35],
         ["MaxStepFrequency", 1],
-        ["TorsoWx", -2.5*almath.TO_RAD],
         ["TorsoWy", 3*almath.TO_RAD] ] )
 
-    time.sleep(10.0)
+    time.sleep(5.0)
     motionProxy.setWalkTargetVelocity(0, 0, Theta, Frequency)
     time.sleep(3)
     
@@ -79,4 +77,9 @@ if __name__ == "__main__":
         print "Usage python motion_walkCustomization.py robotIP (optional default: 127.0.0.1)"
     else:
         robotIp = sys.argv[1]
-    main(robotIp)
+    try :
+        main(robotIp)
+    except:
+        pass
+    
+    postureProxy.goToPosture("Crouch", 0.5)

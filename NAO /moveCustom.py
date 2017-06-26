@@ -64,13 +64,13 @@ configEta = [["Frequency", 1.0],
           ["MaxStepFrequency", 0.4],
           
           # LEFT FOOT
-          ["LeftStepHeight", 0.0012],
-          ["LeftTorsoWx", -2*almath.TO_RAD],
+          ["LeftStepHeight", 0.0022],
+          ["LeftTorsoWx", -3*almath.TO_RAD],
           ["LeftTorsoWy", 3.0*almath.TO_RAD],
           
           # RIGHT FOOT
-          ["RightStepHeight", 0.0012],
-          ["RightTorsoWx", 2*almath.TO_RAD],
+          ["RightStepHeight", 0.0022],
+          ["RightTorsoWx", 3*almath.TO_RAD],
           ["RightTorsoWy", 3.0*almath.TO_RAD]]
 
 
@@ -108,10 +108,10 @@ def moveToEta(X, Y, Theta, Frequency):
 
     if X > 0:
         vX = np.log(1+X)/np.log(11)
-        vX = max(0.4, vX)
+        vX = max(0.5, vX)
     else :
         vX = - np.log(1-X)/(2*np.log(11))
-        vX = min(-0.4, vX)
+        vX = min(-0.5, vX)
     
     if Y > 0:
         vY = np.log(Y + 1)/(5*np.log(3))
@@ -180,13 +180,14 @@ if __name__ == '__main__':
     
     try :
         print ">>>>>>>>>>>>>> Test moveToEta"
-        moveToEta(0.5, 0, 0, 1.0)
+        moveToEta(0.57, 0, 0, 1.0)
+        postureProxy.goToPosture('Stand', 0.5)
         time.sleep(3)
                
         print '>>>>>>>>>>>>>> Deuxieme étape'  
         
-        moveTowardEta(-1,0,0,1.0)
-        time.sleep(7)
+        moveTowardEta(-0.7, 0, 0, 1.0)
+        time.sleep(10)
         
         print '>>>>>>>>>>>>>> Fin'
         
@@ -194,3 +195,7 @@ if __name__ == '__main__':
         print "Value error: ", e
     
     eta.doStop()
+    
+    
+    
+    
