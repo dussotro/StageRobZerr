@@ -577,8 +577,8 @@ def Test_Articulations():
 
 
 if __name__== "__main__":
-    doInitialisation()
-    #test de la vision du NAO
+    #doInitialisation()
+
     try:
 #        print 'b0 :'
 #        b0 = BatteryMemory()
@@ -587,10 +587,10 @@ if __name__== "__main__":
 #        TrySensors()
 #        print "Fin capteurs..." 
 #
-        print "Test de calcul de vitesse et position"
-        #target_velocity()
-        position_robot()
-        print "Fin vitesse / position ..." 
+#        print "Test de calcul de vitesse et position"
+#        #target_velocity()
+#        position_robot()
+#        print "Fin vitesse / position ..." 
 #        
 #        print "Test de la fonction de parole du nao"
 #        TestTts("Test Micro")
@@ -607,7 +607,7 @@ if __name__== "__main__":
 #        print "Fin articulations..."
 #        
 #        print "b1 :"
-#        b1 = BatteryMemory()
+        b1 = BatteryMemory()
 #        print "Fin Batterie..."
 #        print "différence",(b0-b1)
 #        
@@ -629,4 +629,4 @@ if __name__== "__main__":
     except Exception, e:
         print'erreur: ', e
        
-    doStop()
+    #doStop()
