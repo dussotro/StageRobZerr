@@ -25,8 +25,8 @@ class ImageWidget(QWidget):
         self._image = QImage()
         self.setWindowTitle('Nao')
 
-        self._imgWidth = 320
-        self._imgHeight = 240
+        self._imgWidth = 800
+        self._imgHeight = 600
         self._cameraID = CameraID
         self.resize(self._imgWidth, self._imgHeight)
 
@@ -42,7 +42,7 @@ class ImageWidget(QWidget):
         self._registerImageClient(IP, PORT)
 
         # Trigget 'timerEvent' every 100 ms.
-        self.startTimer(100)
+        self.startTimer(200)
 
 
     def _registerImageClient(self, IP, PORT):
@@ -52,12 +52,17 @@ class ImageWidget(QWidget):
         self._videoProxy = ALProxy("ALVideoDevice", IP, PORT)
         resolution = vision_definitions.kQVGA  # 320 * 240
         colorSpace = vision_definitions.kRGBColorSpace
-        self._imgClient = self._videoProxy.subscribe("_client", resolution, colorSpace, 5)
-
+        try : 
+            self._videoProxy.unsubscribe("_client") 
+            self._imgClient = self._videoProxy.subscribe("_client", resolution, colorSpace, 5)
+            
+        except Exception, e:
+            print e 
+            self._unregisterImageClient()
+            self._registerImageClient(IP,PORT)
         # Select camera.
         self._videoProxy.setParam(vision_definitions.kCameraSelectID,
                                   self._cameraID)
-
 
     def _unregisterImageClient(self):
         """
@@ -98,12 +103,13 @@ class ImageWidget(QWidget):
         """
         When the widget is deleted, we unregister our naoqi video module.
         """
+        print('aaa')
         self._unregisterImageClient()
 
 
 
 if __name__ == '__main__':
-    IP = "172.20.12.126"  # Replace here with your NaoQi's IP address.
+    IP = "172.20.27.244"  # Replace here with your NaoQi's IP address.
     PORT = 9559
     CameraID = 0
 

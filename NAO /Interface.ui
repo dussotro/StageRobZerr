@@ -9,8 +9,8 @@
    <rect>
     <x>0</x>
     <y>0</y>
-    <width>720</width>
-    <height>422</height>
+    <width>678</width>
+    <height>385</height>
    </rect>
   </property>
   <property name="windowTitle">
@@ -45,7 +45,7 @@
       <x>50</x>
       <y>180</y>
       <width>201</width>
-      <height>110</height>
+      <height>111</height>
      </rect>
     </property>
     <layout class="QFormLayout" name="formLayout_2">
@@ -73,7 +73,7 @@
      <item row="2" column="0">
       <widget class="QLabel" name="label_0">
        <property name="text">
-        <string>Sensors :</string>
+        <string>&lt;html&gt;&lt;head/&gt;&lt;body&gt;&lt;p&gt;&lt;span style=&quot; font-size:12pt; font-weight:600; text-decoration: underline;&quot;&gt;Sensors :&lt;/span&gt;&lt;/p&gt;&lt;/body&gt;&lt;/html&gt;</string>
        </property>
       </widget>
      </item>
@@ -217,13 +217,26 @@
      <string>Mains</string>
     </property>
    </widget>
+   <widget class="QPushButton" name="Bouton_Camera">
+    <property name="geometry">
+     <rect>
+      <x>410</x>
+      <y>30</y>
+      <width>95</width>
+      <height>31</height>
+     </rect>
+    </property>
+    <property name="text">
+     <string>Camera</string>
+    </property>
+   </widget>
   </widget>
   <widget class="QMenuBar" name="menubar">
    <property name="geometry">
     <rect>
      <x>0</x>
      <y>0</y>
-     <width>720</width>
+     <width>678</width>
      <height>27</height>
     </rect>
    </property>

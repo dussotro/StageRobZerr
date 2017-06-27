@@ -15,7 +15,7 @@ from PyQt4.QtGui import QWidget, QImage, QApplication, QPainter, QPushButton
 robotIP = "172.20.27.244" #Rouge
 #robotIP = "172.20.28.103" #Bleu
 #robotIP = "172.20.11.237"# gamma 
-#robotIP = "172.20.28.103"
+#robotIP = "172.20.28.103" #eta
 
 port = 9559
 CameraID = 0
@@ -80,6 +80,37 @@ def doInitialisation():
     StiffnessOn(motionProxy)
     # Send NAO to Pose Init
     postureProxy.goToPosture("StandInit", 0.5)
+
+def sumList(a, b):
+    result = []
+    for i in range(len(a)):
+        result.append(a[i] + b[i])
+    return result
+
+def initmouv():
+    postureProxy.goToPosture("StandZero", 2.0)
+#    names = ['HipYawPitch','RKneePitch','LKneePitch' ,'LHipPitch','RHipPitch','RAnklePitch','LAnklePitch']
+#    kneeAngle = 2.1
+#    angles = [0.0, kneeAngle, kneeAngle , -kneeAngle/2 , -kneeAngle/2 ,-kneeAngle/2, -kneeAngle/2 ]
+    listValStandInit = [memoryProxy.getData("Device/SubDeviceList/HeadYaw/Position/Actuator/Value"),
+                    memoryProxy.getData("Device/SubDeviceList/HeadPitch/Position/Actuator/Value"),
+                    memoryProxy.getData("Device/SubDeviceList/LShoulderPitch/Position/Actuator/Value"),
+                    memoryProxy.getData("Device/SubDeviceList/LShoulderRoll/Position/Actuator/Value"),
+                    memoryProxy.getData("Device/SubDeviceList/LElbowYaw/Position/Actuator/Value"),
+                    memoryProxy.getData("Device/SubDeviceList/LElbowRoll/Position/Actuator/Value"),
+                    memoryProxy.getData("Device/SubDeviceList/LWristYaw/Position/Actuator/Value"),
+                    memoryProxy.getData("Device/SubDeviceList/LHand/Position/Actuator/Value"),
+                    memoryProxy.getData("Device/SubDeviceList/LKneePitch/Position/Actuator/Value"),
+                    0,
+                    0]
+
+    tab = [0,0,0,0,0,0,0,0,120,0,0]
+    
+    listValStandInit = sumList(listValStandInit, tab)     
+    configRob(listValStandInit[0], listValStandInit[1], listValStandInit[2], listValStandInit[3], listValStandInit[4], listValStandInit[5], listValStandInit[6], listValStandInit[7], listValStandInit[8], listValStandInit[9], listValStandInit[10])
+    
+    time.sleep(3)
+
     
 
 #class Myevent(ALModule):
@@ -288,7 +319,7 @@ def showNaoImage():
 def TrySensors():
     SLeft = [memoryProxy.getData("Device/SubDeviceList/US/Left/Sensor/Value")]
     SRight = [memoryProxy.getData("Device/SubDeviceList/US/Right/Sensor/Value")]
-    for i in range (50):
+    for i in range (5):
         SLeft.append(memoryProxy.getData("Device/SubDeviceList/US/Left/Sensor/Value"))
         SRight.append(memoryProxy.getData("Device/SubDeviceList/US/Right/Sensor/Value"))
     Left = np.mean(SLeft)
@@ -515,11 +546,7 @@ def BatteryMemory():
     #print "status =", b
     return np.mean(s) * 100
     
-def sumList(a, b):
-    result = []
-    for i in range(len(a)):
-        result.append(a[i] + b[i])
-    return result
+
 
 def close():
     myWidget.close()
@@ -596,6 +623,8 @@ def Tete():
     
 
 def Epaule():
+    initmouv()
+    time.sleep(1)
     names = ['LShoulderPitch']
     angles = [2.0857]
     motionProxy.setAngles(names,angles,.2)
@@ -620,10 +649,25 @@ def Epaule():
     angles = [0]
     motionProxy.setAngles(names,angles,.2)
     time.sleep(4)
+    
+    names = ['LShoulderRoll','RShoulderRoll']
+    angles = [-0.3142,0.3142]
+    motionProxy.setAngles(names,angles,.2)
+    time.sleep(2)
+    names = ['LShoulderRoll','RShoulderRoll']
+    angles =  [1.3265, 	-1.3265 ]
+    time.sleep(3)
+    motionProxy.setAngles(names,angles,.2)
+    names = ['LShoulderRoll','RShoulderRoll']
+    angles =  [0, 0 ]
+    time.sleep(1)
+    motionProxy.setAngles(names,angles,.2)
+    
     postureProxy.goToPosture("StandZero", 2.0)
     
-    
 def Coudes():
+    initmouv()
+    time.sleep(1)
     names = ['LElbowRoll']
     angles = [-1.5446 ]
     motionProxy.setAngles(names,angles,.5)
@@ -665,6 +709,8 @@ def Coudes():
     
     
 def Poignet():
+    postureProxy.goToPosture("StandZero", 2.0)
+    time.sleep(1)
     names  = ['LWristYaw','RWristYaw']
     angles = [ -1.8238, +1.8238]
     motionProxy.setAngles(names,angles,.2)
@@ -681,6 +727,8 @@ def Poignet():
     
     
 def Main():
+    postureProxy.goToPosture("StandZero", 2.0)
+    time.sleep(1)
     motionProxy.openHand('RHand')
     motionProxy.openHand('LHand')
     time.sleep(1)

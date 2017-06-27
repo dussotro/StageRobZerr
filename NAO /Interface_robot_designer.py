@@ -1,6 +1,9 @@
 
 from PyQt4 import QtGui,uic
 from naoqi import ALProxy, ALModule
+from PyQt4.QtGui import QWidget, QImage, QApplication, QPainter
+from vision_showimages import *
+import vision_definitions
 import DiagNAO
 import time
 import sys
@@ -64,7 +67,6 @@ class UiTest(QtGui.QMainWindow):
         self.battery_init = -1
         QtGui.QMainWindow.__init__(self, *args, **kwargs)
         self.ui = uic.loadUi('Interface.ui', self)
-        
         self.ui.Bouton_square.clicked.connect(self.Square)
         self.ui.Bouton_battery.clicked.connect(self.Battery)
         self.ui.Bouton_sensors.clicked.connect(self.Sensors)
@@ -75,10 +77,13 @@ class UiTest(QtGui.QMainWindow):
         self.ui.Bouton_Epaule.clicked.connect(self.Epaule)
         self.ui.Bouton_Poignet.clicked.connect(self.Poignet)
         self.ui.Bouton_Coude.clicked.connect(self.Coude)
+        self.ui.Bouton_Camera.clicked.connect(self.Camera)
+        
+        self.inage= ImageWidget(robotIP, port,1)
         
         DiagNAO.doInitialisation()
         self.battery_init = DiagNAO.BatteryMemory()
-        
+            
     def Square(self):
         DiagNAO.Test_Square_Left_Right()
         
@@ -109,7 +114,14 @@ class UiTest(QtGui.QMainWindow):
     
     def Poignet(self):
         DiagNAO.Poignet()
+
+    def Camera(self):
+        if self.inage.isHidden() :
+            self.inage.show()
             
+    def closeEvent(self,event):
+        DiagNAO.doStop()
+        event.accept()        
         
         
     
