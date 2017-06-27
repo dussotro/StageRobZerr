@@ -20,8 +20,8 @@
    <widget class="QPushButton" name="Bouton_square">
     <property name="geometry">
      <rect>
-      <x>100</x>
-      <y>110</y>
+      <x>140</x>
+      <y>20</y>
       <width>95</width>
       <height>31</height>
      </rect>
@@ -42,17 +42,20 @@
    <widget class="QWidget" name="formLayoutWidget">
     <property name="geometry">
      <rect>
-      <x>50</x>
-      <y>180</y>
+      <x>20</x>
+      <y>150</y>
       <width>201</width>
-      <height>111</height>
+      <height>117</height>
      </rect>
     </property>
     <layout class="QFormLayout" name="formLayout_2">
-     <item row="0" column="0">
-      <widget class="QLabel" name="label">
+     <property name="fieldGrowthPolicy">
+      <enum>QFormLayout::AllNonFixedFieldsGrow</enum>
+     </property>
+     <item row="2" column="0">
+      <widget class="QLabel" name="label_0">
        <property name="text">
-        <string>Battery : </string>
+        <string>&lt;html&gt;&lt;head/&gt;&lt;body&gt;&lt;p&gt;&lt;span style=&quot; font-size:12pt; font-weight:600; text-decoration: underline;&quot;&gt;Sensors :&lt;/span&gt;&lt;/p&gt;&lt;/body&gt;&lt;/html&gt;</string>
        </property>
       </widget>
      </item>
@@ -63,20 +66,6 @@
        </property>
       </widget>
      </item>
-     <item row="4" column="0">
-      <widget class="QLabel" name="label_3">
-       <property name="text">
-        <string>Droite :</string>
-       </property>
-      </widget>
-     </item>
-     <item row="2" column="0">
-      <widget class="QLabel" name="label_0">
-       <property name="text">
-        <string>&lt;html&gt;&lt;head/&gt;&lt;body&gt;&lt;p&gt;&lt;span style=&quot; font-size:12pt; font-weight:600; text-decoration: underline;&quot;&gt;Sensors :&lt;/span&gt;&lt;/p&gt;&lt;/body&gt;&lt;/html&gt;</string>
-       </property>
-      </widget>
-     </item>
      <item row="3" column="1">
       <widget class="QLabel" name="label_Gsens">
        <property name="text">
@@ -84,10 +73,24 @@
        </property>
       </widget>
      </item>
+     <item row="4" column="0">
+      <widget class="QLabel" name="label_3">
+       <property name="text">
+        <string>Droite :</string>
+       </property>
+      </widget>
+     </item>
      <item row="4" column="1">
       <widget class="QLabel" name="label_Dsens">
        <property name="text">
         <string/>
+       </property>
+      </widget>
+     </item>
+     <item row="0" column="0">
+      <widget class="QLabel" name="label">
+       <property name="text">
+        <string>Battery : </string>
        </property>
       </widget>
      </item>
@@ -103,8 +106,8 @@
    <widget class="QPushButton" name="Bouton_Stop">
     <property name="geometry">
      <rect>
-      <x>480</x>
-      <y>160</y>
+      <x>60</x>
+      <y>290</y>
       <width>131</width>
       <height>31</height>
      </rect>
@@ -116,8 +119,8 @@
    <widget class="QPushButton" name="Bouton_Tete">
     <property name="geometry">
      <rect>
-      <x>220</x>
-      <y>110</y>
+      <x>370</x>
+      <y>0</y>
       <width>177</width>
       <height>31</height>
      </rect>
@@ -129,8 +132,8 @@
    <widget class="QPushButton" name="Bouton_Total">
     <property name="geometry">
      <rect>
-      <x>450</x>
-      <y>110</y>
+      <x>380</x>
+      <y>290</y>
       <width>151</width>
       <height>31</height>
      </rect>
@@ -142,8 +145,8 @@
    <widget class="QPushButton" name="Bouton_Epaule">
     <property name="geometry">
      <rect>
-      <x>250</x>
-      <y>160</y>
+      <x>410</x>
+      <y>40</y>
       <width>95</width>
       <height>31</height>
      </rect>
@@ -155,8 +158,8 @@
    <widget class="QPushButton" name="Bouton_Coude">
     <property name="geometry">
      <rect>
-      <x>370</x>
-      <y>170</y>
+      <x>410</x>
+      <y>80</y>
       <width>95</width>
       <height>31</height>
      </rect>
@@ -168,8 +171,8 @@
    <widget class="QPushButton" name="Bouton_Poignet">
     <property name="geometry">
      <rect>
-      <x>270</x>
-      <y>220</y>
+      <x>410</x>
+      <y>120</y>
       <width>95</width>
       <height>31</height>
      </rect>
@@ -181,8 +184,8 @@
    <widget class="QPushButton" name="Bouton_battery">
     <property name="geometry">
      <rect>
-      <x>250</x>
-      <y>60</y>
+      <x>10</x>
+      <y>90</y>
       <width>131</width>
       <height>31</height>
      </rect>
@@ -194,8 +197,8 @@
    <widget class="QPushButton" name="Bouton_sensors">
     <property name="geometry">
      <rect>
-      <x>400</x>
-      <y>70</y>
+      <x>0</x>
+      <y>60</y>
       <width>141</width>
       <height>31</height>
      </rect>
@@ -207,9 +210,9 @@
    <widget class="QPushButton" name="Bouton_main">
     <property name="geometry">
      <rect>
-      <x>60</x>
-      <y>60</y>
-      <width>171</width>
+      <x>410</x>
+      <y>170</y>
+      <width>101</width>
       <height>31</height>
      </rect>
     </property>
@@ -220,8 +223,8 @@
    <widget class="QPushButton" name="Bouton_Camera">
     <property name="geometry">
      <rect>
-      <x>410</x>
-      <y>30</y>
+      <x>0</x>
+      <y>10</y>
       <width>95</width>
       <height>31</height>
      </rect>
@@ -230,6 +233,19 @@
      <string>Camera</string>
     </property>
    </widget>
+   <zorder>Bouton_square</zorder>
+   <zorder>formLayoutWidget</zorder>
+   <zorder>Bouton_Stop</zorder>
+   <zorder>Bouton_Tete</zorder>
+   <zorder>Bouton_Total</zorder>
+   <zorder>Bouton_Epaule</zorder>
+   <zorder>Bouton_Coude</zorder>
+   <zorder>Bouton_Poignet</zorder>
+   <zorder>Bouton_battery</zorder>
+   <zorder>Bouton_sensors</zorder>
+   <zorder>Bouton_main</zorder>
+   <zorder>Bouton_Camera</zorder>
+   <zorder>label_battery</zorder>
   </widget>
   <widget class="QMenuBar" name="menubar">
    <property name="geometry">

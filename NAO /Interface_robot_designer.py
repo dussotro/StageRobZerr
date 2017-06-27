@@ -1,4 +1,4 @@
-
+# -*- coding: utf-8 -*-
 from PyQt4 import QtGui,uic
 from naoqi import ALProxy, ALModule
 from PyQt4.QtGui import QWidget, QImage, QApplication, QPainter
@@ -79,12 +79,19 @@ class UiTest(QtGui.QMainWindow):
         self.ui.Bouton_Coude.clicked.connect(self.Coude)
         self.ui.Bouton_Camera.clicked.connect(self.Camera)
         
-        self.inage= ImageWidget(robotIP, port,1)
+        self.inage= ImageWidget(robotIP, port,0)
         
         DiagNAO.doInitialisation()
         self.battery_init = DiagNAO.BatteryMemory()
+        
+        palette= QtGui.QPalette()
+        pixmap = QtGui.QPixmap("fond.jpeg").scaled(self.ui.width(),self.ui.height())   
+        # vérifiez que vous avez cette image
             
-    def Square(self):
+        palette.setBrush(QtGui.QPalette.Background,QtGui.QBrush(pixmap))
+        self.setPalette(palette)
+            
+    def Square(self): 
         DiagNAO.Test_Square_Left_Right()
         
     def Battery(self):

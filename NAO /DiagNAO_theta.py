@@ -13,11 +13,11 @@ from PyQt4.QtGui import QWidget, QImage, QApplication, QPainter, QPushButton
 from optparse import OptionParser
 
 
-robotIP = "172.20.27.244" #Rouge
+#robotIP = "172.20.27.244" #Rouge
 #robotIP = "172.20.28.103" #Bleu
 #robotIP = "172.20.12.49" 
 #robotIP = "172,20,11,237"
-#robotIP = "172.20.28.103"
+robotIP = "172.20.28.103"
 
 
 port = 9559
@@ -680,11 +680,14 @@ if __name__== "__main__":
     
     
         audioProxy.post.playFile("/home/nao/music/a.mp3")
-        tts.say('''Aubret, fait pas le chaud
-                Je te prend en RC tranquille 
-                Allé a plus, vas réviser tes partiels gros vier
-                on se voit a la soirée a fontenay
-        
+        tts.say('''j'voudrais faire un Slam
+pour une grande dame que j'connais depuis tout petit
+j'voudrais faire un Slam
+pour celle qui voit ma vieille canne du lundi au samedi
+j'voudrais faire un Slam
+pour une vieille femme dans laquelle j'ai grandi
+j'voudrais faire un Slam
+pour cette banlieue nord de paname qu'on appelle saint denis
 ''') 
         time.sleep(3)
         audioProxy.post.stopAll()      
