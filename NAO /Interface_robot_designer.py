@@ -78,7 +78,7 @@ class UiTest(QtGui.QMainWindow):
         self.ui.Bouton_Tete.clicked.connect(self.Tete)
         self.ui.Bouton_Total.clicked.connect(self.Total)
         self.ui.Bouton_main.clicked.connect(self.Main)
-        self.ui.Bouton_Epaule.clicked.connect(self.TestEpaule)
+        self.ui.Bouton_Epaule.clicked.connect(self.Epaule)
         self.ui.Bouton_Poignet.clicked.connect(self.Poignet)
         self.ui.Bouton_Coude.clicked.connect(self.Coude)
         self.ui.Bouton_Camera.clicked.connect(self.Camera)
@@ -111,36 +111,36 @@ class UiTest(QtGui.QMainWindow):
         
         
     def Battery(self):
-        if self.prog == 0:
+        if self.prog.value == 0:
             self.ui.label_prog.setText('Battery')
             self.prog = 1
             battery_t = DiagNAO.BatteryMemory()
             self.ui.label_battery.setText(str(battery_t) + '%')
             self.ui.label_prog.setText('')
-            self.prog = 0
+            self.prog.value = 0
             
         
     def Sensors (self):
-        if self.prog == 0:
-            self.prog = 1
+        if self.prog.value == 0:
+            self.prog.value = 1
             self.ui.label_prog.setText('Sensors')
             self.ui.label_Gsens.setText(str(round(DiagNAO.TrySensors()[0],1)))
             self.ui.label_Dsens.setText(str(round(DiagNAO.TrySensors()[1],1)))
             self.ui.label_prog.setText('')
-            self.prog = 1
+            self.prog.value = 1
             
     def Tete(self):
         if self.prog.value == 0:
             self.prog.value = 1
             q = Queue()
-            p = Process(target=DiagNAO.Tete(), args=(q,self.prog))
+            p = Process(target=DiagNAO.Tete, args=(q,self.prog))
             p.start()
         
     def Total(self):
         if self.prog.value == 0:
             self.prog.value = 1
             q = Queue()
-            p = Process(target  = DiagNAO.Test_Articulations(), args=(q,self.prog))
+            p = Process(target  = DiagNAO.Test_Articulations, args=(q,self.prog))
             p.start()
     
     def Stop(self):
@@ -153,35 +153,29 @@ class UiTest(QtGui.QMainWindow):
             p = Process(target=DiagNAO.Main, args=(q,self.prog))
             p.start()
             
-            
-            
-        
     def Epaule(self):
-        if self.prog:
-            self.prog = 1
-            DiagNAO.Epaule()
-            self.prog = 0
-    def TestEpaule(self):
-        if self.prog == 0:
-            self.prog = 1
-            self.Epaule()
+        if self.prog.value == 0:
+            self.prog.value = 1 
+            q = Queue()
+            p = Process(target=DiagNAO.Epaule, args=(q,self.prog))
+            p.start()
         
     
     def Coude(self):
-        if self.prog == 0:
-            self.prog = 1
+        if self.prog.value == 0:
+            self.prog.value = 1
             self.ui.label_prog.setText('Coudes')
             DiagNAO.Coudes()
             self.ui.label_prog.setText('')  
             self.prog =0
     
     def Poignet(self):
-        if self.prog == 0:
-            self.prog = 1
+        if self.prog.value == 0:
+            self.prog.value = 1
             self.ui.label_prog.setText('Poignet')
             DiagNAO.Poignet()
             self.ui.label_prog.setText('')
-            self.prog = 0
+            self.prog.value = 0
     
     def Camera(self):
         if self.inage.isHidden() :
