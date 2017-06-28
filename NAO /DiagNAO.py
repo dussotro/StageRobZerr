@@ -13,10 +13,11 @@ from PyQt4.QtGui import QWidget, QImage, QApplication, QPainter, QPushButton
 import signal
 
 
-robotIP = "172.20.13.63" #Rouge
+#robotIP = "172.20.13.63" #Rouge
 #robotIP = "172.20.28.103" #Bleu
 #robotIP = "172.20.11.237"# gamma 
 #robotIP = "172.20.28.103" #eta
+robotIP = "172.20.11.242"# beta
 
 port = 9559
 CameraID = 0
