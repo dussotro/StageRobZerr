@@ -10,9 +10,10 @@ import vision_showimages as vis
 import numpy as np
 import almath
 from PyQt4.QtGui import QWidget, QImage, QApplication, QPainter, QPushButton
+import signal
 
 
-robotIP = "172.20.27.244" #Rouge
+robotIP = "172.20.13.63" #Rouge
 #robotIP = "172.20.28.103" #Bleu
 #robotIP = "172.20.11.237"# gamma 
 #robotIP = "172.20.28.103" #eta
@@ -627,41 +628,41 @@ def Epaule():
     time.sleep(1)
     names = ['LShoulderPitch']
     angles = [2.0857]
-    motionProxy.setAngles(names,angles,.2)
+    motionProxy.setAngles(names,angles,.35)
 #    time.sleep(2)
     names = ['RShoulderPitch']
     angles = [2.0857]
-    motionProxy.setAngles(names,angles,.2)
+    motionProxy.setAngles(names,angles,.35)
     time.sleep(4)
     names = ['LShoulderPitch']
     angles = [-2.0857]
-    motionProxy.setAngles(names,angles,.2)
+    motionProxy.setAngles(names,angles,.35)
 #    time.sleep(2)
     names = ['RShoulderPitch']
     angles = [-2.0857]
-    motionProxy.setAngles(names,angles,.2)
+    motionProxy.setAngles(names,angles,.35)
     time.sleep(4)
     names = ['LShoulderPitch']
     angles = [0]
-    motionProxy.setAngles(names,angles,.2)
+    motionProxy.setAngles(names,angles,.35)
 #    time.sleep(2)  
     names = ['RShoulderPitch']
     angles = [0]
-    motionProxy.setAngles(names,angles,.2)
+    motionProxy.setAngles(names,angles,.35)
     time.sleep(4)
     
     names = ['LShoulderRoll','RShoulderRoll']
     angles = [-0.3142,0.3142]
-    motionProxy.setAngles(names,angles,.2)
+    motionProxy.setAngles(names,angles,.35)
     time.sleep(2)
     names = ['LShoulderRoll','RShoulderRoll']
     angles =  [1.3265, 	-1.3265 ]
     time.sleep(3)
-    motionProxy.setAngles(names,angles,.2)
+    motionProxy.setAngles(names,angles,.35)
     names = ['LShoulderRoll','RShoulderRoll']
     angles =  [0, 0 ]
     time.sleep(1)
-    motionProxy.setAngles(names,angles,.2)
+    motionProxy.setAngles(names,angles,.35)
     
     postureProxy.goToPosture("StandZero", 2.0)
     
@@ -726,7 +727,8 @@ def Poignet():
     postureProxy.goToPosture("StandZero", 2.0)
     
     
-def Main():
+def Main(queue=None,prog=None):
+    #print Other
     postureProxy.goToPosture("StandZero", 2.0)
     time.sleep(1)
     motionProxy.openHand('RHand')
@@ -734,6 +736,12 @@ def Main():
     time.sleep(1)
     motionProxy.closeHand('RHand')
     motionProxy.closeHand('LHand')
+    #if not Other == None:
+    prog.value = 0
+    print "j'ai finis"
+        #print Other.prog
+        #signal.alarm(1) 
+        #time.sleep(2)
     
 #####################################################################
 # mes modifications 
@@ -814,7 +822,7 @@ def gyroscope():
 def steps():
     footStepsList = []
 
-    # 1) Step forward with your left foot
+    # 1) Step forward with your lefIf time is zero, no alarm is scheduled, and any scheduled alarm is canceled. If the return value is zero, no alarm is currently scheduled.t foot
     footStepsList.append([["LLeg"], [[0.06, 0.1, 0.0]]])
 
     # 2) Sidestep to the left with your left foot
@@ -1008,9 +1016,9 @@ if __name__== "__main__":
 #        
 #        userArmArticular(motionProxy)
 #        time.sleep(1)
-        
-        dorun(6)
-        time.sleep(6)
+#        
+#        dorun(6)
+#        time.sleep(6)
         
 #        doback()
 #        time.sleep(1)
@@ -1021,49 +1029,49 @@ if __name__== "__main__":
         
 
         
-#        print 'b0 :'
-#        b0 = BatteryMemory()
-#        #test de capteurs
-#        print "Test des capteurs frontaux du robot" 
-#        TrySensors()
-#        print "Fin capteurs..." 
-#
-#        print "Test de calcul de vitesse et position"
-#        target_velocity()
-#        position_robot()
-#        print "Fin vitesse / position ..." 
-#        
-#        print "Test de la fonction de parole du nao"
-#        TestTts("Test Micro")
-#        time.sleep(1.0)
-#        print "Fin parole..."
-#        
-#        print "Test de deplacement du robot"
-#        print "trajectoire: carre gauche puis carre droite"
-#        Test_Square_Left_Right()
-#        print "Fin deplacement..."
-#
-#        print "Test des articulations Tete / Bras"
-#        Test_Articulations()
-#        print "Fin articulations..."
-#        
-#        print "b1 :"
-#        b1 = BatteryMemory()
-#        print "Fin Batterie..."
-#        print "différence",(b0-b1)
+        print 'b0 :'
+        b0 = BatteryMemory()
+        #test de capteurs
+        print "Test des capteurs frontaux du robot" 
+        TrySensors()
+        print "Fin capteurs..." 
+
+        print "Test de calcul de vitesse et position"
+        target_velocity()
+        position_robot()
+        print "Fin vitesse / position ..." 
         
-#        print "Test d'affichage en temps réel de la vision du robot"
-#        doStop()
-#        app = QApplication(sys.argv)
-#        myWidget = vis.ImageWidget(robotIP, port, CameraID)
-#        myWidget.show()
-#        boutton= QPushButton()
-#        boutton.show()
-#        boutton.clicked.connect(close)
-#
-#        sys.exit(app.exec_())
-##        
-#        print "Fin video..."
+        print "Test de la fonction de parole du nao"
+        TestTts("Test Micro")
+        time.sleep(1.0)
+        print "Fin parole..."
+        
+        print "Test de deplacement du robot"
+        print "trajectoire: carre gauche puis carre droite"
+        Test_Square_Left_Right()
+        print "Fin deplacement..."
+
+        print "Test des articulations Tete / Bras"
+        Test_Articulations()
+        print "Fin articulations..."
+        
+        print "b1 :"
+        b1 = BatteryMemory()
+        print "Fin Batterie..."
+        print "différence",(b0-b1)
+        
+        print "Test d'affichage en temps réel de la vision du robot"
+        doStop()
+        app = QApplication(sys.argv)
+        myWidget = vis.ImageWidget(robotIP, port, CameraID)
+        myWidget.show()
+        boutton= QPushButton()
+        boutton.show()
+        boutton.clicked.connect(close)
+
+        sys.exit(app.exec_())
+#        
+        print "Fin video..."
         doStop()
         
 

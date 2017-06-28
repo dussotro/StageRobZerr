@@ -13,11 +13,11 @@ from PyQt4.QtGui import QWidget, QImage, QApplication, QPainter, QPushButton
 from optparse import OptionParser
 
 
-#robotIP = "172.20.27.244" #Rouge
+robotIP = "172.20.13.63" #Rouge
 #robotIP = "172.20.28.103" #Bleu
 #robotIP = "172.20.12.49" 
 #robotIP = "172,20,11,237"
-robotIP = "172.20.28.103"
+#robotIP = "172.20.28.103"
 
 
 port = 9559
