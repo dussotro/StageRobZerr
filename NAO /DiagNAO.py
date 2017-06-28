@@ -559,7 +559,7 @@ def close():
     boutton.close()
 #    app.exit()
     
-def Test_Articulations():
+def Test_Articulations(queue=None,prog=None):
     StiffnessOn(motionProxy)
 
 
@@ -597,10 +597,11 @@ def Test_Articulations():
     time.sleep(1)
     motionProxy.closeHand('RHand')
     motionProxy.closeHand('LHand')
-    
     postureProxy.goToPosture("Crouch", 2.0)
+    prog.value = 0
     
-def Tete():
+def Tete(queue=None,prog=None):
+    initmouv()
     names = ['HeadYaw']
     angles = [-2.0857]
     motionProxy.setAngles(names,angles,.6)
@@ -625,12 +626,12 @@ def Tete():
     angles = [0]
     motionProxy.setAngles(names,angles,.6)
     time.sleep(2)
-    postureProxy.goToPosture("StandZero", 2.0)
+    initmouv()
+    prog.value = 0
     
 
-def Epaule():
+def Epaule(queue=None,prog=None):
     initmouv()
-    time.sleep(1)
     names = ['LShoulderPitch']
     angles = [2.0857]
     motionProxy.setAngles(names,angles,.35)
@@ -668,12 +669,11 @@ def Epaule():
     angles =  [0, 0 ]
     time.sleep(1)
     motionProxy.setAngles(names,angles,.35)
-    
-    postureProxy.goToPosture("StandZero", 2.0)
-    
-def Coudes():
     initmouv()
-    time.sleep(1)
+    prog.value = 0
+    
+def Coudes(queue=None,prog=None):
+    initmouv()
     names = ['LElbowRoll']
     angles = [-1.5446 ]
     motionProxy.setAngles(names,angles,.5)
@@ -698,6 +698,7 @@ def Coudes():
     angles = [0]
     motionProxy.setAngles(names,angles,.5)
     time.sleep(2)
+    prog.value = 0
     
     names = ['LElbowYaw','RElbowYaw']
     angles = [-2.0857 ,2.0857]
@@ -711,12 +712,13 @@ def Coudes():
     angles = [0 ,0]
     motionProxy.setAngles(names,angles,.2)
     time.sleep(1)
-    postureProxy.goToPosture("StandZero", 2.0)  
+    initmouv()
+    prog.value = 0
     
     
-def Poignet():
-    postureProxy.goToPosture("StandZero", 2.0)
-    time.sleep(1)
+    
+def Poignet(queue=None,prog=None):
+    initmouv()
     names  = ['LWristYaw','RWristYaw']
     angles = [ -1.8238, +1.8238]
     motionProxy.setAngles(names,angles,.2)
@@ -729,13 +731,13 @@ def Poignet():
     angles = [ 0, 0]
     motionProxy.setAngles(names,angles,.2)
     time.sleep(2)
-    postureProxy.goToPosture("StandZero", 2.0)
+    initmouv()
+    prog.value = 0
     
     
 def Main(queue=None,prog=None):
     #print Other
-    postureProxy.goToPosture("StandZero", 2.0)
-    time.sleep(1)
+    initmouv()
     motionProxy.openHand('RHand')
     motionProxy.openHand('LHand')
     time.sleep(1)
