@@ -12,7 +12,7 @@ import almath
 from PyQt4.QtGui import QWidget, QImage, QApplication, QPainter, QPushButton
 
 
-robotIP = "172.20.27.244" #Rouge
+robotIP = "172.20.28.103" #Eta
 #robotIP = "172.20.28.103" #Bleu
 #robotIP = "172.20.11.237"# gamma 
 
@@ -868,7 +868,7 @@ if __name__== "__main__":
 #        print "Fin deplacement..."
 #
 #        print "Test des articulations Tete / Bras"
-#        Test_Articulations()
+        Test_Articulations()
 #        print "Fin articulations..."
 #        
 #        print "b1 :"
