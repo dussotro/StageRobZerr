@@ -14,8 +14,8 @@ import signal
 
 #robotIP = "172.20.13.63" #Rouge
 #robotIP = "172.20.28.103" #Bleu
-#robotIP = "172.20.11.237"# gamma 
-robotIP = "172.20.11.242" #beta
+robotIP = "172.20.11.237"# gamma 
+#robotIP = "172.20.11.242" #beta
 
 port = 9559
 CameraID = 0
@@ -128,7 +128,7 @@ class UiTest(QtGui.QMainWindow):
             self.ui.label_Gsens.setText(str(round(DiagNAO.TrySensors()[0],1)))
             self.ui.label_Dsens.setText(str(round(DiagNAO.TrySensors()[1],1)))
             self.ui.label_prog.setText('')
-            self.prog.value = 1
+            self.prog.value = 0
             
     def Tete(self):
         if self.prog.value == 0:

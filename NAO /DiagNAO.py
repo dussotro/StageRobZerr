@@ -15,9 +15,9 @@ import signal
 
 #robotIP = "172.20.13.63" #Rouge
 #robotIP = "172.20.28.103" #Bleu
-#robotIP = "172.20.11.237"# gamma 
+robotIP = "172.20.11.237"# gamma 
 #robotIP = "172.20.28.103" #eta
-robotIP = "172.20.11.242"# beta
+#robotIP = "172.20.11.242"# beta
 
 port = 9559
 CameraID = 0
@@ -1023,10 +1023,6 @@ if __name__== "__main__":
 #        
 #        userArmArticular(motionProxy)
 #        time.sleep(1)
-<<<<<<< HEAD
-##        
-=======
-#        
 #        dorun(3)
 #        time.sleep(1)
 #        doright(np.pi/2)
@@ -1039,12 +1035,10 @@ if __name__== "__main__":
 #        time.sleep(1)
 #        doright(0.6)
 #        time.sleep(1)
->>>>>>> b3b97bd0ae20bbd557441885cf6c8c6c147d2177
 #        dorun(3)
 #        time.sleep(1)
 #        doright(np.pi/2)
 #        time.sleep(1)
-<<<<<<< HEAD
 #        dorun(3)
 ##        time.sleep(1)
 ##        doright(0.6)
@@ -1061,37 +1055,26 @@ if __name__== "__main__":
 #        time.sleep(2)
 #        
 ##        doback()
-=======
 #        dorun(6)
 #        time.sleep(2)
         
 #        doback()
->>>>>>> b3b97bd0ae20bbd557441885cf6c8c6c147d2177
 #        time.sleep(1)
 #        
 #        doleft(np.pi/2)
 #        time.sleep(6)
-#        
-        
-
-<<<<<<< HEAD
-##        
-=======
-#        
->>>>>>> b3b97bd0ae20bbd557441885cf6c8c6c147d2177
         print 'b0 :'
         b0 = BatteryMemory()
         #test de capteurs
         print "Test des capteurs frontaux du robot" 
-<<<<<<< HEAD
         TrySensors()
         print "Fin capteurs..." 
 #
-=======
+
         print 'Gauche' ,TrySensors()[0],'\nDroite',TrySensors()[1]
         print "Fin capteurs..." 
 
->>>>>>> b3b97bd0ae20bbd557441885cf6c8c6c147d2177
+
 #        print "Test de calcul de vitesse et position"
 #        target_velocity()
 #        position_robot()
@@ -1127,7 +1110,7 @@ if __name__== "__main__":
 
         sys.exit(app.exec_())
 #        
-<<<<<<< HEAD
+
 ##        print "Test d'affichage en temps réel de la vision du robot"
 ##        doStop()
 ##        app = QApplication(sys.argv)
@@ -1140,11 +1123,9 @@ if __name__== "__main__":
 ##        sys.exit(app.exec_())
 ##        
 #        print "Fin video..."
-=======
+
         print "Fin video..."
->>>>>>> b3b97bd0ae20bbd557441885cf6c8c6c147d2177
-        doStop()
-        
+
 
         
     except Exception, e:
