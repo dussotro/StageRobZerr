@@ -10,11 +10,18 @@ import vision_showimages as vis
 import numpy as np
 import almath
 from PyQt4.QtGui import QWidget, QImage, QApplication, QPainter, QPushButton
+import signal
 
 
+<<<<<<< HEAD
 robotIP = "172.20.28.103" #Eta
+=======
+robotIP = "172.20.13.63" #Rouge
+>>>>>>> 89ad711a8fc3ca5103f715386745b2b224a2ced8
 #robotIP = "172.20.28.103" #Bleu
 #robotIP = "172.20.11.237"# gamma 
+#robotIP = "172.20.28.103" #eta
+#robotIP = "172.20.11.242"# beta
 
 port = 9559
 CameraID = 0
@@ -79,36 +86,38 @@ def doInitialisation():
     StiffnessOn(motionProxy)
     # Send NAO to Pose Init
     postureProxy.goToPosture("StandInit", 0.5)
-    
 
-#class Myevent(ALModule):
-#    """ Mandatory docstring.
-#        comment needed to create a new python module
-#    """
-#    def __init__(self, name):
-#        ALModule.__init__(self, name)
-#        # No need for IP and port here because
-#        # we have our Python broker connected to NAOqi broker
-#        # Create a proxy to ALTextToSpeech for later use
-#        self.tts = BatteryProxy
-#        self.level = 0
-#
-#        # Subscribe to the BatteryChange event:
-#        self.battery.subscribeToEvent("BatteryChargeChanged",
-#            "BatteryRob",
-#            "callBackBattery")
-#        
-#    def callBackBattery(self, *_args):
-#        """ Mandatory docstring.
-#        comment needed to create a bound method
-#        """
-#        self.battery.unsubscribeToEvent("BatteryChargeChanged",
-#                                        "BatteryRob") 
-#        print 'im right here'
-#        print self.percentage
-#        self.battery.unsubscribeToEvent("BatteryChargeChanged",
-#                                            "BatteryRob") 
-#    
+def sumList(a, b):
+    result = []
+    for i in range(len(a)):
+        result.append(a[i] + b[i])
+    return result
+
+def initmouv():
+    postureProxy.goToPosture("Crouch", 2.0)
+#    names = ['HipYawPitch','RKneePitch','LKneePitch' ,'LHipPitch','RHipPitch','RAnklePitch','LAnklePitch']
+#    kneeAngle = 2.1
+#    angles = [0.0, kneeAngle, kneeAngle , -kneeAngle/2 , -kneeAngle/2 ,-kneeAngle/2, -kneeAngle/2 ]
+    listValStandInit = [memoryProxy.getData("Device/SubDeviceList/HeadYaw/Position/Actuator/Value"),
+                    memoryProxy.getData("Device/SubDeviceList/HeadPitch/Position/Actuator/Value"),
+                    memoryProxy.getData("Device/SubDeviceList/LShoulderPitch/Position/Actuator/Value"),
+                    memoryProxy.getData("Device/SubDeviceList/LShoulderRoll/Position/Actuator/Value"),
+                    memoryProxy.getData("Device/SubDeviceList/LElbowYaw/Position/Actuator/Value"),
+                    memoryProxy.getData("Device/SubDeviceList/LElbowRoll/Position/Actuator/Value"),
+                    memoryProxy.getData("Device/SubDeviceList/LWristYaw/Position/Actuator/Value"),
+                    memoryProxy.getData("Device/SubDeviceList/LHand/Position/Actuator/Value"),
+                    memoryProxy.getData("Device/SubDeviceList/LKneePitch/Position/Actuator/Value"),
+                    0,
+                    0]
+
+    tab = [0,0,0,0,0,0,0,0,120,0,0]
+    
+    listValStandInit = sumList(listValStandInit, tab)     
+    configRob(listValStandInit[0], listValStandInit[1], listValStandInit[2], listValStandInit[3], listValStandInit[4], listValStandInit[5], listValStandInit[6], listValStandInit[7], listValStandInit[8], listValStandInit[9], listValStandInit[10])
+    
+    time.sleep(0.5)
+
+    
 
 #==============================================================================
 # Classe de test de toutes les articulations
@@ -187,34 +196,6 @@ def configRob(HeadYawAngle, HeadPitchAngle, ShoulderPitchAngle, ShoulderRollAngl
         # Ask motion to do this with a blocking call    
         motionProxy.angleInterpolationWithSpeed(pNames, pTargetAngles, pMaxSpeedFraction)
 
-class Robot:
-    def __init__(self, rt, ia, am, space):
-            self.d_mvt = {}
-            self.reference_time = rt
-            self.isAbsolute = ia
-            self.axisMask = am
-            self.space = space
-            self.tempo_time = 0
-
-    def mvt(self, where, path):
-            reference_time = 0
-            if self.tempo_time != 0:
-                reference_time = self.tempo_time
-                self.tempo_time = 0
-            else:
-                reference_time = self.reference_time    
-            if not self.d_mvt.has_key(where):
-                self.d_mvt[where] = path
-            else:
-                old_path = self.d_mvt[where]
-                saved_path = [el1 + el2 for el1, el2 in zip(path, old_path)]
-                self.d_mvt[where] = saved_path
-            motionProxy.positionInterpolation(where, self.space, path, self.axisMask, reference_time, self.isAbsolute)
-                    
-            time.sleep(1.0)
-
-
-
 #==============================================================================
 # Audio
 #==============================================================================
@@ -225,69 +206,72 @@ def TestTts(texte):
 # """Vision"""
 #==============================================================================
 
-
-def Test_Image():
-
-    ####
-    # Create proxy on ALVideoDevice
-
-    print "Creating ALVideoDevice proxy to ", robotIP
-
-    camProxy = ALProxy("ALVideoDevice", robotIP, port)
-
-    ####
-    # Register a Generic Video Module
-
-    resolution = vision_definitions.kQVGA
-    colorSpace = vision_definitions.kYUVColorSpace
-    fps = 30
-
-    nameId = camProxy.subscribe("python_GVM", resolution, colorSpace, fps)
-    print nameId
-
-    print 'getting images in local'
-    for i in range(0, 20):
-      camProxy.getImageLocal(nameId)
-      camProxy.releaseImage(nameId)
-
-    resolution = vision_definitions.kQQVGA
-    camProxy.setResolution(nameId, resolution)
-
-    print 'getting images in remote'
-    for i in range(0, 20):
-      camProxy.getImageRemote(nameId)
-
-    camProxy.unsubscribe(nameId)
-
-    print 'end of gvm_getImageLocal python script'
-
-def showNaoImage():
-    videoRecorderProxy = ALProxy("ALVideoRecorder", robotIP, port)
-    
-    # This records a 320*240 MJPG video at 10 fps.
-    # Note MJPG can't be recorded with a framerate lower than 3 fps.
-    videoRecorderProxy.setResolution(1)
-    videoRecorderProxy.setFrameRate(10)
-    videoRecorderProxy.setVideoFormat("MJPG")
-    videoRecorderProxy.startRecording("./", "test")
-
-    time.sleep(5)
-    # Video file is saved on the robot in the
-    # /home/nao/recordings/cameras/ folder.
-    videoInfo = videoRecorderProxy.stopRecording()
-    #print type video
-    print "Video was saved on the robot: ", videoInfo[1]
-    print "Num frames: ", videoInfo[0]
-    video = memoryProxy.getData("./test.avi")
+#def Test_Image():
+#
+#    ####
+#    # Create proxy on ALVideoDevice
+#
+#    print "Creating ALVideoDevice proxy to ", robotIP
+#
+#    camProxy = ALProxy("ALVideoDevice", robotIP, port)
+#
+#    ####
+#    # Register a Generic Video Module
+#
+#    resolution = vision_definitions.kQVGA
+#    colorSpace = vision_definitions.kYUVColorSpace
+#    fps = 30
+#
+#    nameId = camProxy.subscribe("python_GVM", resolution, colorSpace, fps)
+#    print nameId
+#
+#    print 'getting images in local'
+#    for i in range(0, 20):
+#      camProxy.getImageLocal(nameId)
+#      camProxy.releaseImage(nameId)
+#
+#    resolution = vision_definitions.kQQVGA
+#    camProxy.setResolution(nameId, resolution)
+#
+#    print 'getting images in remote'
+#    for i in range(0, 20):
+#      camProxy.getImageRemote(nameId)
+#
+#    camProxy.unsubscribe(nameId)
+#
+#    print 'end of gvm_getImageLocal python script'
+#
+#def showNaoImage():
+#    videoRecorderProxy = ALProxy("ALVideoRecorder", robotIP, port)
+#    
+#    # This records a 320*240 MJPG video at 10 fps.
+#    # Note MJPG can't be recorded with a framerate lower than 3 fps.
+#    videoRecorderProxy.setResolution(1) 
+#    videoRecorderProxy.setFrameRate(10)
+#    videoRecorderProxy.setVideoFormat("MJPG")
+#    videoRecorderProxy.startRecording("./", "test")
+#
+#    time.sleep(5)
+#    # Video file is saved on the robot in the
+#    # /home/nao/recordings/cameras/ folder.
+#    videoInfo = videoRecorderProxy.stopRecording()
+#    #print type video
+#    print "Video was saved on the robot: ", videoInfo[1]
+#    print "Num frames: ", videoInfo[0]
+#    video = memoryProxy.getData("./test.avi")
 
 
 #==============================================================================
 # """Sensors"""
 #==============================================================================
 def TrySensors():
-
-    Left = memoryProxy.getData("Device/SubDeviceList/US/Left/Sensor/Value")
-    Right = memoryProxy.getData("Device/SubDeviceList/US/Right/Sensor/Value") 
+    SLeft = [memoryProxy.getData("Device/SubDeviceList/US/Left/Sensor/Value")]
+    SRight = [memoryProxy.getData("Device/SubDeviceList/US/Right/Sensor/Value")]
+    for i in range (5):
+        SLeft.append(memoryProxy.getData("Device/SubDeviceList/US/Left/Sensor/Value"))
+        SRight.append(memoryProxy.getData("Device/SubDeviceList/US/Right/Sensor/Value"))
+    Left = np.mean(SLeft)
+    Right = np.mean(SRight)
 #    print 'Left :', Left
 #    print 'Right:', Right
     return Left, Right
@@ -330,11 +314,11 @@ config_robo = [["Frequency", 0.4],
                ["LeftTorsoWy", 1.0*almath.TO_RAD]  ]
 
 def dorun(t):
-    X = -0.9
+    X = 0.9
     Y = 0.0
     Theta = 0.0
 #    Frequency =0.9 # low speed
-    motionProxy.moveToward(X, Y, Theta, config_robo )
+    motionProxy.moveTo(X, Y, Theta)
 #    
 #    t0 = time.time()
 #    AngX, AngY = [], []
@@ -353,10 +337,14 @@ def dorun(t):
 
 def doback():
     
-     motionProxy.moveToward(X, Y, Theta, config_robo_back )
+    X = -0.4
+    Y = 0.0
+    Theta = 0.0
+#    Frequency =0.9 # low speed
+    motionProxy.moveTo(X, Y, Theta)
      
-     time.sleep(t)
-     print"back"
+    time.sleep(t)
+    print"back"
     
 def doleft(angle):
     
@@ -412,9 +400,9 @@ def doStandUp():
     print"standing up"
     
 def doStop():
-    
+    time.sleep(1)
     motionProxy.setWalkTargetVelocity(0, 0, 0, Frequency)
-    postureProxy.goToPosture("Crouch", 0.3)
+    postureProxy.goToPosture("Crouch", 0.5)
     Accelero()
     motionProxy.setStiffnesses("Body", 0.0)
     motionProxy.rest()
@@ -430,7 +418,7 @@ def target_velocity():
     Frequency =0.4 # max speed
     motionProxy.moveToward(X, Y, Theta,[["Frequency", 0.4],
                                         ["MaxStepX", 0.08],
-                                        ["RightMaxStepFrequency", 0.3],
+                                        ["Rig fhtMaxStepFrequency", 0.3],
                                         ["RightStepHeight", 0.0018],
                                         ["RightTorsoWx", 3.0*almath.TO_RAD],
                                         ["RightTorsoWy", 1.0*almath.TO_RAD],
@@ -475,7 +463,6 @@ def position_robot():
     #####################
     robotMove = almath.pose2DInverse(initRobotPosition)*endRobotPosition
     print "Robot Move :", robotMove
-
 def Test_Square_Left_Right():
     print ">>>>>>>>>>> Test du carre"
     print ">>> carre gauche"
@@ -502,26 +489,15 @@ def BatteryMemory():
     b = memoryProxy.getData ("Device/SubDeviceList/Battery/Charge/Sensor/Status")
     s = []
     t0 = time.time()
-    while time.time() - t0 < 2:
+    while time.time() - t0 < 1:
         s.append(c)
         c = memoryProxy.getData ("Device/SubDeviceList/Battery/Charge/Sensor/Value")
     #print "Percentage = ", percentage    
     print "Pourcentage de la batterie :", np.mean(s) * 100, "%"
     #print "status =", b
     return np.mean(s) * 100
-    
-def sumList(a, b):
-    result = []
-    for i in range(len(a)):
-        result.append(a[i] + b[i])
-    return result
-
-def close():
-    myWidget.close()
-    boutton.close()
-#    app.exit()
-    
-def Test_Articulations():
+     
+def Test_Articulations(queue=None,prog=None):
     StiffnessOn(motionProxy)
 
 
@@ -554,21 +530,153 @@ def Test_Articulations():
             listValStandInit = sumList(listValStandInit, tab[i][j])
             configRob(listValStandInit[0], listValStandInit[1], listValStandInit[2], listValStandInit[3], listValStandInit[4], listValStandInit[5], listValStandInit[6], listValStandInit[7], listValStandInit[8], listValStandInit[9], listValStandInit[10])
     time.sleep(2)
+    motionProxy.openHand('RHand')
+    motionProxy.openHand('LHand')
+    time.sleep(1)
+    motionProxy.closeHand('RHand')
+    motionProxy.closeHand('LHand')
+    initmouv()
+    prog.value = 0
     
-    postureProxy.goToPosture("Crouch", 2.0)
+def Tete(queue=None,prog=None):
+    initmouv()
+    names = ['HeadYaw']
+    angles = [-2.0857]
+    motionProxy.setAngles(names,angles,.6)
+    time.sleep(1.5)
+    names = ['HeadYaw']
+    angles = [+2.0857]
+    motionProxy.setAngles(names,angles,.6)
+    time.sleep(1.5)
+    names = ['HeadYaw']
+    angles = [0]
+    motionProxy.setAngles(names,angles,.6)
+    time.sleep(1.5)
+    names = ['HeadPitch']
+    angles = [-0.671951]
+    motionProxy.setAngles(names,angles,.6)
+    time.sleep(1)
+    names = ['HeadPitch']
+    angles = [0.515047]
+    motionProxy.setAngles(names,angles,.6)
+    time.sleep(1)
+    names = ['HeadPitch']
+    angles = [0]
+    motionProxy.setAngles(names,angles,.6)
+    time.sleep(1)
+    initmouv()
+    prog.value = 0
     
-def Tete():
-    print('rien')
+
+def Epaule(queue=None,prog=None):
+    initmouv()
+    names = ['LShoulderPitch']
+    angles = [2.0857]
+    motionProxy.setAngles(names,angles,.35)
+#    time.sleep(2)
+    names = ['RShoulderPitch']
+    angles = [2.0857]
+    motionProxy.setAngles(names,angles,.35)
+    time.sleep(2)
+    names = ['LShoulderPitch']
+    angles = [-2.0857]
+    motionProxy.setAngles(names,angles,.35)
+#    time.sleep(2)
+    names = ['RShoulderPitch']
+    angles = [-2.0857]
+    motionProxy.setAngles(names,angles,.35)
+    time.sleep(2)
+    names = ['LShoulderPitch']
+    angles = [0]
+    motionProxy.setAngles(names,angles,.35)
+#    time.sleep(2)  
+    names = ['RShoulderPitch']
+    angles = [0]
+    motionProxy.setAngles(names,angles,.35)
+    time.sleep(2)
+    
+    names = ['LShoulderRoll','RShoulderRoll']
+    angles = [-0.3142,0.3142]
+    motionProxy.setAngles(names,angles,.35)
+    time.sleep(0.5)
+    names = ['LShoulderRoll','RShoulderRoll']
+    angles =  [1.3265, 	-1.3265 ]
+    time.sleep(1)
+    motionProxy.setAngles(names,angles,.35)
+    names = ['LShoulderRoll','RShoulderRoll']
+    angles =  [0, 0 ]
+    time.sleep(1)
+    motionProxy.setAngles(names,angles,.35)
+    prog.value = 0
+    
+def Coudes(queue=None,prog=None):
+    initmouv()
+    names = ['LElbowRoll']
+    angles = [-1.5446 ]
+    motionProxy.setAngles(names,angles,.5)
+#    time.sleep(2)
+    names = ['RElbowRoll']
+    angles = [+1.5446 ]
+    motionProxy.setAngles(names,angles,.5)
+    time.sleep(1)
+    names = ['LElbowRoll']
+    angles = [-0.0349]
+    motionProxy.setAngles(names,angles,.5)
+#    time.sleep(2)
+    names = ['RElbowRoll']
+    angles = [+0.0349]
+    motionProxy.setAngles(names,angles,.5)
+    time.sleep(1)
+    names = ['LElbowRoll']
+    angles = [0]
+    motionProxy.setAngles(names,angles,.5)
+#    time.sleep(2)  
+    names = ['RElbowRoll']
+    angles = [0]
+    motionProxy.setAngles(names,angles,.5)
+    time.sleep(1)    
+    names = ['LElbowYaw','RElbowYaw']
+    angles = [-2.0857 ,2.0857]
+    motionProxy.setAngles(names,angles,.5)
+    time.sleep(2)
+    names = ['LElbowYaw','RElbowYaw']
+    angles = [2.0857 ,-2.0857]
+    motionProxy.setAngles(names,angles,.5)
+    time.sleep(1)
+    names = ['LElbowYaw','RElbowYaw']
+    angles = [0 ,0]
+    motionProxy.setAngles(names,angles,.5)
+    time.sleep(1)
+    prog.value = 0    
+    
+def Poignet(queue=None,prog=None):
+    initmouv()
+    names  = ['LWristYaw','RWristYaw']
+    angles = [ -1.8238, +1.8238]
+    motionProxy.setAngles(names,angles,.2)
+    time.sleep(2)
+    names  = ['LWristYaw','RWristYaw']
+    angles = [ +1.8238, -1.8238]
+    motionProxy.setAngles(names,angles,.2)
+    time.sleep(2)
+    names  = ['LWristYaw','RWristYaw']
+    angles = [ 0, 0]
+    motionProxy.setAngles(names,angles,.2)
+    time.sleep(2)
+    prog.value = 0
+    
+def Main(queue=None,prog=None):
+    initmouv()
+    motionProxy.openHand('RHand')
+    motionProxy.openHand('LHand')
+    time.sleep(1)
+    motionProxy.closeHand('RHand')
+    motionProxy.closeHand('LHand')
+    prog.value = 0
+    
 #####################################################################
 # mes modifications 
 #############################################################
-
-def rempfsr(a, b):
-    result = []
-    for i in range(len(a)):
-        a[i] = b[i]
-        result.append(a[i])
-    return result
 
 def fsr():
    left_foot= [ memoryProxy.getData("Device/SubDeviceList/LFoot/FSR/FrontLeft/Sensor/Value"),
@@ -580,13 +688,6 @@ def fsr():
     memoryProxy.getData("Device/SubDeviceList/RFoot/FSR/FrontRight/Sensor/Value"),
     memoryProxy.getData("Device/SubDeviceList/RFoot/FSR/RearLeft/Sensor/Value"),
     memoryProxy.getData("Device/SubDeviceList/RFoot/FSR/RearRight/Sensor/Value")]
-   
-   valeur_left = [0.07025,0.07025,-0.03025,-0.02965]
-   valeur_right = [0.07025,0.07025,-0.03025,-0.02965]
-   
-   left_foot = rempfsr(left_foot , valeur_left)
-   right_foot = rempfsr(right_foot , valeur_right)
-    
    
    print " left_foot:",left_foot
    print " right_foot:",right_foot
@@ -638,7 +739,7 @@ def gyroscope():
 def steps():
     footStepsList = []
 
-    # 1) Step forward with your left foot
+    # 1) Step forward with your lefIf time is zero, no alarm is scheduled, and any scheduled alarm is canceled. If the return value is zero, no alarm is currently scheduled.t foot
     footStepsList.append([["LLeg"], [[0.06, 0.1, 0.0]]])
 
     # 2) Sidestep to the left with your left foot
@@ -677,55 +778,6 @@ def steps():
                 [stepFrequency],
                 clearExisting)
             
-
-
-#footMove = almath.Pose2D (motionProxy.getRobotPosition(False))
-#isLeftSupport = False
-#minFootSeparation = 0.088
-#minStepX = - 0.04
-#maxStepX = 0.08
-#maxStepY = 0.16
-#maxStepTheta = 0.35
-#def clipFootStepOnGaitConfig(footMove, isLeftSupport):
-#  ''' Clip the foot move so that it does not exceed the maximum
-#      size of steps.
-#      footMove is an almath.Pose2D (x, y, theta position).
-#      isLeftSupport must be set to True if the move is on the right leg
-#      (the robot is supporting itself on the left leg).
-#  '''
-#
-#  def clipFloat(minValue, maxValue, value):
-#    ''' Clip value between two extremes. '''
-#    clipped = value
-#    if (clipped < minValue):
-#      clipped = minValue
-#    if (clipped > maxValue):
-#      clipped = maxValue
-#    return clipped
-#
-#  # Clip X.
-#  
-#  clippedX = clipFloat(minStepX, maxStepX, footMove.x)
-#  footMove.x = clippedX
-#
-#  # Clip Y.
-#  if not isLeftSupport:
-#    clippedY = clipFloat(minFootSeparation, maxStepY, footMove.y)
-#  else:
-#    clippedY = clipFloat(-maxStepY, - minFootSeparation, footMove.y)
-#  footMove.y = clippedY
-#
-#  # Clip Theta.
-#  clippedTheta = clipFloat(-maxStepTheta, maxStepTheta, footMove.theta)
-#  footMove.theta = clippedTheta
-#  
-#def test():
-#    
-#    motionProxy.moveInit()
-#    motionProxy.setWalkTargetVelocity(1.0, 0.0, 0.0, 1.0, motionProxy.getMoveConfig("Default"),
-#                                                motionProxy.getMoveConfig("Min"))
-#time.sleep(3.0)
-
 
 def towalk():
     x  = 1.0
@@ -814,49 +866,39 @@ class HumanGreeterModule(ALModule):
 if __name__== "__main__":
     doInitialisation()
     #test de la vision du NAO
-    try:
-#
-#        fsr()
-#        time.sleep(1)
-#        
-#        tts.say("bonjour")
-#        
-#        gyroscope()
-#        time.sleep(1)
-#        
-#        userArmArticular_r(motionProxy)
-#        time.sleep(1)
-#        
-#        steps()
-#        time.sleep(1)
-#        
-#        userArmArticular(motionProxy)
-#        time.sleep(1)
-        
-        dorun(6)
-        time.sleep(6)
-        
-#        doback()
-#        time.sleep(1)
-#        
-#        doleft(np.pi/2)
-#        time.sleep(6)
-#        
-        
+    try:        
+        print 'b0 :'
+        b0 = BatteryMemory()
+        #test de capteurs
+        print "Test des capteurs frontaux du robot" 
+        print 'Gauche' ,TrySensors()[0],'\nDroite',TrySensors()[1]
+        print "Fin capteurs..." 
 
-        
-#        print 'b0 :'
-#        b0 = BatteryMemory()
-#        #test de capteurs
-#        print "Test des capteurs frontaux du robot" 
-#        TrySensors()
-#        print "Fin capteurs..." 
-#
 #        print "Test de calcul de vitesse et position"
 #        target_velocity()
 #        position_robot()
 #        print "Fin vitesse / position ..." 
+        
+        print "Test de la fonction de parole du nao"
+        TestTts("Test Micro")
+        time.sleep(1.0)
+        print "Fin parole..."
+        
+        print "Test de deplacement du robot"
+        print "trajectoire: carre gauche puis carre droite"
+        Test_Square_Left_Right()
+        print "Fin deplacement..."
+
+        print "Test des articulations Tete / Bras"
+        Test_Articulations()
+        print "Fin articulations..."
+        
+        print "b1 :"
+        b1 = BatteryMemory()
+        print "Fin Batterie..."
+        print "différence",(b0-b1)
 #        
+<<<<<<< HEAD
 #        print "Test de la fonction de parole du nao"
 #        TestTts("Test Micro")
 #        time.sleep(1.0)
@@ -870,24 +912,20 @@ if __name__== "__main__":
 #        print "Test des articulations Tete / Bras"
         Test_Articulations()
 #        print "Fin articulations..."
+=======
+        print "Test d'affichage en temps réel de la vision du robot"
+        doStop()
+        app = QApplication(sys.argv)
+        myWidget = vis.ImageWidget(robotIP, port, CameraID)
+        myWidget.show()
+        boutton= QPushButton()
+        boutton.show()
+        boutton.clicked.connect(close)
+
+        sys.exit(app.exec_())
+>>>>>>> 89ad711a8fc3ca5103f715386745b2b224a2ced8
 #        
-#        print "b1 :"
-#        b1 = BatteryMemory()
-#        print "Fin Batterie..."
-#        print "différence",(b0-b1)
-        
-#        print "Test d'affichage en temps réel de la vision du robot"
-#        doStop()
-#        app = QApplication(sys.argv)
-#        myWidget = vis.ImageWidget(robotIP, port, CameraID)
-#        myWidget.show()
-#        boutton= QPushButton()
-#        boutton.show()
-#        boutton.clicked.connect(close)
-#
-#        sys.exit(app.exec_())
-##        
-#        print "Fin video..."
+        print "Fin video..."
         doStop()
         
 
