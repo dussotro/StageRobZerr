@@ -12,58 +12,15 @@ from multiprocessing import Process, Queue, Value
 import signal
 
 
-#robotIP = "172.20.13.63" #Rouge
+robotIP = "172.20.13.63" #Rouge
 #robotIP = "172.20.28.103" #Bleu
 #robotIP = "172.20.11.237"# gamma 
-robotIP = "172.20.11.242" #beta
+#robotIP = "172.20.11.242" #beta
 
 port = 9559
 CameraID = 0
 Frequency = 0.0 #low speed
 t=1.0
-
-#try:
-#    motionProxy = ALProxy("ALMotion", robotIP, port)
-#except Exception, e:
-#    print"Could not create proxy to ALMotion"
-#    print"Error was: ", e
-#try:
-#    postureProxy = ALProxy("ALRobotPosture", robotIP, port)
-#except Exception, e:
-#    print "Could not create proxy to ALRobotPosture"
-#    print "Error was: ", e
-#try:
-#    sonarProxy = ALProxy("ALSonar", robotIP, port)
-#    sonarProxy.subscribe("myApplication")
-#except Exception, e:
-#    print "Could not create proxy to ALSonar"
-#    print "Error was: ", e
-#
-#try :
-#    audio = ALProxy("ALAudioDevice", robotIP,port)
-#    audio.setOutputVolume(50)
-#except Exception, e: 
-#    print "Could not create proxy to ALaudioProxy"
-#    print "Error was: ", e
-#try :
-#    tts = ALProxy("ALTextToSpeech", robotIP, port)
-#    tts.setLanguage("French")
-#except Exception, e: 
-#    print "Could not create proxy to ALTextToSpeech"
-#    print "Error was: ", e
-#
-#try:
-#    memoryProxy = ALProxy("ALMemory",robotIP, port)
-#except Exception, e:
-#    print "Could not create proxy to ALMemory"
-#    print "Error was: ", e
-#    
-#try:
-#    BatteryProxy = ALProxy("ALBattery",robotIP, port)
-#except Exception, e:
-#    print "Could not create proxy to AlBattery"
-#    print "Error was: ", e
-
 
 class UiTest(QtGui.QMainWindow):
     def __init__(self,*args, **kwargs):
@@ -90,12 +47,9 @@ class UiTest(QtGui.QMainWindow):
         self.battery_init = DiagNAO.BatteryMemory()
         
         palette= QtGui.QPalette()
-        pixmap = QtGui.QPixmap("fond.jpeg").scaled(self.ui.width(),self.ui.height())   
-        # vérifiez que vous avez cette image
+        pixmap = QtGui.QPixmap("fond.jpeg").scaled(self.ui.width(),self.ui.height())   # vérifiez que vous avez cette image
         palette.setBrush(QtGui.QPalette.Background,QtGui.QBrush(pixmap))
         self.setPalette(palette)
-        
-        
         
 #    def setprog(self,signal,signale):
 #        print signal,signale        
@@ -112,6 +66,11 @@ class UiTest(QtGui.QMainWindow):
         
         
     def Battery(self):
+        """
+        Ecrit le pourcentage restant dans la batterie.
+        Pour vérifier qu'il n'y est pas de probleme dans la batterie.
+        Faire une mesure au début et à la fin des Test.
+        """
         if self.prog.value == 0:
             self.ui.label_prog.setText('Battery')
             self.prog = 1
