@@ -111,38 +111,9 @@ def initmouv():
     listValStandInit = sumList(listValStandInit, tab)     
     configRob(listValStandInit[0], listValStandInit[1], listValStandInit[2], listValStandInit[3], listValStandInit[4], listValStandInit[5], listValStandInit[6], listValStandInit[7], listValStandInit[8], listValStandInit[9], listValStandInit[10])
     
-    time.sleep(1)
+    time.sleep(0.5)
 
     
-
-#class Myevent(ALModule):
-#    """ Mandatory docstring.
-#        comment needed to create a new python module
-#    """
-#    def __init__(self, name):
-#        ALModule.__init__(self, name)
-#        # No need for IP and port here because
-#        # we have our Python broker connected to NAOqi broker
-#        # Create a proxy to ALTextToSpeech for later use
-#        self.tts = BatteryProxy
-#        self.level = 0
-#
-#        # Subscribe to the BatteryChange event:
-#        self.battery.subscribeToEvent("BatteryChargeChanged",
-#            "BatteryRob",
-#            "callBackBattery")
-#        
-#    def callBackBattery(self, *_args):
-#        """ Mandatory docstring.
-#        comment needed to create a bound method
-#        """
-#        self.battery.unsubscribeToEvent("BatteryChargeChanged",
-#                                        "BatteryRob") 
-#        print 'im right here'
-#        print self.percentage
-#        self.battery.unsubscribeToEvent("BatteryChargeChanged",
-#                                            "BatteryRob") 
-#    
 
 #==============================================================================
 # Classe de test de toutes les articulations
@@ -221,33 +192,6 @@ def configRob(HeadYawAngle, HeadPitchAngle, ShoulderPitchAngle, ShoulderRollAngl
         # Ask motion to do this with a blocking call    
         motionProxy.angleInterpolationWithSpeed(pNames, pTargetAngles, pMaxSpeedFraction)
 
-class Robot:
-    def __init__(self, rt, ia, am, space):
-            self.d_mvt = {}
-            self.reference_time = rt
-            self.isAbsolute = ia
-            self.axisMask = am
-            self.space = space
-            self.tempo_time = 0
-    def mvt(self, where, path):
-            reference_time = 0
-            if self.tempo_time != 0:
-                reference_time = self.tempo_time
-                self.tempo_time = 0
-            else:
-                reference_time = self.reference_time    
-            if not self.d_mvt.has_key(where):
-                self.d_mvt[where] = path
-            else:
-                old_path = self.d_mvt[where]
-                saved_path = [el1 + el2 for el1, el2 in zip(path, old_path)]
-                self.d_mvt[where] = saved_path
-            motionProxy.positionInterpolation(where, self.space, path, self.axisMask, reference_time, self.isAbsolute)
-                    
-            time.sleep(1.0)
-
-
-
 #==============================================================================
 # Audio
 #==============================================================================
@@ -258,60 +202,59 @@ def TestTts(texte):
 # """Vision"""
 #==============================================================================
 
-
-def Test_Image():
-
-    ####
-    # Create proxy on ALVideoDevice
-
-    print "Creating ALVideoDevice proxy to ", robotIP
-
-    camProxy = ALProxy("ALVideoDevice", robotIP, port)
-
-    ####
-    # Register a Generic Video Module
-
-    resolution = vision_definitions.kQVGA
-    colorSpace = vision_definitions.kYUVColorSpace
-    fps = 30
-
-    nameId = camProxy.subscribe("python_GVM", resolution, colorSpace, fps)
-    print nameId
-
-    print 'getting images in local'
-    for i in range(0, 20):
-      camProxy.getImageLocal(nameId)
-      camProxy.releaseImage(nameId)
-
-    resolution = vision_definitions.kQQVGA
-    camProxy.setResolution(nameId, resolution)
-
-    print 'getting images in remote'
-    for i in range(0, 20):
-      camProxy.getImageRemote(nameId)
-
-    camProxy.unsubscribe(nameId)
-
-    print 'end of gvm_getImageLocal python script'
-
-def showNaoImage():
-    videoRecorderProxy = ALProxy("ALVideoRecorder", robotIP, port)
-    
-    # This records a 320*240 MJPG video at 10 fps.
-    # Note MJPG can't be recorded with a framerate lower than 3 fps.
-    videoRecorderProxy.setResolution(1) 
-    videoRecorderProxy.setFrameRate(10)
-    videoRecorderProxy.setVideoFormat("MJPG")
-    videoRecorderProxy.startRecording("./", "test")
-
-    time.sleep(5)
-    # Video file is saved on the robot in the
-    # /home/nao/recordings/cameras/ folder.
-    videoInfo = videoRecorderProxy.stopRecording()
-    #print type video
-    print "Video was saved on the robot: ", videoInfo[1]
-    print "Num frames: ", videoInfo[0]
-    video = memoryProxy.getData("./test.avi")
+#def Test_Image():
+#
+#    ####
+#    # Create proxy on ALVideoDevice
+#
+#    print "Creating ALVideoDevice proxy to ", robotIP
+#
+#    camProxy = ALProxy("ALVideoDevice", robotIP, port)
+#
+#    ####
+#    # Register a Generic Video Module
+#
+#    resolution = vision_definitions.kQVGA
+#    colorSpace = vision_definitions.kYUVColorSpace
+#    fps = 30
+#
+#    nameId = camProxy.subscribe("python_GVM", resolution, colorSpace, fps)
+#    print nameId
+#
+#    print 'getting images in local'
+#    for i in range(0, 20):
+#      camProxy.getImageLocal(nameId)
+#      camProxy.releaseImage(nameId)
+#
+#    resolution = vision_definitions.kQQVGA
+#    camProxy.setResolution(nameId, resolution)
+#
+#    print 'getting images in remote'
+#    for i in range(0, 20):
+#      camProxy.getImageRemote(nameId)
+#
+#    camProxy.unsubscribe(nameId)
+#
+#    print 'end of gvm_getImageLocal python script'
+#
+#def showNaoImage():
+#    videoRecorderProxy = ALProxy("ALVideoRecorder", robotIP, port)
+#    
+#    # This records a 320*240 MJPG video at 10 fps.
+#    # Note MJPG can't be recorded with a framerate lower than 3 fps.
+#    videoRecorderProxy.setResolution(1) 
+#    videoRecorderProxy.setFrameRate(10)
+#    videoRecorderProxy.setVideoFormat("MJPG")
+#    videoRecorderProxy.startRecording("./", "test")
+#
+#    time.sleep(5)
+#    # Video file is saved on the robot in the
+#    # /home/nao/recordings/cameras/ folder.
+#    videoInfo = videoRecorderProxy.stopRecording()
+#    #print type video
+#    print "Video was saved on the robot: ", videoInfo[1]
+#    print "Num frames: ", videoInfo[0]
+#    video = memoryProxy.getData("./test.avi")
 
 
 #==============================================================================
@@ -427,7 +370,7 @@ def doright(angle):
     
     initRobotPosition = almath.Pose2D(motionProxy.getRobotPosition(False))
     
-    theta= angle
+    theta= -angle
     motionProxy.moveTo (0, 0, theta)
 #    motionProxy.setWalkTargetVelocity(0, 0, -0.5, 0.01)
     #####################
@@ -471,7 +414,7 @@ def target_velocity():
     Frequency =0.4 # max speed
     motionProxy.moveToward(X, Y, Theta,[["Frequency", 0.4],
                                         ["MaxStepX", 0.08],
-                                        ["RightMaxStepFrequency", 0.3],
+                                        ["Rig fhtMaxStepFrequency", 0.3],
                                         ["RightStepHeight", 0.0018],
                                         ["RightTorsoWx", 3.0*almath.TO_RAD],
                                         ["RightTorsoWy", 1.0*almath.TO_RAD],
@@ -516,7 +459,6 @@ def position_robot():
     #####################
     robotMove = almath.pose2DInverse(initRobotPosition)*endRobotPosition
     print "Robot Move :", robotMove
-
 def Test_Square_Left_Right():
     print ">>>>>>>>>>> Test du carre"
     print ">>> carre gauche"
@@ -550,14 +492,7 @@ def BatteryMemory():
     print "Pourcentage de la batterie :", np.mean(s) * 100, "%"
     #print "status =", b
     return np.mean(s) * 100
-    
-
-
-def close():
-    myWidget.close()
-    boutton.close()
-#    app.exit()
-    
+     
 def Test_Articulations(queue=None,prog=None):
     StiffnessOn(motionProxy)
 
@@ -596,7 +531,7 @@ def Test_Articulations(queue=None,prog=None):
     time.sleep(1)
     motionProxy.closeHand('RHand')
     motionProxy.closeHand('LHand')
-    postureProxy.goToPosture("Crouch", 2.0)
+    initmouv()
     prog.value = 0
     
 def Tete(queue=None,prog=None):
@@ -604,27 +539,27 @@ def Tete(queue=None,prog=None):
     names = ['HeadYaw']
     angles = [-2.0857]
     motionProxy.setAngles(names,angles,.6)
-    time.sleep(2)
+    time.sleep(1.5)
     names = ['HeadYaw']
     angles = [+2.0857]
     motionProxy.setAngles(names,angles,.6)
-    time.sleep(2)
+    time.sleep(1.5)
     names = ['HeadYaw']
     angles = [0]
     motionProxy.setAngles(names,angles,.6)
-    time.sleep(2)
+    time.sleep(1.5)
     names = ['HeadPitch']
     angles = [-0.671951]
     motionProxy.setAngles(names,angles,.6)
-    time.sleep(2)
+    time.sleep(1)
     names = ['HeadPitch']
     angles = [0.515047]
     motionProxy.setAngles(names,angles,.6)
-    time.sleep(2)
+    time.sleep(1)
     names = ['HeadPitch']
     angles = [0]
     motionProxy.setAngles(names,angles,.6)
-    time.sleep(2)
+    time.sleep(1)
     initmouv()
     prog.value = 0
     
@@ -638,7 +573,7 @@ def Epaule(queue=None,prog=None):
     names = ['RShoulderPitch']
     angles = [2.0857]
     motionProxy.setAngles(names,angles,.35)
-    time.sleep(4)
+    time.sleep(2)
     names = ['LShoulderPitch']
     angles = [-2.0857]
     motionProxy.setAngles(names,angles,.35)
@@ -646,7 +581,7 @@ def Epaule(queue=None,prog=None):
     names = ['RShoulderPitch']
     angles = [-2.0857]
     motionProxy.setAngles(names,angles,.35)
-    time.sleep(4)
+    time.sleep(2)
     names = ['LShoulderPitch']
     angles = [0]
     motionProxy.setAngles(names,angles,.35)
@@ -654,21 +589,20 @@ def Epaule(queue=None,prog=None):
     names = ['RShoulderPitch']
     angles = [0]
     motionProxy.setAngles(names,angles,.35)
-    time.sleep(4)
+    time.sleep(2)
     
     names = ['LShoulderRoll','RShoulderRoll']
     angles = [-0.3142,0.3142]
     motionProxy.setAngles(names,angles,.35)
-    time.sleep(2)
+    time.sleep(0.5)
     names = ['LShoulderRoll','RShoulderRoll']
     angles =  [1.3265, 	-1.3265 ]
-    time.sleep(3)
+    time.sleep(1)
     motionProxy.setAngles(names,angles,.35)
     names = ['LShoulderRoll','RShoulderRoll']
     angles =  [0, 0 ]
     time.sleep(1)
     motionProxy.setAngles(names,angles,.35)
-    initmouv()
     prog.value = 0
     
 def Coudes(queue=None,prog=None):
@@ -680,7 +614,7 @@ def Coudes(queue=None,prog=None):
     names = ['RElbowRoll']
     angles = [+1.5446 ]
     motionProxy.setAngles(names,angles,.5)
-    time.sleep(2)
+    time.sleep(1)
     names = ['LElbowRoll']
     angles = [-0.0349]
     motionProxy.setAngles(names,angles,.5)
@@ -688,7 +622,7 @@ def Coudes(queue=None,prog=None):
     names = ['RElbowRoll']
     angles = [+0.0349]
     motionProxy.setAngles(names,angles,.5)
-    time.sleep(2)
+    time.sleep(1)
     names = ['LElbowRoll']
     angles = [0]
     motionProxy.setAngles(names,angles,.5)
@@ -696,25 +630,26 @@ def Coudes(queue=None,prog=None):
     names = ['RElbowRoll']
     angles = [0]
     motionProxy.setAngles(names,angles,.5)
+<<<<<<< HEAD
     time.sleep(2)
 #    prog.value = 0
     
+=======
+    time.sleep(1)    
+>>>>>>> 89ad711a8fc3ca5103f715386745b2b224a2ced8
     names = ['LElbowYaw','RElbowYaw']
     angles = [-2.0857 ,2.0857]
-    motionProxy.setAngles(names,angles,.2)
-    time.sleep(1)
+    motionProxy.setAngles(names,angles,.5)
+    time.sleep(2)
     names = ['LElbowYaw','RElbowYaw']
-    angles = [-2.0857 ,-2.0857]
-    motionProxy.setAngles(names,angles,.2)
+    angles = [2.0857 ,-2.0857]
+    motionProxy.setAngles(names,angles,.5)
     time.sleep(1)
     names = ['LElbowYaw','RElbowYaw']
     angles = [0 ,0]
-    motionProxy.setAngles(names,angles,.2)
+    motionProxy.setAngles(names,angles,.5)
     time.sleep(1)
-    initmouv()
-    prog.value = 0
-    
-    
+    prog.value = 0    
     
 def Poignet(queue=None,prog=None):
     initmouv()
@@ -730,35 +665,20 @@ def Poignet(queue=None,prog=None):
     angles = [ 0, 0]
     motionProxy.setAngles(names,angles,.2)
     time.sleep(2)
-    initmouv()
     prog.value = 0
     
-    
 def Main(queue=None,prog=None):
-    #print Other
     initmouv()
     motionProxy.openHand('RHand')
     motionProxy.openHand('LHand')
     time.sleep(1)
     motionProxy.closeHand('RHand')
     motionProxy.closeHand('LHand')
-    #if not Other == None:
     prog.value = 0
-    print "j'ai finis"
-        #print Other.prog
-        #signal.alarm(1) 
-        #time.sleep(2)
     
 #####################################################################
 # mes modifications 
 #############################################################
-
-def rempfsr(a, b):
-    result = []
-    for i in range(len(a)):
-        a[i] = b[i]
-        result.append(a[i])
-    return result
 
 def fsr():
    left_foot= [ memoryProxy.getData("Device/SubDeviceList/LFoot/FSR/FrontLeft/Sensor/Value"),
@@ -770,13 +690,6 @@ def fsr():
     memoryProxy.getData("Device/SubDeviceList/RFoot/FSR/FrontRight/Sensor/Value"),
     memoryProxy.getData("Device/SubDeviceList/RFoot/FSR/RearLeft/Sensor/Value"),
     memoryProxy.getData("Device/SubDeviceList/RFoot/FSR/RearRight/Sensor/Value")]
-   
-   valeur_left = [0.07025,0.07025,-0.03025,-0.02965]
-   valeur_right = [0.07025,0.07025,-0.03025,-0.02965]
-   
-   left_foot = rempfsr(left_foot , valeur_left)
-   right_foot = rempfsr(right_foot , valeur_right)
-    
    
    print " left_foot:",left_foot
    print " right_foot:",right_foot
@@ -868,55 +781,6 @@ def steps():
                 clearExisting)
             
 
-
-#footMove = almath.Pose2D (motionProxy.getRobotPosition(False))
-#isLeftSupport = False
-#minFootSeparation = 0.088
-#minStepX = - 0.04
-#maxStepX = 0.08
-#maxStepY = 0.16
-#maxStepTheta = 0.35
-#def clipFootStepOnGaitConfig(footMove, isLeftSupport):
-#  ''' Clip the foot move so that it does not exceed the maximum
-#      size of steps.
-#      footMove is an almath.Pose2D (x, y, theta position).
-#      isLeftSupport must be set to True if the move is on the right leg
-#      (the robot is supporting itself on the left leg).
-#  '''
-#
-#  def clipFloat(minValue, maxValue, value):
-#    ''' Clip value between two extremes. '''
-#    clipped = value
-#    if (clipped < minValue):
-#      clipped = minValue
-#    if (clipped > maxValue):
-#      clipped = maxValue
-#    return clipped
-#
-#  # Clip X.
-#  
-#  clippedX = clipFloat(minStepX, maxStepX, footMove.x)
-#  footMove.x = clippedX
-#
-#  # Clip Y.
-#  if not isLeftSupport:
-#    clippedY = clipFloat(minFootSeparation, maxStepY, footMove.y)
-#  else:
-#    clippedY = clipFloat(-maxStepY, - minFootSeparation, footMove.y)
-#  footMove.y = clippedY
-#
-#  # Clip Theta.
-#  clippedTheta = clipFloat(-maxStepTheta, maxStepTheta, footMove.theta)
-#  footMove.theta = clippedTheta
-#  
-#def test():
-#    
-#    motionProxy.moveInit()
-#    motionProxy.setWalkTargetVelocity(1.0, 0.0, 0.0, 1.0, motionProxy.getMoveConfig("Default"),
-#                                                motionProxy.getMoveConfig("Min"))
-#time.sleep(3.0)
-
-
 def towalk():
     x  = 1.0
     y  = 0.0
@@ -1004,6 +868,7 @@ class HumanGreeterModule(ALModule):
 if __name__== "__main__":
 #    doInitialisation()
     #test de la vision du NAO
+<<<<<<< HEAD
     try:
 #
 #        fsr()
@@ -1062,6 +927,9 @@ if __name__== "__main__":
 #        
 #        doleft(np.pi/2)
 #        time.sleep(6)
+=======
+    try:        
+>>>>>>> 89ad711a8fc3ca5103f715386745b2b224a2ced8
         print 'b0 :'
         b0 = BatteryMemory()
         #test de capteurs
