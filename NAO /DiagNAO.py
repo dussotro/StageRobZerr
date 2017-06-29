@@ -1003,7 +1003,7 @@ class HumanGreeterModule(ALModule):
         
 
 if __name__== "__main__":
-    doInitialisation()
+#    doInitialisation()
     #test de la vision du NAO
     try:
 #
@@ -1023,27 +1023,27 @@ if __name__== "__main__":
 #        
 #        userArmArticular(motionProxy)
 #        time.sleep(1)
-#        
-        dorun(3)
-        time.sleep(1)
-        doright(np.pi/2)
-        time.sleep(1)
-        dorun(3)
-#        time.sleep(1)
-#        doright(0.6)
-#        time.sleep(1)
-#        dorun(6)
-#        time.sleep(1)
-#        doright(0.6)
-#        time.sleep(1)
+##        
 #        dorun(3)
 #        time.sleep(1)
-#        doright(0.6)
+#        doright(np.pi/2)
 #        time.sleep(1)
-#        dorun(6)
-        time.sleep(2)
-        
-#        doback()
+#        dorun(3)
+##        time.sleep(1)
+##        doright(0.6)
+##        time.sleep(1)
+##        dorun(6)
+##        time.sleep(1)
+##        doright(0.6)
+##        time.sleep(1)
+##        dorun(3)
+##        time.sleep(1)
+##        doright(0.6)
+##        time.sleep(1)
+##        dorun(6)
+#        time.sleep(2)
+#        
+##        doback()
 #        time.sleep(1)
 #        
 #        doleft(np.pi/2)
@@ -1051,13 +1051,13 @@ if __name__== "__main__":
 #        
         
 
-#        
-#        print 'b0 :'
-#        b0 = BatteryMemory()
-#        #test de capteurs
-#        print "Test des capteurs frontaux du robot" 
-#        TrySensors()
-#        print "Fin capteurs..." 
+##        
+        print 'b0 :'
+        b0 = BatteryMemory()
+        #test de capteurs
+        print "Test des capteurs frontaux du robot" 
+        TrySensors()
+        print "Fin capteurs..." 
 #
 #        print "Test de calcul de vitesse et position"
 #        target_velocity()
@@ -1083,16 +1083,16 @@ if __name__== "__main__":
 #        print "Fin Batterie..."
 #        print "différence",(b0-b1)
 #        
-#        print "Test d'affichage en temps réel de la vision du robot"
-#        doStop()
-#        app = QApplication(sys.argv)
-#        myWidget = vis.ImageWidget(robotIP, port, CameraID)
-#        myWidget.show()
-#        boutton= QPushButton()
-#        boutton.show()
-#        boutton.clicked.connect(close)
-#
-#        sys.exit(app.exec_())
+##        print "Test d'affichage en temps réel de la vision du robot"
+##        doStop()
+##        app = QApplication(sys.argv)
+##        myWidget = vis.ImageWidget(robotIP, port, CameraID)
+##        myWidget.show()
+##        boutton= QPushButton()
+##        boutton.show()
+##        boutton.clicked.connect(close)
+##
+##        sys.exit(app.exec_())
 ##        
 #        print "Fin video..."
         doStop()
