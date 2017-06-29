@@ -13,7 +13,7 @@ from PyQt4.QtGui import QWidget, QImage, QApplication, QPainter, QPushButton
 import signal
 
 
-robotIP = "172.20.13.63" #Rouge
+#robotIP = "172.20.13.63" #Rouge
 #robotIP = "172.20.28.103" #Bleu
 robotIP = "172.20.11.237"# gamma 
 #robotIP = "172.20.28.103" #eta
@@ -23,6 +23,8 @@ port = 9559
 CameraID = 0
 Frequency = 0.0 #low speed
 t=1.0
+
+
 
 try:
     motionProxy = ALProxy("ALMotion", robotIP, port)
@@ -116,7 +118,7 @@ def initmouv():
     
 
 #==============================================================================
-# Classe de test de toutes les articulations
+# test de toutes les articulations
 #==============================================================================
 
 
@@ -191,6 +193,47 @@ def configRob(HeadYawAngle, HeadPitchAngle, ShoulderPitchAngle, ShoulderRollAngl
         pMaxSpeedFraction = 0.35
         # Ask motion to do this with a blocking call    
         motionProxy.angleInterpolationWithSpeed(pNames, pTargetAngles, pMaxSpeedFraction)
+
+def Test_Articulations(queue=None,prog=None):
+    StiffnessOn(motionProxy)
+
+
+    # Send NAO to Pose Init
+    postureProxy.goToPosture("StandZero", 2.0)
+    # Get the Robot Configuration    
+    listValStandInit = [memoryProxy.getData("Device/SubDeviceList/HeadYaw/Position/Actuator/Value"),
+                        memoryProxy.getData("Device/SubDeviceList/HeadPitch/Position/Actuator/Value"),
+                        memoryProxy.getData("Device/SubDeviceList/LShoulderPitch/Position/Actuator/Value"),
+                        memoryProxy.getData("Device/SubDeviceList/LShoulderRoll/Position/Actuator/Value"),
+                        memoryProxy.getData("Device/SubDeviceList/LElbowYaw/Position/Actuator/Value"),
+                        memoryProxy.getData("Device/SubDeviceList/LElbowRoll/Position/Actuator/Value"),
+                        memoryProxy.getData("Device/SubDeviceList/LWristYaw/Position/Actuator/Value"),
+                        memoryProxy.getData("Device/SubDeviceList/LHand/Position/Actuator/Value"),
+                        memoryProxy.getData("Device/SubDeviceList/LKneePitch/Position/Actuator/Value"),
+                        0,
+                        0]
+    
+    tab = [[[0,0,0,0,0,0,0,0,120,0,0],[0,0,0,0,0,0,0,0,0,0,0], [0,0,0,0,0,0,0,0,0,0,0]],
+           [[130,0,0,0,0,0,0,0,0,0,0],[-260,0,0,0,0,0,0,0,0,0,0], [130,0,0,0,0,0,0,0,0,0,0]],
+           [[0,30,0,0,0,0,0,0,0,0,0],[0,-70,0,0,0,0,0,0,0,0,0], [0,40,0,0,0,0,0,0,0,0,0]],
+           [[0,0,120,0,0,0,0,0,0,0,0],[0,0,-240,0,0,0,0,0,0,0,0], [0,0,120,0,0,0,0,0,0,0,0]],
+           [[0,0,0,-18,0,0,0,0,0,0,0],[0,0,0,95,0,0,0,0,0,0,0], [0,0,0,-75,0,0,0,0,0,0,0]],
+           [[0,0,0,0,120,0,0,0,0,0,0],[0,0,0,0,-240,0,0,0,0,0,0], [0,0,0,0,120,0,0,0,0,0,0]],
+           [[0,0,0,0,0,0,-2,0,0,0,0,0],[0,0,0,0,0,90,0,0,0,0,0], [0,0,0,0,0,0,-88,0,0,0,0]],
+           [[0,0,0,0,0,0,105,0,0,0,0],[0,0,0,0,0,0,-210,0,0,0,0], [0,0,0,0,0,0,105,0,0,0,0]]]
+    
+    for i in range(len(tab)):
+        for j in range(3):
+            listValStandInit = sumList(listValStandInit, tab[i][j])
+            configRob(listValStandInit[0], listValStandInit[1], listValStandInit[2], listValStandInit[3], listValStandInit[4], listValStandInit[5], listValStandInit[6], listValStandInit[7], listValStandInit[8], listValStandInit[9], listValStandInit[10])
+    time.sleep(2)
+    motionProxy.openHand('RHand')
+    motionProxy.openHand('LHand')
+    time.sleep(1)
+    motionProxy.closeHand('RHand')
+    motionProxy.closeHand('LHand')
+    initmouv()
+    prog.value = 0
 
 #==============================================================================
 # Audio
@@ -316,20 +359,20 @@ def dorun(t):
 #    Frequency =0.9 # low speed
     motionProxy.moveTo(X, Y, Theta)
 #    
-#    t0 = time.time()
-#    AngX, AngY = [], []
-#    while time.time()< (t0 + t):
-#        accelero = Accelero()
-#        AngX.append(accelero[0])
-#        AngY.append(accelero[1])
-#        time.sleep(0.2)
-##    motionProxy.moveTo (0.4, 0, 0)
-##    time.sleep(t)
-#    maxAngX, maxAngY = max(AngX), max(AngY)
-#    print "maxAngX, maxAngY = ", maxAngX, ", ", maxAngY
-#    motionProxy.setWalkTargetVelocity(0.0, 0, 0, 1)
-#    print"running"
-#    
+    t0 = time.time()
+    AngX, AngY = [], []
+    while time.time()< (t0 + t):
+        accelero = Accelero()
+        AngX.append(accelero[0])
+        AngY.append(accelero[1])
+        time.sleep(0.2)
+#    motionProxy.moveTo (0.4, 0, 0)
+#    time.sleep(t)
+    maxAngX, maxAngY = max(AngX), max(AngY)
+    print "maxAngX, maxAngY = ", maxAngX, ", ", maxAngY
+    motionProxy.setWalkTargetVelocity(0.0, 0, 0, 1)
+    print"running"
+    
 
 def doback():
     
@@ -363,8 +406,8 @@ def doleft(angle):
 
 
 
-#    time.sleep(t)
-#    print"turning left"
+    time.sleep(t)
+    print"turning left"
 
 def doright(angle):
     
@@ -412,16 +455,7 @@ def target_velocity():
     Y = 0.0
     Theta = 0.0
     Frequency =0.4 # max speed
-    motionProxy.moveToward(X, Y, Theta,[["Frequency", 0.4],
-                                        ["MaxStepX", 0.08],
-                                        ["Rig fhtMaxStepFrequency", 0.3],
-                                        ["RightStepHeight", 0.0018],
-                                        ["RightTorsoWx", 3.0*almath.TO_RAD],
-                                        ["RightTorsoWy", 1.0*almath.TO_RAD],
-                                        ["LeftMaxStepFrequency", 0.3],
-                                        ["LeftStepHeight", 0.0018],
-                                        ["LeftTorsoWx", -3.0*almath.TO_RAD],
-                                        ["LeftTorsoWy", 1.0*almath.TO_RAD]  ] )
+    motionProxy.setWalkTargetVelocity(X, Y, Theta, Frequency)
 
     time.sleep(4.0)
     print "Straight Forward"
@@ -459,6 +493,9 @@ def position_robot():
     #####################
     robotMove = almath.pose2DInverse(initRobotPosition)*endRobotPosition
     print "Robot Move :", robotMove
+    
+
+    
 def Test_Square_Left_Right():
     print ">>>>>>>>>>> Test du carre"
     print ">>> carre gauche"
@@ -493,46 +530,10 @@ def BatteryMemory():
     #print "status =", b
     return np.mean(s) * 100
      
-def Test_Articulations(queue=None,prog=None):
-    StiffnessOn(motionProxy)
 
-
-    # Send NAO to Pose Init
-    postureProxy.goToPosture("StandZero", 2.0)
-    # Get the Robot Configuration    
-    listValStandInit = [memoryProxy.getData("Device/SubDeviceList/HeadYaw/Position/Actuator/Value"),
-                        memoryProxy.getData("Device/SubDeviceList/HeadPitch/Position/Actuator/Value"),
-                        memoryProxy.getData("Device/SubDeviceList/LShoulderPitch/Position/Actuator/Value"),
-                        memoryProxy.getData("Device/SubDeviceList/LShoulderRoll/Position/Actuator/Value"),
-                        memoryProxy.getData("Device/SubDeviceList/LElbowYaw/Position/Actuator/Value"),
-                        memoryProxy.getData("Device/SubDeviceList/LElbowRoll/Position/Actuator/Value"),
-                        memoryProxy.getData("Device/SubDeviceList/LWristYaw/Position/Actuator/Value"),
-                        memoryProxy.getData("Device/SubDeviceList/LHand/Position/Actuator/Value"),
-                        memoryProxy.getData("Device/SubDeviceList/LKneePitch/Position/Actuator/Value"),
-                        0,
-                        0]
-    
-    tab = [[[0,0,0,0,0,0,0,0,120,0,0],[0,0,0,0,0,0,0,0,0,0,0], [0,0,0,0,0,0,0,0,0,0,0]],
-           [[130,0,0,0,0,0,0,0,0,0,0],[-260,0,0,0,0,0,0,0,0,0,0], [130,0,0,0,0,0,0,0,0,0,0]],
-           [[0,30,0,0,0,0,0,0,0,0,0],[0,-70,0,0,0,0,0,0,0,0,0], [0,40,0,0,0,0,0,0,0,0,0]],
-           [[0,0,120,0,0,0,0,0,0,0,0],[0,0,-240,0,0,0,0,0,0,0,0], [0,0,120,0,0,0,0,0,0,0,0]],
-           [[0,0,0,-18,0,0,0,0,0,0,0],[0,0,0,95,0,0,0,0,0,0,0], [0,0,0,-75,0,0,0,0,0,0,0]],
-           [[0,0,0,0,120,0,0,0,0,0,0],[0,0,0,0,-240,0,0,0,0,0,0], [0,0,0,0,120,0,0,0,0,0,0]],
-           [[0,0,0,0,0,0,-2,0,0,0,0,0],[0,0,0,0,0,90,0,0,0,0,0], [0,0,0,0,0,0,-88,0,0,0,0]],
-           [[0,0,0,0,0,0,105,0,0,0,0],[0,0,0,0,0,0,-210,0,0,0,0], [0,0,0,0,0,0,105,0,0,0,0]]]
-    
-    for i in range(len(tab)):
-        for j in range(3):
-            listValStandInit = sumList(listValStandInit, tab[i][j])
-            configRob(listValStandInit[0], listValStandInit[1], listValStandInit[2], listValStandInit[3], listValStandInit[4], listValStandInit[5], listValStandInit[6], listValStandInit[7], listValStandInit[8], listValStandInit[9], listValStandInit[10])
-    time.sleep(2)
-    motionProxy.openHand('RHand')
-    motionProxy.openHand('LHand')
-    time.sleep(1)
-    motionProxy.closeHand('RHand')
-    motionProxy.closeHand('LHand')
-    initmouv()
-    prog.value = 0
+#==============================================================================
+# définitions des fonctions articulations  de robot (ells sont utiles pour l'interface graphique)
+#============================================================================== 
     
 def Tete(queue=None,prog=None):
     initmouv()
@@ -630,13 +631,10 @@ def Coudes(queue=None,prog=None):
     names = ['RElbowRoll']
     angles = [0]
     motionProxy.setAngles(names,angles,.5)
-<<<<<<< HEAD
     time.sleep(2)
 #    prog.value = 0
     
-=======
     time.sleep(1)    
->>>>>>> 89ad711a8fc3ca5103f715386745b2b224a2ced8
     names = ['LElbowYaw','RElbowYaw']
     angles = [-2.0857 ,2.0857]
     motionProxy.setAngles(names,angles,.5)
@@ -676,9 +674,9 @@ def Main(queue=None,prog=None):
     motionProxy.closeHand('LHand')
     prog.value = 0
     
-#####################################################################
-# mes modifications 
-#############################################################
+#==============================================================================
+# prend les valeurs de capteurs pied d'un robot
+#============================================================================== 
 
 def fsr():
    left_foot= [ memoryProxy.getData("Device/SubDeviceList/LFoot/FSR/FrontLeft/Sensor/Value"),
@@ -694,6 +692,19 @@ def fsr():
    print " left_foot:",left_foot
    print " right_foot:",right_foot
    
+ 
+def gyroscope():
+    
+    a = memoryProxy.getData("Device/SubDeviceList/InertialSensor/GyroscopeX/Sensor/Value")
+    b = memoryProxy.getData("Device/SubDeviceList/InertialSensor/GyroscopeY/Sensor/Value")
+    c = memoryProxy.getData("Device/SubDeviceList/InertialSensor/GyroscopeZ/Sensor/Value")
+    print "a", a
+    print "b", b
+    print "c", c
+
+#==============================================================================
+# fait certains mouvements par les mains et les pieds de robot
+#============================================================================== 
 
 # fait bouger la maine
 def userArmArticular(motionProxy):
@@ -725,17 +736,6 @@ def userArmArticular_r(motionProxy):
     motionProxy.angleInterpolationWithSpeed(JointNames, Arm1, pFractionMaxSpeed)
     motionProxy.angleInterpolationWithSpeed(JointNames, Arm2, pFractionMaxSpeed)
     motionProxy.angleInterpolationWithSpeed(JointNames, Arm1, pFractionMaxSpeed)
-   
-
-    
-def gyroscope():
-    
-    a = memoryProxy.getData("Device/SubDeviceList/InertialSensor/GyroscopeX/Sensor/Value")
-    b = memoryProxy.getData("Device/SubDeviceList/InertialSensor/GyroscopeY/Sensor/Value")
-    c = memoryProxy.getData("Device/SubDeviceList/InertialSensor/GyroscopeZ/Sensor/Value")
-    print "a", a
-    print "b", b
-    print "c", c
     
     
 def steps():
@@ -780,7 +780,9 @@ def steps():
                 [stepFrequency],
                 clearExisting)
             
-
+#==============================================================================
+# utilisation d'autre fonction pour faire bouger le robot
+#============================================================================== 
 def towalk():
     x  = 1.0
     y  = 0.0
@@ -801,31 +803,10 @@ def towalk():
     time.sleep(10)
     motionProxy.moveToward(0.0, 0.0, 0.0)
     
-    
-def testtowalk():
-    
-    for i in range(2):
-        x  = 1.0
-        y  = 0.0
-        theta  = 0.0
-        moveConfig = [["Frequency", 0.5]]
-        motionProxy.moveToward(x, y, theta, moveConfig)
-        # If we don't send another command, he will walk forever
-        # Lets make him slow down (step length) and turn after 10 seconds
-        time.sleep(10)
-        x = 0.5
-        theta = 0.6
-        motionProxy.moveToward(x, y, theta, moveConfig)
-        # Lets make him slow down(frequency) after 5 seconds
-        time.sleep(5)
-    
-    
-#    moveConfig = [["Frequency", 0.5]]
-#    motionProxy.moveToward(x, y, theta, moveConfig)
-    # After another 10 seconds, we'll make him stop
-    time.sleep(10)
-    motionProxy.moveToward(0.0, 0.0, 0.0)
 
+#==============================================================================
+# les EVENTS  d'un robot
+#============================================================================== 
 
 class HumanGreeterModule(ALModule):
     """ A simple module able to react
@@ -864,11 +845,13 @@ class HumanGreeterModule(ALModule):
             "HumanGreeter",
             "onFaceDetected")
         
+#==============================================================================
+# test générale pour un robot
+#============================================================================== 
 
 if __name__== "__main__":
-#    doInitialisation()
+    doInitialisation()
     #test de la vision du NAO
-<<<<<<< HEAD
     try:
 #
 #        fsr()
@@ -887,49 +870,8 @@ if __name__== "__main__":
 #        
 #        userArmArticular(motionProxy)
 #        time.sleep(1)
-#        dorun(3)
-#        time.sleep(1)
-#        doright(np.pi/2)
-#        time.sleep(1)
-#        dorun(3)
-#        time.sleep(1)
-#        doright(0.6)
-#        time.sleep(1)
-#        dorun(6)
-#        time.sleep(1)
-#        doright(0.6)
-#        time.sleep(1)
-#        dorun(3)
-#        time.sleep(1)
-#        doright(np.pi/2)
-#        time.sleep(1)
-#        dorun(3)
-##        time.sleep(1)
-##        doright(0.6)
-##        time.sleep(1)
-##        dorun(6)
-##        time.sleep(1)
-##        doright(0.6)
-##        time.sleep(1)
-##        dorun(3)
-##        time.sleep(1)
-##        doright(0.6)
-##        time.sleep(1)
-##        dorun(6)
-#        time.sleep(2)
-#        
-##        doback()
-#        dorun(6)
-#        time.sleep(2)
-        
-#        doback()
-#        time.sleep(1)
-#        
-#        doleft(np.pi/2)
-#        time.sleep(6)
-=======
+
     try:        
->>>>>>> 89ad711a8fc3ca5103f715386745b2b224a2ced8
         print 'b0 :'
         b0 = BatteryMemory()
         #test de capteurs
