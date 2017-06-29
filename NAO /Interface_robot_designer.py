@@ -2,7 +2,6 @@
 from PyQt4 import QtGui,uic
 from naoqi import ALProxy, ALModule
 from PyQt4.QtGui import QWidget, QImage, QApplication, QPainter
-from PyQt4.QtCore import QObject, pyqtSignal
 from vision_showimages import *
 import vision_definitions
 import DiagNAO
@@ -52,23 +51,6 @@ class UiTest(QtGui.QMainWindow):
         pixmap = QtGui.QPixmap("fond.jpeg").scaled(self.ui.width(),self.ui.height())   # vérifiez que vous avez cette image
         palette.setBrush(QtGui.QPalette.Background,QtGui.QBrush(pixmap))
         self.setPalette(palette)
-        
-        valueChanged = pyqtSignal([int], ['QString'])
-#        self.connect(self.prog.value, SIGNAL("valueChanged(int)"), self.change_prog)
-        
-#        self.prog.value.valueChanged.connect(self.change_prog)
-#    def setprog(self,signal,signale):
-#        print signal,signale        
-#        self.prog = 0
-#        print "setter {}".format(self.prog)
-#        print self
-
-   
-    def change_prog(self):
-        if self.prog.value == 0:
-            self.ui.label_prog.setText('Sensors')
-        else:
-            self.ui.label_prog.setText('Sensors2356989')
             
     def Square(self): 
         if self.prog.value == 0:
@@ -84,23 +66,18 @@ class UiTest(QtGui.QMainWindow):
         Pour vérifier qu'il n'y est pas de probleme dans la batterie.
         Faire une mesure au début et à la fin des Test.
         """
-        if self.prog.value == 0:
-            self.prog.value = 1
-            self.ui.label_prog.setText('Battery')
-            battery_t = DiagNAO.BatteryMemory()
-            self.ui.label_battery.setText(str(round(battery_t)) + '%')
-            self.ui.label_prog.setText('')
-            self.prog.value = 0
+#        if self.prog.value == 0:
+#            self.prog.value = 1
+        battery_t = DiagNAO.BatteryMemory()
+        self.ui.label_battery.setText(str(round(battery_t)) + '%')            
+#            self.prog.value = 0
             
         
     def Sensors (self):
-        if self.prog.value == 0:
-            self.prog.value = 1
-            self.ui.label_prog.setText('Sensors')
-            self.ui.label_Gsens.setText(str(round(DiagNAO.TrySensors()[0],1)))
-            self.ui.label_Dsens.setText(str(round(DiagNAO.TrySensors()[1],1)))
-            self.ui.label_prog.setText('')
-            self.prog.value = 0
+#        if self.prog.value == 0:
+#            self.prog.value = 1
+        self.ui.label_Gsens.setText(str(round(DiagNAO.TrySensors()[0],1)))
+        self.ui.label_Dsens.setText(str(round(DiagNAO.TrySensors()[1],1)))
             
     def Tete(self):
         if self.prog.value == 0:
@@ -109,7 +86,6 @@ class UiTest(QtGui.QMainWindow):
             q = Queue()
             p = Process(target=DiagNAO.Tete, args=(q,self.prog))
             p.start()
-            self.prog.value = 0
             
         
     def Total(self):
@@ -118,7 +94,6 @@ class UiTest(QtGui.QMainWindow):
             q = Queue()
             p = Process(target  = DiagNAO.Test_Articulations, args=(q,self.prog))
             p.start()
-            self.prog.value = 0
     
     def Stop(self):
         DiagNAO.doStop()        
@@ -140,19 +115,17 @@ class UiTest(QtGui.QMainWindow):
     
     def Coude(self):
         if self.prog.value == 0:
-            self.prog.value = 1
-            self.ui.label_prog.setText('Coudes')
-            DiagNAO.Coudes()
-            self.ui.label_prog.setText('')  
-            self.prog =0
+            self.prog.value = 1 
+            q = Queue()
+            p = Process(target=DiagNAO.Coudes, args=(q,self.prog))
+            p.start()
     
     def Poignet(self):
         if self.prog.value == 0:
-            self.prog.value = 1
-            self.ui.label_prog.setText('Poignet')
-            DiagNAO.Poignet()
-            self.ui.label_prog.setText('')
-            self.prog.value = 0
+            self.prog.value = 1 
+            q = Queue()
+            p = Process(target=DiagNAO.Poignet, args=(q,self.prog))
+            p.start()
     
     def Camera(self):
         if self.inage.isHidden() :

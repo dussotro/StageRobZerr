@@ -111,7 +111,7 @@ def initmouv():
     listValStandInit = sumList(listValStandInit, tab)     
     configRob(listValStandInit[0], listValStandInit[1], listValStandInit[2], listValStandInit[3], listValStandInit[4], listValStandInit[5], listValStandInit[6], listValStandInit[7], listValStandInit[8], listValStandInit[9], listValStandInit[10])
     
-    time.sleep(1)
+    time.sleep(0.5)
 
     
 
@@ -471,7 +471,7 @@ def target_velocity():
     Frequency =0.4 # max speed
     motionProxy.moveToward(X, Y, Theta,[["Frequency", 0.4],
                                         ["MaxStepX", 0.08],
-                                        ["RightMaxStepFrequency", 0.3],
+                                        ["Rig fhtMaxStepFrequency", 0.3],
                                         ["RightStepHeight", 0.0018],
                                         ["RightTorsoWx", 3.0*almath.TO_RAD],
                                         ["RightTorsoWy", 1.0*almath.TO_RAD],
@@ -516,7 +516,6 @@ def position_robot():
     #####################
     robotMove = almath.pose2DInverse(initRobotPosition)*endRobotPosition
     print "Robot Move :", robotMove
-
 def Test_Square_Left_Right():
     print ">>>>>>>>>>> Test du carre"
     print ">>> carre gauche"
@@ -596,7 +595,7 @@ def Test_Articulations(queue=None,prog=None):
     time.sleep(1)
     motionProxy.closeHand('RHand')
     motionProxy.closeHand('LHand')
-    postureProxy.goToPosture("Crouch", 2.0)
+    initmouv()
     prog.value = 0
     
 def Tete(queue=None,prog=None):
@@ -604,27 +603,27 @@ def Tete(queue=None,prog=None):
     names = ['HeadYaw']
     angles = [-2.0857]
     motionProxy.setAngles(names,angles,.6)
-    time.sleep(2)
+    time.sleep(1.5)
     names = ['HeadYaw']
     angles = [+2.0857]
     motionProxy.setAngles(names,angles,.6)
-    time.sleep(2)
+    time.sleep(1.5)
     names = ['HeadYaw']
     angles = [0]
     motionProxy.setAngles(names,angles,.6)
-    time.sleep(2)
+    time.sleep(1.5)
     names = ['HeadPitch']
     angles = [-0.671951]
     motionProxy.setAngles(names,angles,.6)
-    time.sleep(2)
+    time.sleep(1)
     names = ['HeadPitch']
     angles = [0.515047]
     motionProxy.setAngles(names,angles,.6)
-    time.sleep(2)
+    time.sleep(1)
     names = ['HeadPitch']
     angles = [0]
     motionProxy.setAngles(names,angles,.6)
-    time.sleep(2)
+    time.sleep(1)
     initmouv()
     prog.value = 0
     
@@ -638,7 +637,7 @@ def Epaule(queue=None,prog=None):
     names = ['RShoulderPitch']
     angles = [2.0857]
     motionProxy.setAngles(names,angles,.35)
-    time.sleep(4)
+    time.sleep(2)
     names = ['LShoulderPitch']
     angles = [-2.0857]
     motionProxy.setAngles(names,angles,.35)
@@ -646,7 +645,7 @@ def Epaule(queue=None,prog=None):
     names = ['RShoulderPitch']
     angles = [-2.0857]
     motionProxy.setAngles(names,angles,.35)
-    time.sleep(4)
+    time.sleep(2)
     names = ['LShoulderPitch']
     angles = [0]
     motionProxy.setAngles(names,angles,.35)
@@ -654,21 +653,20 @@ def Epaule(queue=None,prog=None):
     names = ['RShoulderPitch']
     angles = [0]
     motionProxy.setAngles(names,angles,.35)
-    time.sleep(4)
+    time.sleep(2)
     
     names = ['LShoulderRoll','RShoulderRoll']
     angles = [-0.3142,0.3142]
     motionProxy.setAngles(names,angles,.35)
-    time.sleep(2)
+    time.sleep(0.5)
     names = ['LShoulderRoll','RShoulderRoll']
     angles =  [1.3265, 	-1.3265 ]
-    time.sleep(3)
+    time.sleep(1)
     motionProxy.setAngles(names,angles,.35)
     names = ['LShoulderRoll','RShoulderRoll']
     angles =  [0, 0 ]
     time.sleep(1)
     motionProxy.setAngles(names,angles,.35)
-    initmouv()
     prog.value = 0
     
 def Coudes(queue=None,prog=None):
@@ -680,7 +678,7 @@ def Coudes(queue=None,prog=None):
     names = ['RElbowRoll']
     angles = [+1.5446 ]
     motionProxy.setAngles(names,angles,.5)
-    time.sleep(2)
+    time.sleep(1)
     names = ['LElbowRoll']
     angles = [-0.0349]
     motionProxy.setAngles(names,angles,.5)
@@ -688,7 +686,7 @@ def Coudes(queue=None,prog=None):
     names = ['RElbowRoll']
     angles = [+0.0349]
     motionProxy.setAngles(names,angles,.5)
-    time.sleep(2)
+    time.sleep(1)
     names = ['LElbowRoll']
     angles = [0]
     motionProxy.setAngles(names,angles,.5)
@@ -696,22 +694,19 @@ def Coudes(queue=None,prog=None):
     names = ['RElbowRoll']
     angles = [0]
     motionProxy.setAngles(names,angles,.5)
-    time.sleep(2)
-    prog.value = 0
-    
+    time.sleep(1)    
     names = ['LElbowYaw','RElbowYaw']
     angles = [-2.0857 ,2.0857]
-    motionProxy.setAngles(names,angles,.2)
-    time.sleep(1)
+    motionProxy.setAngles(names,angles,.5)
+    time.sleep(2)
     names = ['LElbowYaw','RElbowYaw']
-    angles = [-2.0857 ,-2.0857]
-    motionProxy.setAngles(names,angles,.2)
+    angles = [2.0857 ,-2.0857]
+    motionProxy.setAngles(names,angles,.5)
     time.sleep(1)
     names = ['LElbowYaw','RElbowYaw']
     angles = [0 ,0]
-    motionProxy.setAngles(names,angles,.2)
+    motionProxy.setAngles(names,angles,.5)
     time.sleep(1)
-    initmouv()
     prog.value = 0
     
     
@@ -730,24 +725,17 @@ def Poignet(queue=None,prog=None):
     angles = [ 0, 0]
     motionProxy.setAngles(names,angles,.2)
     time.sleep(2)
-    initmouv()
     prog.value = 0
     
     
 def Main(queue=None,prog=None):
-    #print Other
     initmouv()
     motionProxy.openHand('RHand')
     motionProxy.openHand('LHand')
     time.sleep(1)
     motionProxy.closeHand('RHand')
     motionProxy.closeHand('LHand')
-    #if not Other == None:
     prog.value = 0
-    print "j'ai finis"
-        #print Other.prog
-        #signal.alarm(1) 
-        #time.sleep(2)
     
 #####################################################################
 # mes modifications 
