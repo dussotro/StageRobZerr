@@ -115,35 +115,6 @@ def initmouv():
 
     
 
-#class Myevent(ALModule):
-#    """ Mandatory docstring.
-#        comment needed to create a new python module
-#    """
-#    def __init__(self, name):
-#        ALModule.__init__(self, name)
-#        # No need for IP and port here because
-#        # we have our Python broker connected to NAOqi broker
-#        # Create a proxy to ALTextToSpeech for later use
-#        self.tts = BatteryProxy
-#        self.level = 0
-#
-#        # Subscribe to the BatteryChange event:
-#        self.battery.subscribeToEvent("BatteryChargeChanged",
-#            "BatteryRob",
-#            "callBackBattery")
-#        
-#    def callBackBattery(self, *_args):
-#        """ Mandatory docstring.
-#        comment needed to create a bound method
-#        """
-#        self.battery.unsubscribeToEvent("BatteryChargeChanged",
-#                                        "BatteryRob") 
-#        print 'im right here'
-#        print self.percentage
-#        self.battery.unsubscribeToEvent("BatteryChargeChanged",
-#                                            "BatteryRob") 
-#    
-
 #==============================================================================
 # Classe de test de toutes les articulations
 #==============================================================================
@@ -221,33 +192,6 @@ def configRob(HeadYawAngle, HeadPitchAngle, ShoulderPitchAngle, ShoulderRollAngl
         # Ask motion to do this with a blocking call    
         motionProxy.angleInterpolationWithSpeed(pNames, pTargetAngles, pMaxSpeedFraction)
 
-class Robot:
-    def __init__(self, rt, ia, am, space):
-            self.d_mvt = {}
-            self.reference_time = rt
-            self.isAbsolute = ia
-            self.axisMask = am
-            self.space = space
-            self.tempo_time = 0
-    def mvt(self, where, path):
-            reference_time = 0
-            if self.tempo_time != 0:
-                reference_time = self.tempo_time
-                self.tempo_time = 0
-            else:
-                reference_time = self.reference_time    
-            if not self.d_mvt.has_key(where):
-                self.d_mvt[where] = path
-            else:
-                old_path = self.d_mvt[where]
-                saved_path = [el1 + el2 for el1, el2 in zip(path, old_path)]
-                self.d_mvt[where] = saved_path
-            motionProxy.positionInterpolation(where, self.space, path, self.axisMask, reference_time, self.isAbsolute)
-                    
-            time.sleep(1.0)
-
-
-
 #==============================================================================
 # Audio
 #==============================================================================
@@ -258,60 +202,59 @@ def TestTts(texte):
 # """Vision"""
 #==============================================================================
 
-
-def Test_Image():
-
-    ####
-    # Create proxy on ALVideoDevice
-
-    print "Creating ALVideoDevice proxy to ", robotIP
-
-    camProxy = ALProxy("ALVideoDevice", robotIP, port)
-
-    ####
-    # Register a Generic Video Module
-
-    resolution = vision_definitions.kQVGA
-    colorSpace = vision_definitions.kYUVColorSpace
-    fps = 30
-
-    nameId = camProxy.subscribe("python_GVM", resolution, colorSpace, fps)
-    print nameId
-
-    print 'getting images in local'
-    for i in range(0, 20):
-      camProxy.getImageLocal(nameId)
-      camProxy.releaseImage(nameId)
-
-    resolution = vision_definitions.kQQVGA
-    camProxy.setResolution(nameId, resolution)
-
-    print 'getting images in remote'
-    for i in range(0, 20):
-      camProxy.getImageRemote(nameId)
-
-    camProxy.unsubscribe(nameId)
-
-    print 'end of gvm_getImageLocal python script'
-
-def showNaoImage():
-    videoRecorderProxy = ALProxy("ALVideoRecorder", robotIP, port)
-    
-    # This records a 320*240 MJPG video at 10 fps.
-    # Note MJPG can't be recorded with a framerate lower than 3 fps.
-    videoRecorderProxy.setResolution(1) 
-    videoRecorderProxy.setFrameRate(10)
-    videoRecorderProxy.setVideoFormat("MJPG")
-    videoRecorderProxy.startRecording("./", "test")
-
-    time.sleep(5)
-    # Video file is saved on the robot in the
-    # /home/nao/recordings/cameras/ folder.
-    videoInfo = videoRecorderProxy.stopRecording()
-    #print type video
-    print "Video was saved on the robot: ", videoInfo[1]
-    print "Num frames: ", videoInfo[0]
-    video = memoryProxy.getData("./test.avi")
+#def Test_Image():
+#
+#    ####
+#    # Create proxy on ALVideoDevice
+#
+#    print "Creating ALVideoDevice proxy to ", robotIP
+#
+#    camProxy = ALProxy("ALVideoDevice", robotIP, port)
+#
+#    ####
+#    # Register a Generic Video Module
+#
+#    resolution = vision_definitions.kQVGA
+#    colorSpace = vision_definitions.kYUVColorSpace
+#    fps = 30
+#
+#    nameId = camProxy.subscribe("python_GVM", resolution, colorSpace, fps)
+#    print nameId
+#
+#    print 'getting images in local'
+#    for i in range(0, 20):
+#      camProxy.getImageLocal(nameId)
+#      camProxy.releaseImage(nameId)
+#
+#    resolution = vision_definitions.kQQVGA
+#    camProxy.setResolution(nameId, resolution)
+#
+#    print 'getting images in remote'
+#    for i in range(0, 20):
+#      camProxy.getImageRemote(nameId)
+#
+#    camProxy.unsubscribe(nameId)
+#
+#    print 'end of gvm_getImageLocal python script'
+#
+#def showNaoImage():
+#    videoRecorderProxy = ALProxy("ALVideoRecorder", robotIP, port)
+#    
+#    # This records a 320*240 MJPG video at 10 fps.
+#    # Note MJPG can't be recorded with a framerate lower than 3 fps.
+#    videoRecorderProxy.setResolution(1) 
+#    videoRecorderProxy.setFrameRate(10)
+#    videoRecorderProxy.setVideoFormat("MJPG")
+#    videoRecorderProxy.startRecording("./", "test")
+#
+#    time.sleep(5)
+#    # Video file is saved on the robot in the
+#    # /home/nao/recordings/cameras/ folder.
+#    videoInfo = videoRecorderProxy.stopRecording()
+#    #print type video
+#    print "Video was saved on the robot: ", videoInfo[1]
+#    print "Num frames: ", videoInfo[0]
+#    video = memoryProxy.getData("./test.avi")
 
 
 #==============================================================================
@@ -427,7 +370,7 @@ def doright(angle):
     
     initRobotPosition = almath.Pose2D(motionProxy.getRobotPosition(False))
     
-    theta= angle
+    theta= -angle
     motionProxy.moveTo (0, 0, theta)
 #    motionProxy.setWalkTargetVelocity(0, 0, -0.5, 0.01)
     #####################
@@ -549,14 +492,7 @@ def BatteryMemory():
     print "Pourcentage de la batterie :", np.mean(s) * 100, "%"
     #print "status =", b
     return np.mean(s) * 100
-    
-
-
-def close():
-    myWidget.close()
-    boutton.close()
-#    app.exit()
-    
+     
 def Test_Articulations(queue=None,prog=None):
     StiffnessOn(motionProxy)
 
@@ -707,9 +643,7 @@ def Coudes(queue=None,prog=None):
     angles = [0 ,0]
     motionProxy.setAngles(names,angles,.5)
     time.sleep(1)
-    prog.value = 0
-    
-    
+    prog.value = 0    
     
 def Poignet(queue=None,prog=None):
     initmouv()
@@ -727,7 +661,6 @@ def Poignet(queue=None,prog=None):
     time.sleep(2)
     prog.value = 0
     
-    
 def Main(queue=None,prog=None):
     initmouv()
     motionProxy.openHand('RHand')
@@ -741,13 +674,6 @@ def Main(queue=None,prog=None):
 # mes modifications 
 #############################################################
 
-def rempfsr(a, b):
-    result = []
-    for i in range(len(a)):
-        a[i] = b[i]
-        result.append(a[i])
-    return result
-
 def fsr():
    left_foot= [ memoryProxy.getData("Device/SubDeviceList/LFoot/FSR/FrontLeft/Sensor/Value"),
     memoryProxy.getData("Device/SubDeviceList/LFoot/FSR/FrontRight/Sensor/Value"),
@@ -758,13 +684,6 @@ def fsr():
     memoryProxy.getData("Device/SubDeviceList/RFoot/FSR/FrontRight/Sensor/Value"),
     memoryProxy.getData("Device/SubDeviceList/RFoot/FSR/RearLeft/Sensor/Value"),
     memoryProxy.getData("Device/SubDeviceList/RFoot/FSR/RearRight/Sensor/Value")]
-   
-   valeur_left = [0.07025,0.07025,-0.03025,-0.02965]
-   valeur_right = [0.07025,0.07025,-0.03025,-0.02965]
-   
-   left_foot = rempfsr(left_foot , valeur_left)
-   right_foot = rempfsr(right_foot , valeur_right)
-    
    
    print " left_foot:",left_foot
    print " right_foot:",right_foot
@@ -856,55 +775,6 @@ def steps():
                 clearExisting)
             
 
-
-#footMove = almath.Pose2D (motionProxy.getRobotPosition(False))
-#isLeftSupport = False
-#minFootSeparation = 0.088
-#minStepX = - 0.04
-#maxStepX = 0.08
-#maxStepY = 0.16
-#maxStepTheta = 0.35
-#def clipFootStepOnGaitConfig(footMove, isLeftSupport):
-#  ''' Clip the foot move so that it does not exceed the maximum
-#      size of steps.
-#      footMove is an almath.Pose2D (x, y, theta position).
-#      isLeftSupport must be set to True if the move is on the right leg
-#      (the robot is supporting itself on the left leg).
-#  '''
-#
-#  def clipFloat(minValue, maxValue, value):
-#    ''' Clip value between two extremes. '''
-#    clipped = value
-#    if (clipped < minValue):
-#      clipped = minValue
-#    if (clipped > maxValue):
-#      clipped = maxValue
-#    return clipped
-#
-#  # Clip X.
-#  
-#  clippedX = clipFloat(minStepX, maxStepX, footMove.x)
-#  footMove.x = clippedX
-#
-#  # Clip Y.
-#  if not isLeftSupport:
-#    clippedY = clipFloat(minFootSeparation, maxStepY, footMove.y)
-#  else:
-#    clippedY = clipFloat(-maxStepY, - minFootSeparation, footMove.y)
-#  footMove.y = clippedY
-#
-#  # Clip Theta.
-#  clippedTheta = clipFloat(-maxStepTheta, maxStepTheta, footMove.theta)
-#  footMove.theta = clippedTheta
-#  
-#def test():
-#    
-#    motionProxy.moveInit()
-#    motionProxy.setWalkTargetVelocity(1.0, 0.0, 0.0, 1.0, motionProxy.getMoveConfig("Default"),
-#                                                motionProxy.getMoveConfig("Min"))
-#time.sleep(3.0)
-
-
 def towalk():
     x  = 1.0
     y  = 0.0
@@ -992,53 +862,7 @@ class HumanGreeterModule(ALModule):
 if __name__== "__main__":
     doInitialisation()
     #test de la vision du NAO
-    try:
-#
-#        fsr()
-#        time.sleep(1)
-#        
-#        tts.say("bonjour")
-#        
-#        gyroscope()
-#        time.sleep(1)
-#        
-#        userArmArticular_r(motionProxy)
-#        time.sleep(1)
-#        
-#        steps()
-#        time.sleep(1)
-#        
-#        userArmArticular(motionProxy)
-#        time.sleep(1)
-#        
-#        dorun(3)
-#        time.sleep(1)
-#        doright(np.pi/2)
-#        time.sleep(1)
-#        dorun(3)
-#        time.sleep(1)
-#        doright(0.6)
-#        time.sleep(1)
-#        dorun(6)
-#        time.sleep(1)
-#        doright(0.6)
-#        time.sleep(1)
-#        dorun(3)
-#        time.sleep(1)
-#        doright(0.6)
-#        time.sleep(1)
-#        dorun(6)
-#        time.sleep(2)
-        
-#        doback()
-#        time.sleep(1)
-#        
-#        doleft(np.pi/2)
-#        time.sleep(6)
-#        
-        
-
-#        
+    try:        
         print 'b0 :'
         b0 = BatteryMemory()
         #test de capteurs
