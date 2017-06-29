@@ -697,7 +697,7 @@ def Coudes(queue=None,prog=None):
     angles = [0]
     motionProxy.setAngles(names,angles,.5)
     time.sleep(2)
-    prog.value = 0
+#    prog.value = 0
     
     names = ['LElbowYaw','RElbowYaw']
     angles = [-2.0857 ,2.0857]

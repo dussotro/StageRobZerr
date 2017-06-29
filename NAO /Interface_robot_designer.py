@@ -16,11 +16,8 @@ from multiprocessing import Process, Queue, Value
 
 robotIP = "172.20.13.63" #Rouge
 #robotIP = "172.20.28.103" #Bleu
-<<<<<<< HEAD
 robotIP = "172.20.11.237"# gamma 
-=======
 #robotIP = "172.20.11.237"# gamma 
->>>>>>> 0098fb604a14b13db2b51790dfe685fbaf4b2f67
 #robotIP = "172.20.11.242" #beta
 
 port = 9559
