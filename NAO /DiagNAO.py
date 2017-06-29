@@ -13,7 +13,7 @@ from PyQt4.QtGui import QWidget, QImage, QApplication, QPainter, QPushButton
 import signal
 
 
-#robotIP = "172.20.13.63" #Rouge
+robotIP = "172.20.13.63" #Rouge
 #robotIP = "172.20.28.103" #Bleu
 robotIP = "172.20.11.237"# gamma 
 #robotIP = "172.20.28.103" #eta
@@ -90,7 +90,7 @@ def sumList(a, b):
     return result
 
 def initmouv():
-    postureProxy.goToPosture("StandZero", 2.0)
+    postureProxy.goToPosture("Crouch", 2.0)
 #    names = ['HipYawPitch','RKneePitch','LKneePitch' ,'LHipPitch','RHipPitch','RAnklePitch','LAnklePitch']
 #    kneeAngle = 2.1
 #    angles = [0.0, kneeAngle, kneeAngle , -kneeAngle/2 , -kneeAngle/2 ,-kneeAngle/2, -kneeAngle/2 ]
@@ -111,7 +111,7 @@ def initmouv():
     listValStandInit = sumList(listValStandInit, tab)     
     configRob(listValStandInit[0], listValStandInit[1], listValStandInit[2], listValStandInit[3], listValStandInit[4], listValStandInit[5], listValStandInit[6], listValStandInit[7], listValStandInit[8], listValStandInit[9], listValStandInit[10])
     
-    time.sleep(3)
+    time.sleep(1)
 
     
 
@@ -229,7 +229,6 @@ class Robot:
             self.axisMask = am
             self.space = space
             self.tempo_time = 0
-
     def mvt(self, where, path):
             reference_time = 0
             if self.tempo_time != 0:
