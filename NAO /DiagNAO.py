@@ -111,7 +111,7 @@ def initmouv():
     listValStandInit = sumList(listValStandInit, tab)     
     configRob(listValStandInit[0], listValStandInit[1], listValStandInit[2], listValStandInit[3], listValStandInit[4], listValStandInit[5], listValStandInit[6], listValStandInit[7], listValStandInit[8], listValStandInit[9], listValStandInit[10])
     
-    time.sleep(2)
+    time.sleep(1)
 
     
 

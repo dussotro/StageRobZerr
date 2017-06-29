@@ -2,6 +2,7 @@
 from PyQt4 import QtGui,uic
 from naoqi import ALProxy, ALModule
 from PyQt4.QtGui import QWidget, QImage, QApplication, QPainter
+from PyQt4.QtCore import QObject, pyqtSignal
 from vision_showimages import *
 import vision_definitions
 import DiagNAO
@@ -9,7 +10,8 @@ import time
 import sys
 import os
 from multiprocessing import Process, Queue, Value
-import signal
+
+
 
 
 robotIP = "172.20.13.63" #Rouge
@@ -42,7 +44,7 @@ class UiTest(QtGui.QMainWindow):
         self.ui.Bouton_Camera.clicked.connect(self.Camera)
     
         self.inage= ImageWidget(robotIP, port,0)
-        
+            
         DiagNAO.doInitialisation()
         self.battery_init = DiagNAO.BatteryMemory()
         
@@ -51,12 +53,23 @@ class UiTest(QtGui.QMainWindow):
         palette.setBrush(QtGui.QPalette.Background,QtGui.QBrush(pixmap))
         self.setPalette(palette)
         
+        valueChanged = pyqtSignal([int], ['QString'])
+#        self.connect(self.prog.value, SIGNAL("valueChanged(int)"), self.change_prog)
+        
+#        self.prog.value.valueChanged.connect(self.change_prog)
 #    def setprog(self,signal,signale):
 #        print signal,signale        
 #        self.prog = 0
 #        print "setter {}".format(self.prog)
 #        print self
-#            
+
+   
+    def change_prog(self):
+        if self.prog.value == 0:
+            self.ui.label_prog.setText('Sensors')
+        else:
+            self.ui.label_prog.setText('Sensors2356989')
+            
     def Square(self): 
         if self.prog.value == 0:
             self.prog.value = 1 
@@ -72,10 +85,10 @@ class UiTest(QtGui.QMainWindow):
         Faire une mesure au début et à la fin des Test.
         """
         if self.prog.value == 0:
+            self.prog.value = 1
             self.ui.label_prog.setText('Battery')
-            self.prog = 1
             battery_t = DiagNAO.BatteryMemory()
-            self.ui.label_battery.setText(str(battery_t) + '%')
+            self.ui.label_battery.setText(str(round(battery_t)) + '%')
             self.ui.label_prog.setText('')
             self.prog.value = 0
             
@@ -87,14 +100,17 @@ class UiTest(QtGui.QMainWindow):
             self.ui.label_Gsens.setText(str(round(DiagNAO.TrySensors()[0],1)))
             self.ui.label_Dsens.setText(str(round(DiagNAO.TrySensors()[1],1)))
             self.ui.label_prog.setText('')
-            self.prog.value = 1
+            self.prog.value = 0
             
     def Tete(self):
         if self.prog.value == 0:
             self.prog.value = 1
+            self.ui.repaint()
             q = Queue()
             p = Process(target=DiagNAO.Tete, args=(q,self.prog))
             p.start()
+            self.prog.value = 0
+            
         
     def Total(self):
         if self.prog.value == 0:
@@ -102,6 +118,7 @@ class UiTest(QtGui.QMainWindow):
             q = Queue()
             p = Process(target  = DiagNAO.Test_Articulations, args=(q,self.prog))
             p.start()
+            self.prog.value = 0
     
     def Stop(self):
         DiagNAO.doStop()        
