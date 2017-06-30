@@ -81,7 +81,7 @@ def doInitialisation():
     StiffnessOn(motionProxy)
     # Send NAO to Pose Init
     postureProxy.goToPosture("StandInit", 0.5)
-
+    
 def doStandUp():
     
     motionProxy.wakeUp()
@@ -437,6 +437,7 @@ def doright(angle):
     time.sleep(t)
     print"turning right"
     
+
     
 def doStop():
     time.sleep(1)
@@ -532,7 +533,7 @@ def BatteryMemory():
      
 
 #==============================================================================
-# définitions des fonctions articulations  de robot (ells sont utiles pour l'interface graphique)
+# definitions des fonctions articulations  de robot (elles sont utiles pour l interface graphique)
 #============================================================================== 
     
 def Tete(queue=None,prog=None):
@@ -675,7 +676,7 @@ def Main(queue=None,prog=None):
     prog.value = 0
     
 #==============================================================================
-# prend les valeurs de capteurs pied d'un robot
+# prend les valeurs de capteurs pied d un robot
 #============================================================================== 
 
 def fsr():
@@ -781,7 +782,7 @@ def steps():
                 clearExisting)
             
 #==============================================================================
-# utilisation d'autre fonction pour faire bouger le robot
+# utilisation d autre fonction pour faire bouger le robot
 #============================================================================== 
 def towalk():
     x  = 1.0
@@ -805,7 +806,7 @@ def towalk():
     
 
 #==============================================================================
-# les EVENTS  d'un robot
+# les EVENTS  d un robot
 #============================================================================== 
 
 class HumanGreeterModule(ALModule):
@@ -846,7 +847,7 @@ class HumanGreeterModule(ALModule):
             "onFaceDetected")
         
 #==============================================================================
-# test générale pour un robot
+# test generale pour un robot
 #============================================================================== 
 
 if __name__== "__main__":
@@ -871,7 +872,7 @@ if __name__== "__main__":
 #        userArmArticular(motionProxy)
 #        time.sleep(1)
 
-    try:        
+           
         print 'b0 :'
         b0 = BatteryMemory()
         #test de capteurs
@@ -906,7 +907,7 @@ if __name__== "__main__":
         print "b1 :"
         b1 = BatteryMemory()
         print "Fin Batterie..."
-        print "différence",(b0-b1)
+        print "difference",(b0-b1)
 #        
 
 #        print "Test de la fonction de parole du nao"
@@ -923,7 +924,7 @@ if __name__== "__main__":
         Test_Articulations()
 #        print "Fin articulations..."
 
-        print "Test d'affichage en temps réel de la vision du robot"
+        print "Test d'affichage en temps reel de la vision du robot"
         doStop()
         app = QApplication(sys.argv)
         myWidget = vis.ImageWidget(robotIP, port, CameraID)
@@ -935,7 +936,7 @@ if __name__== "__main__":
         sys.exit(app.exec_())
 #        
 
-##        print "Test d'affichage en temps réel de la vision du robot"
+##        print "Test d'affichage en temps reel de la vision du robot"
 ##        doStop()
 ##        app = QApplication(sys.argv)
 ##        myWidget = vis.ImageWidget(robotIP, port, CameraID)
