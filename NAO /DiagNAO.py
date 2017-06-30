@@ -1,6 +1,3 @@
-# -*- coding: utf-8 -*-
-#h25 v4
-
 import time
 import sys
 from naoqi import ALProxy, ALModule
@@ -13,18 +10,10 @@ from PyQt4.QtGui import QWidget, QImage, QApplication, QPainter, QPushButton
 import signal
 
 
-<<<<<<< HEAD
-<<<<<<< HEAD
-robotIP = "172.20.28.103" #Eta
-=======
-robotIP = "172.20.13.63" #Rouge
->>>>>>> 89ad711a8fc3ca5103f715386745b2b224a2ced8
-=======
+#robotIP = "172.20.28.103" #Eta
 #robotIP = "172.20.13.63" #Rouge
->>>>>>> 543eb7ee6fb04ed3c48fdbc62d424c3b44fd5a6f
 #robotIP = "172.20.28.103" #Bleu
 robotIP = "172.20.11.237"# gamma 
-#robotIP = "172.20.28.103" #eta
 #robotIP = "172.20.11.242"# beta
 
 port = 9559
@@ -93,11 +82,13 @@ def doInitialisation():
     # Send NAO to Pose Init
     postureProxy.goToPosture("StandInit", 0.5)
 
-def sumList(a, b):
-    result = []
-    for i in range(len(a)):
-        result.append(a[i] + b[i])
-    return result
+def doStandUp():
+    
+    motionProxy.wakeUp()
+    motionProxy.setStiffnesses("Body", 1.0)
+    time.sleep(t)
+    print"standing up"
+
 
 def initmouv():
     postureProxy.goToPosture("Crouch", 2.0)
@@ -242,6 +233,13 @@ def Test_Articulations(queue=None,prog=None):
     motionProxy.closeHand('LHand')
     initmouv()
     prog.value = 0
+    
+def sumList(a, b):
+    result = []
+    for i in range(len(a)):
+        result.append(a[i] + b[i])
+    return result
+
 
 #==============================================================================
 # Audio
@@ -439,12 +437,6 @@ def doright(angle):
     time.sleep(t)
     print"turning right"
     
-def doStandUp():
-    
-    motionProxy.wakeUp()
-    motionProxy.setStiffnesses("Body", 1.0)
-    time.sleep(t)
-    print"standing up"
     
 def doStop():
     time.sleep(1)
@@ -916,7 +908,7 @@ if __name__== "__main__":
         print "Fin Batterie..."
         print "différence",(b0-b1)
 #        
-<<<<<<< HEAD
+
 #        print "Test de la fonction de parole du nao"
 #        TestTts("Test Micro")
 #        time.sleep(1.0)
@@ -930,7 +922,7 @@ if __name__== "__main__":
 #        print "Test des articulations Tete / Bras"
         Test_Articulations()
 #        print "Fin articulations..."
-=======
+
         print "Test d'affichage en temps réel de la vision du robot"
         doStop()
         app = QApplication(sys.argv)
@@ -941,7 +933,6 @@ if __name__== "__main__":
         boutton.clicked.connect(close)
 
         sys.exit(app.exec_())
->>>>>>> 89ad711a8fc3ca5103f715386745b2b224a2ced8
 #        
 
 ##        print "Test d'affichage en temps réel de la vision du robot"
