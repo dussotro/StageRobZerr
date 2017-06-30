@@ -3,7 +3,7 @@
 
 import time
 import sys
-from naoqi import ALProxy, ALModule
+from naoqi import ALProxy, ALModule, ALBroker
 import motion
 import select
 import vision_showimages as vis
@@ -11,20 +11,13 @@ import numpy as np
 import almath
 from PyQt4.QtGui import QWidget, QImage, QApplication, QPainter, QPushButton
 import signal
+from optparse import OptionParser
 
 
-<<<<<<< HEAD
-<<<<<<< HEAD
-robotIP = "172.20.28.103" #Eta
-=======
+#robotIP = "172.20.28.103" #Eta
 robotIP = "172.20.13.63" #Rouge
->>>>>>> 89ad711a8fc3ca5103f715386745b2b224a2ced8
-=======
-#robotIP = "172.20.13.63" #Rouge
->>>>>>> 543eb7ee6fb04ed3c48fdbc62d424c3b44fd5a6f
 #robotIP = "172.20.28.103" #Bleu
-robotIP = "172.20.11.237"# gamma 
-#robotIP = "172.20.28.103" #eta
+#robotIP = "172.20.11.237"# gamma 
 #robotIP = "172.20.11.242"# beta
 
 port = 9559
@@ -53,7 +46,7 @@ except Exception, e:
 
 try :
     audio = ALProxy("ALAudioDevice", robotIP,port)
-    audio.setOutputVolume(50)
+    audio.setOutputVolume(30)
 except Exception, e: 
     print "Could not create proxy to ALaudioProxy"
     print "Error was: ", e
@@ -76,6 +69,23 @@ except Exception, e:
     print "Could not create proxy to AlBattery"
     print "Error was: ", e
 
+try:
+    SpeechReco = ALProxy("ALSpeechRecognition",robotIP,port)
+    try :
+        print ' je tente d unsub'
+        SpeechReco.unsubscribe('Arr')
+        print 'a'
+        SpeechReco.unsubscribe('Arr')
+        print 'b'
+        SpeechReco.unsubscribe('Arr')
+        print'c'
+    except :
+        pass
+#        print 'Error was: ',e
+        SpeechReco.setWordListAsVocabulary(["Bonjour","Fromage","Romain","Salut","Anticonstitutionnelle","Endomorphisme"])
+except Exception,e: 
+    print"Could not create proxy to ALSpeechRecognition"
+    print "Error was :",e
 
 
 #stiffness for real NAO Robot
@@ -832,10 +842,58 @@ class HumanGreeterModule(ALModule):
         # Subscribe to the FaceDetected event:
         global memory
         memory = ALProxy("ALMemory")
-        memory.subscribeToEvent("FaceDetected",
-            "HumanGreeter",
-            "onFaceDetected")
+#        memory.subscribeToEvent("FaceDetected",
+#            "HumanGreeter",
+#            "onFaceDetected")
+        memory.subscribeToEvent("robotHasFallen", "HumanGreeter",
+                                "RobotFall")
+        
+        memory.subscribeToEvent("WordRecognized", "HumanGreeter",
+                                "WordReco")
 
+#        memory.subscribeToEvent("LastWordRecognized","HumanGreeter",
+#                                "LastWordReco")
+        
+    def RobotFall(self,*_args):
+        
+        memory.unsubscribeToEvent("robotHasFallen","HumanGreeter")
+        self.tts.say("Je suis tombé, aidez moi")
+        print 'je suis tombé'
+        memory.subscribeToEvent("robotHasFallen","HumanGreeter",
+                                "RobotFall")
+    def WordReco(self, *_args):
+        
+        memory.unsubscribeToEvent("WordRecognized","HumanGreeter")
+#        SpeechReco.unsubscribe('python_client')
+        tts.enableNotifications()
+        print memory.getData("ALTextToSpeech/TextDone")
+        self.tts.say("tu viens de dire :"+str(_args[1][0]))
+        
+        print "tu viens de dire "+str(_args[1])
+        tts.enableNotifications()
+        while True :    
+            print memory.getData("ALTextToSpeech/TextDone")
+            time.sleep(1)
+        
+        
+#        SpeechReco.subscribe('python_client')
+        memory.subscribeToEvent("WordRecognized", "HumanGreeter",
+                                "WordReco")
+
+#    def LastWordReco(self, *_args):
+#        memory.unsubscribeToEvent("LastWordRecognized","HumanGreeter")
+#        
+##        SpeechReco.unsubscribe('python_client')
+#        
+#        self.tts.say("tu viens de dire"+str(_args[1][0]))
+#        print "tu viens de dire"+str(_args)
+#        
+##        SpeechReco.subscribe('python_client')
+#        
+#        memory.subscribeToEvent("LastWordRecognized", "HumanGreeter",
+#                                "LastWordReco")
+        
+        
     def onFaceDetected(self, *_args):
         """ This will be called each time a face is
         detected.
@@ -847,6 +905,7 @@ class HumanGreeterModule(ALModule):
             "HumanGreeter")
 
         self.tts.say("Hello, you")
+       
 
         # Subscribe again to the event
         memory.subscribeToEvent("FaceDetected",
@@ -861,62 +920,68 @@ if __name__== "__main__":
     doInitialisation()
     #test de la vision du NAO
     try:
+        parser = OptionParser()
+        parser.add_option("--pip",
+        help="Parent broker port. The IP address or your robot",
+        dest="pip")
+        parser.add_option("--pport",
+        help="Parent broker port. The port NAOqi is listening to",
+        dest="pport",
+        type="int")
+        parser.set_defaults(
+        pip=robotIP,
+        pport=9559)
+    
+        (opts, args_) = parser.parse_args()
+        pip   = opts.pip
+        pport = opts.pport
+        
+        #    print pip,pport
+        # We need this broker to be able to construct
+        # NAOqi modules and subscribe to other modules
+        # The broker must stay alive until the program exists
+        myBroker = ALBroker("myBroker",
+           "0.0.0.0",   # listen to anyone
+           0,           # find a free port and use it
+           pip,         # parent broker IP
+           pport)       # parent broker port
+    
+    
+        # Warning: HumanGreeter must be a global variable
+        # The name given to the constructor must be the name of the
+        # variable
+        print "define HumanGreeter"
+        global HumanGreeter
+        HumanGreeter = HumanGreeterModule("HumanGreeter")
+        
+        print "suscribe to event"
+#        SpeechReco.subscribe('Arr')
+#        print(str(SpeechReco.getParameter()))
+        print "wait..."
+        time.sleep(15)
+#        SpeechReco.unsubscribe('Arr')
+        
+        print "c est la fin"
+        time.sleep(15) 
+            
+            
+#        print 'b0 :'
+#        b0 = BatteryMemory()
+#        #test de capteurs
+#        print "Test des capteurs frontaux du robot" 
+#        TrySensors()
+#        print "Fin capteurs..." 
+##
 #
-#        fsr()
-#        time.sleep(1)
-#        
-#        tts.say("bonjour")
-#        
-#        gyroscope()
-#        time.sleep(1)
-#        
-#        userArmArticular_r(motionProxy)
-#        time.sleep(1)
-#        
-#        steps()
-#        time.sleep(1)
-#        
-#        userArmArticular(motionProxy)
-#        time.sleep(1)
-
-    try:        
-        print 'b0 :'
-        b0 = BatteryMemory()
-        #test de capteurs
-        print "Test des capteurs frontaux du robot" 
-        TrySensors()
-        print "Fin capteurs..." 
+#        print 'Gauche' ,TrySensors()[0],'\nDroite',TrySensors()[1]
+#        print "Fin capteurs..." 
 #
-
-        print 'Gauche' ,TrySensors()[0],'\nDroite',TrySensors()[1]
-        print "Fin capteurs..." 
-
-
-#        print "Test de calcul de vitesse et position"
-#        target_velocity()
-#        position_robot()
-#        print "Fin vitesse / position ..." 
-        
-        print "Test de la fonction de parole du nao"
-        TestTts("Test Micro")
-        time.sleep(1.0)
-        print "Fin parole..."
-        
-        print "Test de deplacement du robot"
-        print "trajectoire: carre gauche puis carre droite"
-        Test_Square_Left_Right()
-        print "Fin deplacement..."
-
-        print "Test des articulations Tete / Bras"
-        Test_Articulations()
-        print "Fin articulations..."
-        
-        print "b1 :"
-        b1 = BatteryMemory()
-        print "Fin Batterie..."
-        print "différence",(b0-b1)
+#
+##        print "Test de calcul de vitesse et position"
+##        target_velocity()
+##        position_robot()
+##        print "Fin vitesse / position ..." 
 #        
-<<<<<<< HEAD
 #        print "Test de la fonction de parole du nao"
 #        TestTts("Test Micro")
 #        time.sleep(1.0)
@@ -928,40 +993,30 @@ if __name__== "__main__":
 #        print "Fin deplacement..."
 #
 #        print "Test des articulations Tete / Bras"
-        Test_Articulations()
+#        Test_Articulations()
 #        print "Fin articulations..."
-=======
-        print "Test d'affichage en temps réel de la vision du robot"
-        doStop()
-        app = QApplication(sys.argv)
-        myWidget = vis.ImageWidget(robotIP, port, CameraID)
-        myWidget.show()
-        boutton= QPushButton()
-        boutton.show()
-        boutton.clicked.connect(close)
-
-        sys.exit(app.exec_())
->>>>>>> 89ad711a8fc3ca5103f715386745b2b224a2ced8
 #        
-
-##        print "Test d'affichage en temps réel de la vision du robot"
-##        doStop()
-##        app = QApplication(sys.argv)
-##        myWidget = vis.ImageWidget(robotIP, port, CameraID)
-##        myWidget.show()
-##        boutton= QPushButton()
-##        boutton.show()
-##        boutton.clicked.connect(close)
-##
-##        sys.exit(app.exec_())
-##        
-#        print "Fin video..."
-
+#        print "b1 :"
+#        b1 = BatteryMemory()
+#        print "Fin Batterie..."
+#        print "différence",(b0-b1)
+#
+#        print "Test d'affichage en temps réel de la vision du robot"
+#        doStop()
+#        app = QApplication(sys.argv)
+#        myWidget = vis.ImageWidget(robotIP, port, CameraID)
+#        myWidget.show()
+#        boutton= QPushButton()
+#        boutton.show()
+#        boutton.clicked.connect(close)
+#
+#        sys.exit(app.exec_())
         print "Fin video..."
+        doStop()
 
 
         
     except Exception, e:
         print'erreur: ', e
-       
+      
     doStop()
