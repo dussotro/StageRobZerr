@@ -239,7 +239,7 @@
      <string>Camera</string>
     </property>
    </widget>
-   <widget class="QPushButton" name="Bouton_Bonjour">
+   <widget class="QPushButton" name="Bonjour">
     <property name="geometry">
      <rect>
       <x>390</x>

@@ -879,36 +879,36 @@ if __name__== "__main__":
         print "Test des capteurs frontaux du robot" 
         TrySensors()
         print "Fin capteurs..." 
+##
 #
-
         print 'Gauche' ,TrySensors()[0],'\nDroite',TrySensors()[1]
         print "Fin capteurs..." 
 
-
-#        print "Test de calcul de vitesse et position"
-#        target_velocity()
-#        position_robot()
-#        print "Fin vitesse / position ..." 
-        
+#
+##        print "Test de calcul de vitesse et position"
+##        target_velocity()
+##        position_robot()
+##        print "Fin vitesse / position ..." 
+#        
         print "Test de la fonction de parole du nao"
         TestTts("Test Micro")
         time.sleep(1.0)
         print "Fin parole..."
-        
-        print "Test de deplacement du robot"
-        print "trajectoire: carre gauche puis carre droite"
-        Test_Square_Left_Right()
-        print "Fin deplacement..."
-
+#        
+#        print "Test de deplacement du robot"
+#        print "trajectoire: carre gauche puis carre droite"
+#        Test_Square_Left_Right()
+#        print "Fin deplacement..."
+#
         print "Test des articulations Tete / Bras"
         Test_Articulations()
         print "Fin articulations..."
-        
+#        
         print "b1 :"
         b1 = BatteryMemory()
         print "Fin Batterie..."
         print "difference",(b0-b1)
-#        
+##        
 
 #        print "Test de la fonction de parole du nao"
 #        TestTts("Test Micro")
@@ -921,8 +921,20 @@ if __name__== "__main__":
 #        print "Fin deplacement..."
 #
 #        print "Test des articulations Tete / Bras"
-        Test_Articulations()
+#        Test_Articulations()
 #        print "Fin articulations..."
+
+#        print "Test d'affichage en temps reel de la vision du robot"
+#        doStop()
+#        app = QApplication(sys.argv)
+#        myWidget = vis.ImageWidget(robotIP, port, CameraID)
+#        myWidget.show()
+#        boutton= QPushButton()
+#        boutton.show()
+#        boutton.clicked.connect(close)
+#
+#        sys.exit(app.exec_())
+        
 
         print "Test d'affichage en temps reel de la vision du robot"
         doStop()
@@ -935,21 +947,10 @@ if __name__== "__main__":
 
         sys.exit(app.exec_())
 #        
-
-##        print "Test d'affichage en temps reel de la vision du robot"
-##        doStop()
-##        app = QApplication(sys.argv)
-##        myWidget = vis.ImageWidget(robotIP, port, CameraID)
-##        myWidget.show()
-##        boutton= QPushButton()
-##        boutton.show()
-##        boutton.clicked.connect(close)
-##
-##        sys.exit(app.exec_())
-##        
-#        print "Fin video..."
+        print "Fin video..."
 
         print "Fin video..."
+        
 
 
         

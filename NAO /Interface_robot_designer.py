@@ -1,4 +1,4 @@
-# -*- coding: utf-8 -*-
+
 from PyQt4 import QtGui,uic
 from naoqi import ALProxy, ALModule
 from PyQt4.QtGui import QWidget, QImage, QApplication, QPainter
@@ -15,8 +15,7 @@ from multiprocessing import Process, Queue, Value
 
 #robotIP = "172.20.13.63" #Rouge
 #robotIP = "172.20.28.103" #Bleu
-robotIP = "172.20.11.237"# gamma 
-#robotIP = "172.20.11.237"# gamma 
+robotIP = "172.20.11.237"# gamma  
 #robotIP = "172.20.11.242" #beta
 
 port = 9559
@@ -42,6 +41,7 @@ class UiTest(QtGui.QMainWindow):
         self.ui.Bouton_Poignet.clicked.connect(self.Poignet)
         self.ui.Bouton_Coude.clicked.connect(self.Coude)
         self.ui.Bouton_Camera.clicked.connect(self.Camera)
+        self.ui.Bouton_Bonjour.clicked.connect(self.parole)
     
         self.inage= ImageWidget(robotIP, port,0)
             
@@ -49,7 +49,7 @@ class UiTest(QtGui.QMainWindow):
         self.battery_init = DiagNAO.BatteryMemory()
         
         palette= QtGui.QPalette()
-        pixmap = QtGui.QPixmap("fond.jpeg").scaled(self.ui.width(),self.ui.height())   # vérifiez que vous avez cette image
+        pixmap = QtGui.QPixmap("fond.jpeg").scaled(self.ui.width(), self.ui.height() )   # verifiez que vous avez cette image
         palette.setBrush(QtGui.QPalette.Background,QtGui.QBrush(pixmap))
         self.setPalette(palette)
             
@@ -64,8 +64,8 @@ class UiTest(QtGui.QMainWindow):
     def Battery(self):
         """
         Ecrit le pourcentage restant dans la batterie.
-        Pour vérifier qu'il n'y est pas de probleme dans la batterie.
-        Faire une mesure au début et à la fin des Test.
+        Pour verifier qu'il n'y est pas de probleme dans la batterie.
+        Faire une mesure au debut et a la fin des Test
         """
 #        if self.prog.value == 0:
 #            self.prog.value = 1
@@ -134,7 +134,12 @@ class UiTest(QtGui.QMainWindow):
             
     def closeEvent(self,event):
         DiagNAO.doStop()
-        event.accept()        
+        event.accept() 
+        
+    def parole(self):
+       
+        DiagNAO.TestTts("Bonjour tout lmonde")
+        
     
         
         
