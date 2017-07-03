@@ -12,15 +12,9 @@ from optparse import OptionParser
 
 
 #robotIP = "172.20.28.103" #Eta
-<<<<<<< HEAD
-robotIP = "172.20.13.63" #Rouge
-#robotIP = "172.20.28.103" #Bleu
-#robotIP = "172.20.11.237"# gamma 
-=======
 #robotIP = "172.20.13.63" #Rouge
 #robotIP = "172.20.28.103" #Bleu
 robotIP = "172.20.11.237"# gamma 
->>>>>>> 4dfad5b955c518db3ad95b88688ca6d70c483610
 #robotIP = "172.20.11.242"# beta
 
 port = 9559
