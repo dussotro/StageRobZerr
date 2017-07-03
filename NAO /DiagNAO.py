@@ -1,6 +1,6 @@
 import time
 import sys
-from naoqi import ALProxy, ALModule
+from naoqi import ALProxy, ALModule,  ALBroker
 import motion
 import select
 import vision_showimages as vis
@@ -64,16 +64,27 @@ try:
 except Exception, e:
     print "Could not create proxy to AlBattery"
     print "Error was: ", e
+    
+try :
+    asr = ALProxy("ALSpeechRecognition", robotIP, port)
+    asr.setLanguage("English")
+except Exception, e: 
+    print "Could not create proxy to ALTextToSpeech"
+    print "Error was: ", e
+
+
+
+
 
 
 
 #stiffness for real NAO Robot
-def StiffnessOn(proxy):
+def StiffnessOn(motionProxy):
     # We use the "Body" name to signify the collection of all joints
     pNames = "Body"
     pStiffnessLists = 1.0
     pTimeLists = 1.0
-    proxy.stiffnessInterpolation(pNames, pStiffnessLists, pTimeLists)
+    motionProxy.stiffnessInterpolation(pNames, pStiffnessLists, pTimeLists)
     
 def doInitialisation():
     print">>>>>> Initialisation"
@@ -845,6 +856,19 @@ class HumanGreeterModule(ALModule):
         memory.subscribeToEvent("FaceDetected",
             "HumanGreeter",
             "onFaceDetected")
+def parole():
+    vocabulary = ["yes", "no", "please"]
+    asr.setVocabulary(vocabulary, False)
+
+# Start the speech recognition engine with user Test_ASR
+    asr.subscribe("Test_ASR")
+    print 'Speech recognition engine started'
+    time.sleep(20)
+    tt.say
+    asr.unsubscribe("Test_ASR")
+    
+    WordRecognized = [ "yes", 0.8, "no", 0.75, "please", 0.7]
+
         
 #==============================================================================
 # test generale pour un robot
@@ -854,6 +878,10 @@ if __name__== "__main__":
     doInitialisation()
     #test de la vision du NAO
     try:
+#        parole()
+        Main()
+        time.sleep(5)
+#        doStop()
 #
 #        fsr()
 #        time.sleep(1)
@@ -873,43 +901,23 @@ if __name__== "__main__":
 #        time.sleep(1)
 
            
-        print 'b0 :'
-        b0 = BatteryMemory()
-        #test de capteurs
-        print "Test des capteurs frontaux du robot" 
-        TrySensors()
-        print "Fin capteurs..." 
+#        print 'b0 :'
+#        b0 = BatteryMemory()
+#        #test de capteurs
+#        print "Test des capteurs frontaux du robot" 
+#        TrySensors()
+#        print "Fin capteurs..." 
+###
 ##
+#        print 'Gauche' ,TrySensors()[0],'\nDroite',TrySensors()[1]
+#        print "Fin capteurs..." 
 #
-        print 'Gauche' ,TrySensors()[0],'\nDroite',TrySensors()[1]
-        print "Fin capteurs..." 
-
-#
-##        print "Test de calcul de vitesse et position"
-##        target_velocity()
-##        position_robot()
-##        print "Fin vitesse / position ..." 
-#        
-        print "Test de la fonction de parole du nao"
-        TestTts("Test Micro")
-        time.sleep(1.0)
-        print "Fin parole..."
-#        
-#        print "Test de deplacement du robot"
-#        print "trajectoire: carre gauche puis carre droite"
-#        Test_Square_Left_Right()
-#        print "Fin deplacement..."
-#
-        print "Test des articulations Tete / Bras"
-        Test_Articulations()
-        print "Fin articulations..."
-#        
-        print "b1 :"
-        b1 = BatteryMemory()
-        print "Fin Batterie..."
-        print "difference",(b0-b1)
+##
+###        print "Test de calcul de vitesse et position"
+###        target_velocity()
+###        position_robot()
+###        print "Fin vitesse / position ..." 
 ##        
-
 #        print "Test de la fonction de parole du nao"
 #        TestTts("Test Micro")
 #        time.sleep(1.0)
@@ -923,7 +931,39 @@ if __name__== "__main__":
 #        print "Test des articulations Tete / Bras"
 #        Test_Articulations()
 #        print "Fin articulations..."
-
+##        
+#        print "b1 :"
+#        b1 = BatteryMemory()
+#        print "Fin Batterie..."
+#        print "difference",(b0-b1)
+###        
+#
+##        print "Test de la fonction de parole du nao"
+##        TestTts("Test Micro")
+##        time.sleep(1.0)
+##        print "Fin parole..."
+##        
+##        print "Test de deplacement du robot"
+##        print "trajectoire: carre gauche puis carre droite"
+##        Test_Square_Left_Right()
+##        print "Fin deplacement..."
+##
+##        print "Test des articulations Tete / Bras"
+##        Test_Articulations()
+##        print "Fin articulations..."
+#
+##        print "Test d'affichage en temps reel de la vision du robot"
+##        doStop()
+##        app = QApplication(sys.argv)
+##        myWidget = vis.ImageWidget(robotIP, port, CameraID)
+##        myWidget.show()
+##        boutton= QPushButton()
+##        boutton.show()
+##        boutton.clicked.connect(close)
+##
+##        sys.exit(app.exec_())
+#        
+#
 #        print "Test d'affichage en temps reel de la vision du robot"
 #        doStop()
 #        app = QApplication(sys.argv)
@@ -934,22 +974,11 @@ if __name__== "__main__":
 #        boutton.clicked.connect(close)
 #
 #        sys.exit(app.exec_())
-        
-
-        print "Test d'affichage en temps reel de la vision du robot"
+##        
+#        print "Fin video..."
+#
+#        print "Fin video..."
         doStop()
-        app = QApplication(sys.argv)
-        myWidget = vis.ImageWidget(robotIP, port, CameraID)
-        myWidget.show()
-        boutton= QPushButton()
-        boutton.show()
-        boutton.clicked.connect(close)
-
-        sys.exit(app.exec_())
-#        
-        print "Fin video..."
-
-        print "Fin video..."
         
 
 

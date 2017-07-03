@@ -809,6 +809,7 @@ class HumanGreeterModule(ALModule):
             "HumanGreeter")
 
         self.tts.say("Hello, you")
+#        Test_Articulations()
 
         # Subscribe again to the event
         memory.subscribeToEvent("FaceDetected",
