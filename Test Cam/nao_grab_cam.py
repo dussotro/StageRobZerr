@@ -10,7 +10,11 @@ import matplotlib.pyplot as pl
 import almath
 
 # NAO parameters
+<<<<<<< HEAD
 robotIP, port = "172.20.11.237", 9559
+=======
+robotIP, port = "172.20.13.63", 9559
+>>>>>>> 831cfa681d613346052bc7213e2b5b876c57e2e1
 ALMEMORY_KEY_NAMES = ["Device/SubDeviceList/HeadYaw/Position/Sensor/Value", "Device/SubDeviceList/HeadPitch/Position/Sensor/Value"]
 
 # Detection threshold and counter parameters
@@ -151,22 +155,22 @@ def Main():
             sat = cv2.split(img_PIL)[1]
             val = cv2.split(img_PIL)[2]
             
-#            pl.figure(figsize=(12,4))
-#            pl.subplot(131)
-#            pl.imshow(hue, cmap='Greys')
-#            pl.subplot(132)
-#            pl.imshow(sat, cmap='Greys')            
-#            pl.subplot(133)
-#            pl.imshow(val, cmap='Greys')
-#                        
-#            pl.savefig('Image/HSV.png')
+            pl.figure(figsize=(12,4))
+            pl.subplot(131)
+            pl.imshow(hue, cmap='Greys')
+            pl.subplot(132)
+            pl.imshow(sat, cmap='Greys')            
+            pl.subplot(133)
+            pl.imshow(val, cmap='Greys')
+                        
+            pl.savefig('Image/HSV.png')
             
             seuil = 100.0
             ret, seg_sat = cv2.threshold(sat, seuil, 255.0, cv2.THRESH_BINARY)
-#            pl.figure(figsize=(4,4))
-#            pl.imshow(seg_sat)
-#            pl.savefig('Image/IsolementBalle.png')
-#            time.sleep(3)
+            pl.figure(figsize=(4,4))
+            pl.imshow(seg_sat)
+            pl.savefig('Image/IsolementBalle.png')
+            time.sleep(3)
 
             contours, hierarchy = cv2.findContours(seg_sat, cv2.RETR_EXTERNAL, cv2.CHAIN_APPROX_SIMPLE)
             out = np.zeros_like(seg_sat)
@@ -225,7 +229,7 @@ def Main():
             #motionProxy.post.setWalkTargetVelocity(vitesse, 0.0, omega, 0.3)
             
             
-            time.sleep(0.5)
+            time.sleep(5)
             
         elif cmd=="stop":
             motionProxy.stopMove()
