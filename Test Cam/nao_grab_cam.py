@@ -10,7 +10,7 @@ import matplotlib.pyplot as pl
 import almath
 
 # NAO parameters
-robotIP, port = "172.20.28.103", 9559
+robotIP, port = "172.20.11.237", 9559
 ALMEMORY_KEY_NAMES = ["Device/SubDeviceList/HeadYaw/Position/Sensor/Value", "Device/SubDeviceList/HeadPitch/Position/Sensor/Value"]
 
 # Detection threshold and counter parameters
@@ -199,7 +199,7 @@ def Main():
                 x, y = recordData()
                 x, y = x + dx, y + dy
                 omega = x
-                 print "aire : ", best_area, " | dx : ", dx, " | dy : ", dy
+                print "aire : ", best_area, " | dx : ", dx, " | dy : ", dy
                 motionProxy.setAngles("HeadYaw", -x*almath.TO_RAD, 0.2)
                 motionProxy.setAngles("HeadPitch", y*almath.TO_RAD, 0.2)
             
