@@ -1,6 +1,3 @@
-# -*- coding: utf-8 -*-
-#h25 v4
-
 import time
 import sys
 from naoqi import ALProxy, ALModule, ALBroker
@@ -15,9 +12,15 @@ from optparse import OptionParser
 
 
 #robotIP = "172.20.28.103" #Eta
+<<<<<<< HEAD
 robotIP = "172.20.13.63" #Rouge
 #robotIP = "172.20.28.103" #Bleu
 #robotIP = "172.20.11.237"# gamma 
+=======
+#robotIP = "172.20.13.63" #Rouge
+#robotIP = "172.20.28.103" #Bleu
+robotIP = "172.20.11.237"# gamma 
+>>>>>>> 4dfad5b955c518db3ad95b88688ca6d70c483610
 #robotIP = "172.20.11.242"# beta
 
 port = 9559
@@ -102,12 +105,14 @@ def doInitialisation():
     StiffnessOn(motionProxy)
     # Send NAO to Pose Init
     postureProxy.goToPosture("StandInit", 0.5)
+    
+def doStandUp():
+    
+    motionProxy.wakeUp()
+    motionProxy.setStiffnesses("Body", 1.0)
+    time.sleep(t)
+    print"standing up"
 
-def sumList(a, b):
-    result = []
-    for i in range(len(a)):
-        result.append(a[i] + b[i])
-    return result
 
 def initmouv():
     postureProxy.goToPosture("Crouch", 2.0)
@@ -252,6 +257,13 @@ def Test_Articulations(queue=None,prog=None):
     motionProxy.closeHand('LHand')
     initmouv()
     prog.value = 0
+    
+def sumList(a, b):
+    result = []
+    for i in range(len(a)):
+        result.append(a[i] + b[i])
+    return result
+
 
 #==============================================================================
 # Audio
@@ -449,12 +461,7 @@ def doright(angle):
     time.sleep(t)
     print"turning right"
     
-def doStandUp():
-    
-    motionProxy.wakeUp()
-    motionProxy.setStiffnesses("Body", 1.0)
-    time.sleep(t)
-    print"standing up"
+
     
 def doStop():
     time.sleep(1)
@@ -550,7 +557,7 @@ def BatteryMemory():
      
 
 #==============================================================================
-# définitions des fonctions articulations  de robot (ells sont utiles pour l'interface graphique)
+# definitions des fonctions articulations  de robot (elles sont utiles pour l interface graphique)
 #============================================================================== 
     
 def Tete(queue=None,prog=None):
@@ -693,7 +700,7 @@ def Main(queue=None,prog=None):
     prog.value = 0
     
 #==============================================================================
-# prend les valeurs de capteurs pied d'un robot
+# prend les valeurs de capteurs pied d un robot
 #============================================================================== 
 
 def fsr():
@@ -799,7 +806,7 @@ def steps():
                 clearExisting)
             
 #==============================================================================
-# utilisation d'autre fonction pour faire bouger le robot
+# utilisation d autre fonction pour faire bouger le robot
 #============================================================================== 
 def towalk():
     x  = 1.0
@@ -823,7 +830,7 @@ def towalk():
     
 
 #==============================================================================
-# les EVENTS  d'un robot
+# les EVENTS  d un robot
 #============================================================================== 
 
 class HumanGreeterModule(ALModule):
@@ -913,7 +920,7 @@ class HumanGreeterModule(ALModule):
             "onFaceDetected")
         
 #==============================================================================
-# test générale pour un robot
+# test generale pour un robot
 #============================================================================== 
 
 if __name__== "__main__":
@@ -964,24 +971,21 @@ if __name__== "__main__":
         print "c est la fin"
         time.sleep(15) 
             
-            
+           
 #        print 'b0 :'
 #        b0 = BatteryMemory()
-#        #test de capteurs
+        #test de capteurs
 #        print "Test des capteurs frontaux du robot" 
 #        TrySensors()
 #        print "Fin capteurs..." 
-##
-#
 #        print 'Gauche' ,TrySensors()[0],'\nDroite',TrySensors()[1]
 #        print "Fin capteurs..." 
-#
+
 #
 ##        print "Test de calcul de vitesse et position"
 ##        target_velocity()
 ##        position_robot()
 ##        print "Fin vitesse / position ..." 
-#        
 #        print "Test de la fonction de parole du nao"
 #        TestTts("Test Micro")
 #        time.sleep(1.0)
@@ -995,7 +999,6 @@ if __name__== "__main__":
 #        print "Test des articulations Tete / Bras"
 #        Test_Articulations()
 #        print "Fin articulations..."
-#        
 #        print "b1 :"
 #        b1 = BatteryMemory()
 #        print "Fin Batterie..."
@@ -1012,8 +1015,9 @@ if __name__== "__main__":
 #
 #        sys.exit(app.exec_())
         print "Fin video..."
-        doStop()
 
+
+        print "Fin video..."
 
         
     except Exception, e:
