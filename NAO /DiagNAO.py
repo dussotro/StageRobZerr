@@ -1,6 +1,6 @@
 import time
 import sys
-from naoqi import ALProxy, ALModule,  ALBroker
+from naoqi import ALProxy, ALModule
 import motion
 import select
 import vision_showimages as vis
@@ -79,12 +79,12 @@ except Exception, e:
 
 
 #stiffness for real NAO Robot
-def StiffnessOn(motionProxy):
+def StiffnessOn(proxy):
     # We use the "Body" name to signify the collection of all joints
     pNames = "Body"
     pStiffnessLists = 1.0
     pTimeLists = 1.0
-    motionProxy.stiffnessInterpolation(pNames, pStiffnessLists, pTimeLists)
+    proxy.stiffnessInterpolation(pNames, pStiffnessLists, pTimeLists)
     
 def doInitialisation():
     print">>>>>> Initialisation"
@@ -856,7 +856,7 @@ class HumanGreeterModule(ALModule):
         memory.subscribeToEvent("FaceDetected",
             "HumanGreeter",
             "onFaceDetected")
-def parole():
+def hake():
     vocabulary = ["yes", "no", "please"]
     asr.setVocabulary(vocabulary, False)
 
@@ -878,9 +878,8 @@ if __name__== "__main__":
     doInitialisation()
     #test de la vision du NAO
     try:
-#        parole()
-        Main()
-        time.sleep(5)
+#        pa()
+#        time.sleep(5)
 #        doStop()
 #
 #        fsr()
@@ -978,7 +977,6 @@ if __name__== "__main__":
 #        print "Fin video..."
 #
 #        print "Fin video..."
-        doStop()
         
 
 
