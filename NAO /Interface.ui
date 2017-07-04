@@ -20,9 +20,9 @@
    <widget class="QPushButton" name="Bouton_square">
     <property name="geometry">
      <rect>
-      <x>210</x>
-      <y>30</y>
-      <width>95</width>
+      <x>190</x>
+      <y>40</y>
+      <width>111</width>
       <height>31</height>
      </rect>
     </property>
@@ -106,9 +106,9 @@
    <widget class="QPushButton" name="Bouton_Stop">
     <property name="geometry">
      <rect>
-      <x>100</x>
+      <x>80</x>
       <y>290</y>
-      <width>131</width>
+      <width>151</width>
       <height>31</height>
      </rect>
     </property>
@@ -119,9 +119,9 @@
    <widget class="QPushButton" name="Bouton_Tete">
     <property name="geometry">
      <rect>
-      <x>380</x>
-      <y>20</y>
-      <width>177</width>
+      <x>510</x>
+      <y>40</y>
+      <width>101</width>
       <height>31</height>
      </rect>
     </property>
@@ -132,7 +132,7 @@
    <widget class="QPushButton" name="Bouton_Total">
     <property name="geometry">
      <rect>
-      <x>390</x>
+      <x>430</x>
       <y>290</y>
       <width>151</width>
       <height>31</height>
@@ -145,8 +145,8 @@
    <widget class="QPushButton" name="Bouton_Epaule">
     <property name="geometry">
      <rect>
-      <x>420</x>
-      <y>60</y>
+      <x>510</x>
+      <y>80</y>
       <width>101</width>
       <height>31</height>
      </rect>
@@ -158,8 +158,8 @@
    <widget class="QPushButton" name="Bouton_Coude">
     <property name="geometry">
      <rect>
-      <x>420</x>
-      <y>100</y>
+      <x>510</x>
+      <y>120</y>
       <width>101</width>
       <height>31</height>
      </rect>
@@ -171,8 +171,8 @@
    <widget class="QPushButton" name="Bouton_Poignet">
     <property name="geometry">
      <rect>
-      <x>420</x>
-      <y>140</y>
+      <x>510</x>
+      <y>160</y>
       <width>101</width>
       <height>31</height>
      </rect>
@@ -184,7 +184,7 @@
    <widget class="QPushButton" name="Bouton_battery">
     <property name="geometry">
      <rect>
-      <x>240</x>
+      <x>190</x>
       <y>80</y>
       <width>111</width>
       <height>31</height>
@@ -197,7 +197,7 @@
    <widget class="QPushButton" name="Bouton_sensors">
     <property name="geometry">
      <rect>
-      <x>60</x>
+      <x>40</x>
       <y>80</y>
       <width>111</width>
       <height>31</height>
@@ -210,8 +210,8 @@
    <widget class="QPushButton" name="Bouton_main">
     <property name="geometry">
      <rect>
-      <x>420</x>
-      <y>190</y>
+      <x>510</x>
+      <y>200</y>
       <width>101</width>
       <height>31</height>
      </rect>
@@ -229,14 +229,27 @@
    <widget class="QPushButton" name="Bouton_Camera">
     <property name="geometry">
      <rect>
-      <x>70</x>
-      <y>30</y>
-      <width>95</width>
+      <x>40</x>
+      <y>40</y>
+      <width>111</width>
       <height>31</height>
      </rect>
     </property>
     <property name="text">
      <string>Camera</string>
+    </property>
+   </widget>
+   <widget class="QPushButton" name="Bouton_Bonjour">
+    <property name="geometry">
+     <rect>
+      <x>390</x>
+      <y>40</y>
+      <width>95</width>
+      <height>31</height>
+     </rect>
+    </property>
+    <property name="text">
+     <string>dis bonjour</string>
     </property>
    </widget>
   </widget>

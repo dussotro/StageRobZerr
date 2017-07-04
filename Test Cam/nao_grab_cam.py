@@ -11,7 +11,15 @@ import pylab as pl
 import almath
 
 # NAO parameters
+<<<<<<< HEAD
 robotIP, port = "172.20.25.150", 9559
+=======
+<<<<<<< HEAD
+robotIP, port = "172.20.11.237", 9559
+=======
+robotIP, port = "172.20.13.63", 9559
+>>>>>>> 831cfa681d613346052bc7213e2b5b876c57e2e1
+>>>>>>> 0ee8a54027254e46d10507de394bc6f36b1aa046
 ALMEMORY_KEY_NAMES = ["Device/SubDeviceList/HeadYaw/Position/Sensor/Value", "Device/SubDeviceList/HeadPitch/Position/Sensor/Value"]
 
 # Detection threshold and counter parameters
@@ -169,6 +177,7 @@ def Main():
             pl.draw()
             
             
+<<<<<<< HEAD
             img_PIL2 = cv2.cvtColor(np.asarray(img_PIL1), cv2.COLOR_RGB2HSV)
 #            pl.figure(figsize=(4,4))
 #            pl.imshow(img_PIL)
@@ -201,6 +210,24 @@ def Main():
 #            pl.colorbar()   
 #            
 #            pl.savefig('Image/HSV.png')
+=======
+            pl.figure(figsize=(12,4))
+            pl.subplot(131)
+            pl.imshow(hue, cmap='Greys')
+            pl.subplot(132)
+            pl.imshow(sat, cmap='Greys')            
+            pl.subplot(133)
+            pl.imshow(val, cmap='Greys')
+                        
+            pl.savefig('Image/HSV.png')
+            
+            seuil = 100.0
+            ret, seg_sat = cv2.threshold(sat, seuil, 255.0, cv2.THRESH_BINARY)
+            pl.figure(figsize=(4,4))
+            pl.imshow(seg_sat)
+            pl.savefig('Image/IsolementBalle.png')
+            time.sleep(3)
+>>>>>>> 0ee8a54027254e46d10507de394bc6f36b1aa046
 
             
             img_PIL4 = cv2.inRange(img_PIL3, HSVmin, HSVmax)
@@ -242,7 +269,11 @@ def Main():
                 x, y = recordData()
                 x, y = x + dx, y + dy
                 omega = x
+<<<<<<< HEAD
                 print " | dx : ", dx, " | dy : ", dy
+=======
+                print "aire : ", best_area, " | dx : ", dx, " | dy : ", dy
+>>>>>>> 0ee8a54027254e46d10507de394bc6f36b1aa046
                 motionProxy.setAngles("HeadYaw", -x*almath.TO_RAD, 0.2)
                 motionProxy.setAngles("HeadPitch", y*almath.TO_RAD, 0.2)
             
@@ -274,7 +305,11 @@ def Main():
 #            filein.write("stop")
 #            filein.close() 
             
+<<<<<<< HEAD
             time.sleep(0.2)
+=======
+            time.sleep(5)
+>>>>>>> 0ee8a54027254e46d10507de394bc6f36b1aa046
             
         elif cmd=="stop":
             motionProxy.stopMove()
