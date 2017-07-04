@@ -55,6 +55,7 @@ class ImageWidget(QWidget):
         self._videoProxy = ALProxy("ALVideoDevice", IP, PORT)
         resolution = vision_definitions.kQVGA  # 320 * 240
         colorSpace = vision_definitions.kRGBColorSpace
+        self._imgClient = self._videoProxy.subscribe("_client", resolution, colorSpace, 5)
         try :
             self._imgClient = self._videoProxy.subscribe("_client", resolution, colorSpace, 5)
         except :
@@ -105,8 +106,8 @@ class ImageWidget(QWidget):
         
 #        self._alImage = self._videoProxy.getImageRemote(self._imgClient)
         self._image = QImage(self._pixelArray,         # Pixel array.
-                             self._imgWidth,           # Width.
-                             self._imgHeight,          # Height.
+                             self._pixelArray.shape[0],           # Width.
+                             self._pixelArray.shape[1],          # Height.
                              QImage.Format_RGB888)
 
 

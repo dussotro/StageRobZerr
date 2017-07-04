@@ -66,6 +66,17 @@ try:
 except Exception, e:
     print "Could not create proxy to AlBattery"
     print "Error was: ", e
+    
+try :
+    asr = ALProxy("ALSpeechRecognition", robotIP, port)
+    asr.setLanguage("English")
+except Exception, e: 
+    print "Could not create proxy to ALTextToSpeech"
+    print "Error was: ", e
+
+
+
+
 
 try:
     SpeechReco = ALProxy("ALSpeechRecognition",robotIP,port)
@@ -859,8 +870,8 @@ class HumanGreeterModule(ALModule):
     def RobotFall(self,*_args):
         
         memory.unsubscribeToEvent("robotHasFallen","HumanGreeter")
-        self.tts.say("Je suis tombé, aidez moi")
-        print 'je suis tombé'
+        self.tts.say("Je suis tombe, aidez moi")
+        print 'je suis tombe'
         memory.subscribeToEvent("robotHasFallen","HumanGreeter",
                                 "RobotFall")
     def WordReco(self, *_args):
@@ -913,6 +924,19 @@ class HumanGreeterModule(ALModule):
         memory.subscribeToEvent("FaceDetected",
             "HumanGreeter",
             "onFaceDetected")
+def hake():
+    vocabulary = ["yes", "no", "please"]
+    asr.setVocabulary(vocabulary, False)
+
+# Start the speech recognition engine with user Test_ASR
+    asr.subscribe("Test_ASR")
+    print 'Speech recognition engine started'
+    time.sleep(20)
+    tt.say
+    asr.unsubscribe("Test_ASR")
+    
+    WordRecognized = [ "yes", 0.8, "no", 0.75, "please", 0.7]
+
         
 #==============================================================================
 # test generale pour un robot
@@ -922,6 +946,44 @@ if __name__== "__main__":
     doInitialisation()
     #test de la vision du NAO
     try:
+#        pa()
+#        time.sleep(5)
+#        doStop()
+#
+#        fsr()
+#        time.sleep(1)
+#        
+#        tts.say("bonjour")
+#        
+#        gyroscope()
+#        time.sleep(1)
+#        
+#        userArmArticular_r(motionProxy)
+#        time.sleep(1)
+#        
+#        steps()
+#        time.sleep(1)
+#        
+#        userArmArticular(motionProxy)
+#        time.sleep(1)
+
+           
+#        print 'b0 :'
+#        b0 = BatteryMemory()
+#        #test de capteurs
+#        print "Test des capteurs frontaux du robot" 
+#        TrySensors()
+#        print "Fin capteurs..." 
+###
+##
+#        print 'Gauche' ,TrySensors()[0],'\nDroite',TrySensors()[1]
+#        print "Fin capteurs..." 
+#
+##
+###        print "Test de calcul de vitesse et position"
+###        target_velocity()
+###        position_robot()
+###        print "Fin vitesse / position ..." 
         parser = OptionParser()
         parser.add_option("--pip",
         help="Parent broker port. The IP address or your robot",
@@ -994,12 +1056,46 @@ if __name__== "__main__":
 #        print "Test des articulations Tete / Bras"
 #        Test_Articulations()
 #        print "Fin articulations..."
+##        
 #        print "b1 :"
 #        b1 = BatteryMemory()
 #        print "Fin Batterie..."
-#        print "différence",(b0-b1)
+#        print "difference",(b0-b1)
+###        
 #
-#        print "Test d'affichage en temps réel de la vision du robot"
+##        print "Test de la fonction de parole du nao"
+##        TestTts("Test Micro")
+##        time.sleep(1.0)
+##        print "Fin parole..."
+##        
+##        print "Test de deplacement du robot"
+##        print "trajectoire: carre gauche puis carre droite"
+##        Test_Square_Left_Right()
+##        print "Fin deplacement..."
+##
+##        print "Test des articulations Tete / Bras"
+##        Test_Articulations()
+##        print "Fin articulations..."
+#
+##        print "Test d'affichage en temps reel de la vision du robot"
+##        doStop()
+##        app = QApplication(sys.argv)
+##        myWidget = vis.ImageWidget(robotIP, port, CameraID)
+##        myWidget.show()
+##        boutton= QPushButton()
+##        boutton.show()
+##        boutton.clicked.connect(close)
+##
+##        sys.exit(app.exec_())
+#        
+#
+#        print "Test d'affichage en temps reel de la vision du robot"
+#        print "b1 :"
+#        b1 = BatteryMemory()
+#        print "Fin Batterie..."
+#        print "difference",(b0-b1)
+#
+#        print "Test d'affichage en temps reel de la vision du robot"
 #        doStop()
 #        app = QApplication(sys.argv)
 #        myWidget = vis.ImageWidget(robotIP, port, CameraID)
@@ -1009,8 +1105,11 @@ if __name__== "__main__":
 #        boutton.clicked.connect(close)
 #
 #        sys.exit(app.exec_())
+##        
+#        print "Fin video..."
+#
+#        print "Fin video..."
         print "Fin video..."
-
 
         print "Fin video..."
 

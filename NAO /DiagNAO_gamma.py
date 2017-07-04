@@ -358,7 +358,7 @@ def dorun(t):
 
 def doback():
     
-    X = 0.9
+    X = -0.4
     Y = 0.0
     Theta = 0.0
 #    Frequency =0.9 # low speed
@@ -771,7 +771,7 @@ def testtowalk():
     motionProxy.moveToward(0.0, 0.0, 0.0)
 
 
-
+#global capteur_detection 
 class HumanGreeterModule(ALModule):
     """ A simple module able to react
     to facedetection events
@@ -797,23 +797,34 @@ class HumanGreeterModule(ALModule):
         memory.subscribeToEvent("HandRightBackTouched",
                                 "HumanGreeter",
                                 "Maindroite")
+        
+        
 
     def onFaceDetected(self, *_args):
         """ This will be called each time a face is
         detected.
 
         """
+       
         # Unsubscribe to the event when talking,
         # to avoid repetitions
         memory.unsubscribeToEvent("FaceDetected",
             "HumanGreeter")
 
-        self.tts.say("Hello, you")
+        self.tts.say("Bonjour monsieur")
+        userArmArticular_r(motionProxy)
+        time.sleep(3)
+        userArmArticular(motionProxy)
+        time.sleep(3)
+        
+#        capteur_detection = 1
+       
 
         # Subscribe again to the event
         memory.subscribeToEvent("FaceDetected",
             "HumanGreeter",
             "onFaceDetected")
+      
         
     def Maingauche(self,*_args):
         memory.unsubscribeToEvent("HandLeftBackTouched",
@@ -854,6 +865,7 @@ def test_event():
     # We need this broker to be able to construct
     # NAOqi modules and subscribe to other modules
     # The broker must stay alive until the program exists
+    global myBroker
     myBroker = ALBroker("myBroker",
        "0.0.0.0",   # listen to anyone
        0,           # find a free port and use it
@@ -866,16 +878,142 @@ def test_event():
     # variable
     global HumanGreeter
     HumanGreeter = HumanGreeterModule("HumanGreeter")
+
+def dancer():
+    
+    
+    # Set NAO in Stiffness On
+#    StiffnessOn(proxy)
+
+    # Send NAO to Pose Init
+    postureProxy.goToPosture("StandInit", 0.5)
+
+    # Enable Whole Body Balancer
+    isEnabled  = True
+    motionProxy.wbEnable(isEnabled)
+
+    # Legs are constrained fixed
+    stateName  = "Fixed"
+    supportLeg = "Legs"
+    motionProxy.wbFootState(stateName, supportLeg)
+
+    # Constraint Balance Motion
+    isEnable   = True
+    supportLeg = "Legs"
+    motionProxy.wbEnableBalanceConstraint(isEnable, supportLeg)
+
+    # Arms motion
+    effectorList = ["LArm", "RArm"]
+
+    space        = motion.FRAME_ROBOT
+
+    pathList     = [
+                    [
+                     [0.0,   0.08,  0.14, 0.0, 0.0, 0.0], # target 1 for "LArm"
+                     [0.0,  -0.05, -0.07, 0.0, 0.0, 0.0], # target 2 for "LArm"
+                     [0.0,   0.08,  0.14, 0.0, 0.0, 0.0], # target 3 for "LArm"
+                     [0.0,  -0.05, -0.07, 0.0, 0.0, 0.0], # target 4 for "LArm"
+                     [0.0,   0.08,  0.14, 0.0, 0.0, 0.0], # target 5 for "LArm"
+                     ],
+                    [
+                     [0.0,   0.05, -0.07, 0.0, 0.0, 0.0], # target 1 for "RArm"
+                     [0.0,  -0.08,  0.14, 0.0, 0.0, 0.0], # target 2 for "RArm"
+                     [0.0,   0.05, -0.07, 0.0, 0.0, 0.0], # target 3 for "RArm"
+                     [0.0,  -0.08,  0.14, 0.0, 0.0, 0.0], # target 4 for "RArm"
+                     [0.0,   0.05, -0.07, 0.0, 0.0, 0.0], # target 5 for "RArm"
+                     [0.0,  -0.08,  0.14, 0.0, 0.0, 0.0], # target 6 for "RArm"
+                     ]
+                    ]
+
+    axisMaskList = [almath.AXIS_MASK_VEL, # for "LArm"
+                    almath.AXIS_MASK_VEL] # for "RArm"
+
+    coef       = 1.5
+    timesList  = [ [coef*(i+1) for i in range(5)],  # for "LArm" in seconds
+                   [coef*(i+1) for i in range(6)] ] # for "RArm" in seconds
+
+    isAbsolute   = False
+
+    # called cartesian interpolation
+    motionProxy.positionInterpolations(effectorList, space, pathList,
+                                 axisMaskList, timesList, isAbsolute)
+
+    # Torso Motion
+    effectorList = ["Torso", "LArm", "RArm"]
+
+    dy = 0.06
+    dz = 0.06
+    pathList     = [
+                    [
+                     [0.0, +dy, -dz, 0.0, 0.0, 0.0], # target  1 for "Torso"
+                     [0.0, 0.0, 0.0, 0.0, 0.0, 0.0], # target  2 for "Torso"
+                     [0.0, -dy, -dz, 0.0, 0.0, 0.0], # target  3 for "Torso"
+                     [0.0, 0.0, 0.0, 0.0, 0.0, 0.0], # target  4 for "Torso"
+                     [0.0, +dy, -dz, 0.0, 0.0, 0.0], # target  5 for "Torso"
+                     [0.0, 0.0, 0.0, 0.0, 0.0, 0.0], # target  6 for "Torso"
+                     [0.0, -dy, -dz, 0.0, 0.0, 0.0], # target  7 for "Torso"
+                     [0.0, 0.0, 0.0, 0.0, 0.0, 0.0], # target  8 for "Torso"
+                     [0.0, +dy, -dz, 0.0, 0.0, 0.0], # target  9 for "Torso"
+                     [0.0, 0.0, 0.0, 0.0, 0.0, 0.0], # target 10 for "Torso"
+                     [0.0, -dy, -dz, 0.0, 0.0, 0.0], # target 11 for "Torso"
+                     [0.0, 0.0, 0.0, 0.0, 0.0, 0.0], # target 12 for "Torso"
+                     ],
+                     [[0.0, 0.0, 0.0, 0.0, 0.0, 0.0]], # for "LArm"
+                     [[0.0, 0.0, 0.0, 0.0, 0.0, 0.0]], # for "LArm"
+                    ]
+
+    axisMaskList = [almath.AXIS_MASK_ALL, # for "Torso"
+                    almath.AXIS_MASK_VEL, # for "LArm"
+                    almath.AXIS_MASK_VEL] # for "RArm"
+
+    coef       = 0.5
+    timesList  = [
+                  [coef*(i+1) for i in range(12)], # for "Torso" in seconds
+                  [coef*12],                       # for "LArm" in seconds
+                  [coef*12]                        # for "RArm" in seconds
+                 ]
+
+    isAbsolute   = False
+
+    motionProxy.positionInterpolations(effectorList, space, pathList, 
+                                      axisMaskList, timesList, isAbsolute)
+
+
+    # Deactivate whole body
+    isEnabled    = False
+    motionProxy.wbEnable(isEnabled)
+
+    # Send NAO to Pose Init
+    postureProxy.goToPosture("StandInit", 0.5)
     
 
 if __name__== "__main__":
-    doInitialisation()
+#    doInitialisation()
     #test de la vision du NAO
     try:
-        test_event()
-        time.sleep(10)
         doStop()
+        tts.say("je me lève")
+        doInitialisation()
+        tts.say("allezy touchez les main")
+        time.sleep(2)
+        test_event()
+        time.sleep(5)
+#        doStop()
         myBroker.shutdown()
+        time.sleep(3)
+#        motionProxy.setStiffnesses("Body", 0.0)
+        time.sleep(2)
+##        print"capdetect", capteur_detection
+##        if capteur_detection == 1:
+##            tts.say("ca marche")
+##            Test_Articulations()
+##            time.sleep(2)
+##            capteur.detection=0
+       
+#        doStop()
+#        
+#        
+        
         
 
 #        fsr()
@@ -930,8 +1068,41 @@ if __name__== "__main__":
 #        print "Fin deplacement..."
 #
 #        print "Test des articulations Tete / Bras"
-#        Test_Articulations()
+        tts.say("regardez moi ")
+        time.sleep(1)
+        Test_Articulations()
+        time.sleep(1)
 #        print "Fin articulations..."
+        tts.say("mettez moi sur la terre ")
+        time.sleep(6)
+        tts.say("je vais bouger ")
+        time.sleep(2)
+        
+        dorun(6)
+        time.sleep(2)
+        
+        doleft(np.pi/2)
+        time.sleep(2)
+        
+        dorun(3)
+        time.sleep(2)
+        
+        doright(np.pi/2)
+        time.sleep(2)
+        
+        dorun(3)
+        time.sleep(2)
+        doright(np.pi)
+        time.sleep(2)
+        
+        doback()
+        time.sleep(2)
+        
+        steps()
+        time.sleep(10)
+        
+        dancer()
+        time.sleep(2)
 #        
 #        print "b1 :"
 #        b1 = BatteryMemory()
@@ -950,14 +1121,14 @@ if __name__== "__main__":
 #        sys.exit(app.exec_())
 ##        
 #        print "Fin video..."
-#        doStop()
-        myBroker.shutdown()
+        doStop()
+#        myBroker.shutdown()
         
 
         
     except Exception, e:
         print'erreur: ', e
        
-#    doStop()
+#        doStop()
         myBroker.shutdown()
         sys.exit(0)
