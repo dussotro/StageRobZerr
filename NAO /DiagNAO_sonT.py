@@ -12,8 +12,8 @@ import signal
 from optparse import OptionParser
 
 
-#robotIP = "172.20.28.103" #Eta
-robotIP = "172.20.13.63" #Rouge
+robotIP = "172.20.13.107" #Eta
+#robotIP = "172.20.13.63" #Rouge
 #robotIP = "172.20.28.103" #Bleu
 #robotIP = "172.20.11.237"# gamma 
 #robotIP = "172.20.11.242"# beta
@@ -44,13 +44,18 @@ except Exception, e:
 
 try :
     audio = ALProxy("ALAudioDevice", robotIP,port)
-    audio.setOutputVolume(30)
+    audio.setOutputVolume(100)
 except Exception, e: 
     print "Could not create proxy to ALaudioProxy"
     print "Error was: ", e
 try :
     tts = ALProxy("ALTextToSpeech", robotIP, port)
     tts.setLanguage("French")
+    tts.setParameter('pitchShift',1)
+#    tts.setParameter('speed',2)
+    tts.setParameter("doubleVoice", 1.0)
+    tts.setParameter("doubleVoiceTimeShift",0.5)
+    
 except Exception, e: 
     print "Could not create proxy to ALTextToSpeech"
     print "Error was: ", e
@@ -67,24 +72,6 @@ except Exception, e:
     print "Could not create proxy to AlBattery"
     print "Error was: ", e
 
-try:
-    SpeechReco = ALProxy("ALSpeechRecognition",robotIP,port)
-    try :
-        print ' je tente d unsub'
-        SpeechReco.unsubscribe('Arr')
-        print 'a'
-        SpeechReco.unsubscribe('Arr')
-        print 'b'
-        SpeechReco.unsubscribe('Arr')
-        print'c'
-    except :
-        pass
-#        print 'Error was: ',e
-        SpeechReco.setWordListAsVocabulary(["Bonjour","Fromage","Romain","Salut","Anticonstitutionnelle","Endomorphisme"])
-except Exception,e: 
-    print"Could not create proxy to ALSpeechRecognition"
-    print "Error was :",e
-
 
 #stiffness for real NAO Robot
 def StiffnessOn(proxy):
@@ -97,9 +84,9 @@ def StiffnessOn(proxy):
 def doInitialisation():
     print">>>>>> Initialisation"
     # Set NAO in Stiffness On
-    StiffnessOn(motionProxy)
+#    StiffnessOn(motionProxy)
     # Send NAO to Pose Init
-    postureProxy.goToPosture("StandInit", 0.5)
+#    postureProxy.goToPosture("StandInit", 0.5)
     
 def doStandUp():
     
@@ -460,12 +447,12 @@ def doright(angle):
     
 def doStop():
     time.sleep(1)
-    motionProxy.setWalkTargetVelocity(0, 0, 0, Frequency)
-    postureProxy.goToPosture("Crouch", 0.5)
-    Accelero()
-    motionProxy.setStiffnesses("Body", 0.0)
-    motionProxy.rest()
-    time.sleep(t)
+#    motionProxy.setWalkTargetVelocity(0, 0, 0, Frequency)
+#    postureProxy.goToPosture("Crouch", 0.5)
+#    Accelero()
+#    motionProxy.setStiffnesses("Body", 0.0)
+#    motionProxy.rest()
+#    time.sleep(t)
     print"Stopping"
 
 
@@ -920,102 +907,24 @@ class HumanGreeterModule(ALModule):
 
 if __name__== "__main__":
     doInitialisation()
-    #test de la vision du NAO
-    try:
-        parser = OptionParser()
-        parser.add_option("--pip",
-        help="Parent broker port. The IP address or your robot",
-        dest="pip")
-        parser.add_option("--pport",
-        help="Parent broker port. The port NAOqi is listening to",
-        dest="pport",
-        type="int")
-        parser.set_defaults(
-        pip=robotIP,
-        pport=9559)
+
+    tts.say('Bonjour')
     
-        (opts, args_) = parser.parse_args()
-        pip   = opts.pip
-        pport = opts.pport
-        
-        #    print pip,pport
-        # We need this broker to be able to construct
-        # NAOqi modules and subscribe to other modules
-        # The broker must stay alive until the program exists
-        myBroker = ALBroker("myBroker",
-           "0.0.0.0",   # listen to anyone
-           0,           # find a free port and use it
-           pip,         # parent broker IP
-           pport)       # parent broker port
+    time.sleep(2)
+          
+    tts.say('Salut')
     
+    time.sleep(2)
     
-        # Warning: HumanGreeter must be a global variable
-        # The name given to the constructor must be the name of the
-        # variable
-        print "define HumanGreeter"
-        global HumanGreeter
-        HumanGreeter = HumanGreeterModule("HumanGreeter")
-        
-        print "suscribe to event"
-#        SpeechReco.subscribe('Arr')
-#        print(str(SpeechReco.getParameter()))
-        print "wait..."
-        time.sleep(15)
-#        SpeechReco.unsubscribe('Arr')
-        
-        print "c est la fin"
-        time.sleep(15) 
-            
-           
-#        print 'b0 :'
-#        b0 = BatteryMemory()
-        #test de capteurs
-#        print "Test des capteurs frontaux du robot" 
-#        TrySensors()
-#        print "Fin capteurs..." 
-#        print 'Gauche' ,TrySensors()[0],'\nDroite',TrySensors()[1]
-#        print "Fin capteurs..." 
+    tts.say('endomorphisme')
+    
+    time.sleep(2)
+    
+    tts.say('Fromage')
+    
+    time.sleep(2)
+    
+    tts.say('Anticonstitutionnel')
+#    time.sleep(10)
 
-#
-##        print "Test de calcul de vitesse et position"
-##        target_velocity()
-##        position_robot()
-##        print "Fin vitesse / position ..." 
-#        print "Test de la fonction de parole du nao"
-#        TestTts("Test Micro")
-#        time.sleep(1.0)
-#        print "Fin parole..."
-#        
-#        print "Test de deplacement du robot"
-#        print "trajectoire: carre gauche puis carre droite"
-#        Test_Square_Left_Right()
-#        print "Fin deplacement..."
-#
-#        print "Test des articulations Tete / Bras"
-#        Test_Articulations()
-#        print "Fin articulations..."
-#        print "b1 :"
-#        b1 = BatteryMemory()
-#        print "Fin Batterie..."
-#        print "différence",(b0-b1)
-#
-#        print "Test d'affichage en temps réel de la vision du robot"
-#        doStop()
-#        app = QApplication(sys.argv)
-#        myWidget = vis.ImageWidget(robotIP, port, CameraID)
-#        myWidget.show()
-#        boutton= QPushButton()
-#        boutton.show()
-#        boutton.clicked.connect(close)
-#
-#        sys.exit(app.exec_())
-        print "Fin video..."
-
-
-        print "Fin video..."
-
-        
-    except Exception, e:
-        print'erreur: ', e
-      
     doStop()

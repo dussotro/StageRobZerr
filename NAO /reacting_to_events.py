@@ -25,7 +25,7 @@ class HumanGreeterModule(ALModule):
     """ A simple module able to react
     to facedetection events
 
-    """
+    """find
     def __init__(self, name):
         ALModule.__init__(self, name)
         # No need for IP and port here because
@@ -142,9 +142,5 @@ def main():
         sys.exit(0)
 
 
-
 if __name__ == "__main__":
     main()
-
-
-
