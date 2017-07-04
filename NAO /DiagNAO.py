@@ -869,8 +869,8 @@ class HumanGreeterModule(ALModule):
     def RobotFall(self,*_args):
         
         memory.unsubscribeToEvent("robotHasFallen","HumanGreeter")
-        self.tts.say("Je suis tombé, aidez moi")
-        print 'je suis tombé'
+        self.tts.say("Je suis tombe, aidez moi")
+        print 'je suis tombe'
         memory.subscribeToEvent("robotHasFallen","HumanGreeter",
                                 "RobotFall")
     def WordReco(self, *_args):
@@ -945,7 +945,6 @@ if __name__== "__main__":
     doInitialisation()
     #test de la vision du NAO
     try:
-<<<<<<< HEAD
 #        pa()
 #        time.sleep(5)
 #        doStop()
@@ -984,8 +983,6 @@ if __name__== "__main__":
 ###        target_velocity()
 ###        position_robot()
 ###        print "Fin vitesse / position ..." 
-##        
-=======
         parser = OptionParser()
         parser.add_option("--pip",
         help="Parent broker port. The IP address or your robot",
@@ -1045,7 +1042,6 @@ if __name__== "__main__":
 ##        target_velocity()
 ##        position_robot()
 ##        print "Fin vitesse / position ..." 
->>>>>>> 831cfa681d613346052bc7213e2b5b876c57e2e1
 #        print "Test de la fonction de parole du nao"
 #        TestTts("Test Micro")
 #        time.sleep(1.0)
@@ -1059,7 +1055,6 @@ if __name__== "__main__":
 #        print "Test des articulations Tete / Bras"
 #        Test_Articulations()
 #        print "Fin articulations..."
-<<<<<<< HEAD
 ##        
 #        print "b1 :"
 #        b1 = BatteryMemory()
@@ -1094,14 +1089,12 @@ if __name__== "__main__":
 #        
 #
 #        print "Test d'affichage en temps reel de la vision du robot"
-=======
 #        print "b1 :"
 #        b1 = BatteryMemory()
 #        print "Fin Batterie..."
-#        print "différence",(b0-b1)
+#        print "difference",(b0-b1)
 #
-#        print "Test d'affichage en temps réel de la vision du robot"
->>>>>>> 831cfa681d613346052bc7213e2b5b876c57e2e1
+#        print "Test d'affichage en temps reel de la vision du robot"
 #        doStop()
 #        app = QApplication(sys.argv)
 #        myWidget = vis.ImageWidget(robotIP, port, CameraID)
@@ -1111,16 +1104,11 @@ if __name__== "__main__":
 #        boutton.clicked.connect(close)
 #
 #        sys.exit(app.exec_())
-<<<<<<< HEAD
 ##        
 #        print "Fin video..."
 #
 #        print "Fin video..."
-        
-=======
         print "Fin video..."
-
->>>>>>> 831cfa681d613346052bc7213e2b5b876c57e2e1
 
         print "Fin video..."
 

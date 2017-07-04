@@ -580,6 +580,8 @@ if __name__== "__main__":
     #doInitialisation()
 
     try:
+        dorun(t)
+        time.sleep
 #        print 'b0 :'
 #        b0 = BatteryMemory()
 #        #test de capteurs
