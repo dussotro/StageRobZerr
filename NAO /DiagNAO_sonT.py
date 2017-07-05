@@ -44,13 +44,18 @@ except Exception, e:
 
 try :
     audio = ALProxy("ALAudioDevice", robotIP,port)
-    audio.setOutputVolume(30)
+    audio.setOutputVolume(100)
 except Exception, e: 
     print "Could not create proxy to ALaudioProxy"
     print "Error was: ", e
 try :
     tts = ALProxy("ALTextToSpeech", robotIP, port)
     tts.setLanguage("French")
+    tts.setParameter('pitchShift',1)
+#    tts.setParameter('speed',2)
+    tts.setParameter("doubleVoice", 1.0)
+    tts.setParameter("doubleVoiceTimeShift",0.5)
+    
 except Exception, e: 
     print "Could not create proxy to ALTextToSpeech"
     print "Error was: ", e
@@ -66,35 +71,6 @@ try:
 except Exception, e:
     print "Could not create proxy to AlBattery"
     print "Error was: ", e
-    
-try :
-    asr = ALProxy("ALSpeechRecognition", robotIP, port)
-    asr.setLanguage("English")
-except Exception, e: 
-    print "Could not create proxy to ALTextToSpeech"
-    print "Error was: ", e
-
-
-
-
-
-try:
-    SpeechReco = ALProxy("ALSpeechRecognition",robotIP,port)
-    try :
-        print ' je tente d unsub'
-        SpeechReco.unsubscribe('Arr')
-        print 'a'
-        SpeechReco.unsubscribe('Arr')
-        print 'b'
-        SpeechReco.unsubscribe('Arr')
-        print'c'
-    except :
-        pass
-#        print 'Error was: ',e
-        SpeechReco.setWordListAsVocabulary(["Bonjour","Fromage","Romain","Salut","Anticonstitutionnelle","Endomorphisme"])
-except Exception,e: 
-    print"Could not create proxy to ALSpeechRecognition"
-    print "Error was :",e
 
 
 #stiffness for real NAO Robot
@@ -108,9 +84,9 @@ def StiffnessOn(proxy):
 def doInitialisation():
     print">>>>>> Initialisation"
     # Set NAO in Stiffness On
-    StiffnessOn(motionProxy)
+#    StiffnessOn(motionProxy)
     # Send NAO to Pose Init
-    postureProxy.goToPosture("StandInit", 0.5)
+#    postureProxy.goToPosture("StandInit", 0.5)
     
 def doStandUp():
     
@@ -121,7 +97,7 @@ def doStandUp():
 
 
 def initmouv():
-    postureProxy.goToPosture("StandZero", 2.0)
+    postureProxy.goToPosture("Crouch", 2.0)
 #    names = ['HipYawPitch','RKneePitch','LKneePitch' ,'LHipPitch','RHipPitch','RAnklePitch','LAnklePitch']
 #    kneeAngle = 2.1
 #    angles = [0.0, kneeAngle, kneeAngle , -kneeAngle/2 , -kneeAngle/2 ,-kneeAngle/2, -kneeAngle/2 ]
@@ -137,13 +113,13 @@ def initmouv():
                     0,
                     0]
 
-    tab = [0,0,0,0,0,0,0,0,2.1,0,0]
+    tab = [0,0,0,0,0,0,0,0,120,0,0]
     
     listValStandInit = sumList(listValStandInit, tab)     
     configRob(listValStandInit[0], listValStandInit[1], listValStandInit[2], listValStandInit[3], listValStandInit[4], listValStandInit[5], listValStandInit[6], listValStandInit[7], listValStandInit[8], listValStandInit[9], listValStandInit[10])
     
     time.sleep(0.5)
-    
+
     
 
 #==============================================================================
@@ -214,7 +190,7 @@ def configRob(HeadYawAngle, HeadPitchAngle, ShoulderPitchAngle, ShoulderRollAngl
         pTargetAngles = Head + LeftArm + LeftLeg + RightLeg + RightArm
     
         # Convert to radians
-        pTargetAngles = [ x for x in pTargetAngles]
+        pTargetAngles = [ x * almath.TO_RAD for x in pTargetAngles]
 
         # We use the "Body" name to signify the collection of all joints
         pNames = "Body"
@@ -471,12 +447,12 @@ def doright(angle):
     
 def doStop():
     time.sleep(1)
-    motionProxy.setWalkTargetVelocity(0, 0, 0, Frequency)
-    postureProxy.goToPosture("Crouch", 0.5)
-    Accelero()
-    motionProxy.setStiffnesses("Body", 0.0)
-    motionProxy.rest()
-    time.sleep(t)
+#    motionProxy.setWalkTargetVelocity(0, 0, 0, Frequency)
+#    postureProxy.goToPosture("Crouch", 0.5)
+#    Accelero()
+#    motionProxy.setStiffnesses("Body", 0.0)
+#    motionProxy.rest()
+#    time.sleep(t)
     print"Stopping"
 
 
@@ -598,56 +574,44 @@ def Tete(queue=None,prog=None):
 
 def Epaule(queue=None,prog=None):
     initmouv()
-    freq = 0.30
-    print 'Temp 1 '
-    print 'RPitch ', memoryProxy.getData ("Device/SubDeviceList/RShoulderPitch/Temperature/Sensor/Value")
-    print 'LPitch ', memoryProxy.getData ("Device/SubDeviceList/LShoulderPitch/Temperature/Sensor/Value")
-    print 'RRoll' , memoryProxy.getData ("Device/SubDeviceList/RShoulderRoll/Temperature/Sensor/Value")
-    print 'LRoll' , memoryProxy.getData ("Device/SubDeviceList/LShoulderRoll/Temperature/Sensor/Value")
     names = ['LShoulderPitch']
     angles = [2.0857]
-    motionProxy.setAngles(names,angles,freq)
+    motionProxy.setAngles(names,angles,.35)
 #    time.sleep(2)
     names = ['RShoulderPitch']
     angles = [2.0857]
-    motionProxy.setAngles(names,angles,freq)
+    motionProxy.setAngles(names,angles,.35)
     time.sleep(2)
     names = ['LShoulderPitch']
     angles = [-2.0857]
-    motionProxy.setAngles(names,angles,freq)
+    motionProxy.setAngles(names,angles,.35)
 #    time.sleep(2)
     names = ['RShoulderPitch']
     angles = [-2.0857]
-    motionProxy.setAngles(names,angles,freq)
+    motionProxy.setAngles(names,angles,.35)
     time.sleep(2)
     names = ['LShoulderPitch']
     angles = [0]
-    motionProxy.setAngles(names,angles,freq)
+    motionProxy.setAngles(names,angles,.35)
 #    time.sleep(2)  
     names = ['RShoulderPitch']
     angles = [0]
-    motionProxy.setAngles(names,angles,freq)
+    motionProxy.setAngles(names,angles,.35)
     time.sleep(2)
     
     names = ['LShoulderRoll','RShoulderRoll']
     angles = [-0.3142,0.3142]
-    motionProxy.setAngles(names,angles,freq)
+    motionProxy.setAngles(names,angles,.35)
     time.sleep(0.5)
     names = ['LShoulderRoll','RShoulderRoll']
     angles =  [1.3265, 	-1.3265 ]
     time.sleep(1)
-    motionProxy.setAngles(names,angles,freq)
+    motionProxy.setAngles(names,angles,.35)
     names = ['LShoulderRoll','RShoulderRoll']
     angles =  [0, 0 ]
     time.sleep(1)
-    motionProxy.setAngles(names,angles,freq)
+    motionProxy.setAngles(names,angles,.35)
     prog.value = 0
-    
-    print 'Temp 2'
-    print 'RPitch ', memoryProxy.getData ("Device/SubDeviceList/RShoulderPitch/Temperature/Sensor/Value")
-    print 'LPitch ', memoryProxy.getData ("Device/SubDeviceList/LShoulderPitch/Temperature/Sensor/Value")
-    print 'RRoll' , memoryProxy.getData ("Device/SubDeviceList/RShoulderRoll/Temperature/Sensor/Value")
-    print 'LRoll' , memoryProxy.getData ("Device/SubDeviceList/LShoulderRoll/Temperature/Sensor/Value")
     
 def Coudes(queue=None,prog=None):
     initmouv()
@@ -738,20 +702,13 @@ def fsr():
  
 def gyroscope():
     
-#    a = memoryProxy.getData("Device/SubDeviceList/InertialSensor/GyroscopeX/Sensor/Value")
-#    b = memoryProxy.getData("Device/SubDeviceList/InertialSensor/GyroscopeY/Sensor/Value")
-#    c = memoryProxy.getData("Device/SubDeviceList/InertialSensor/GyroscopeZ/Sensor/Value")
-    
     a = memoryProxy.getData("Device/SubDeviceList/InertialSensor/GyroscopeX/Sensor/Value")
     b = memoryProxy.getData("Device/SubDeviceList/InertialSensor/GyroscopeY/Sensor/Value")
-    c=0
-#    print "a", a
-#    print "b", b
-#    print "c", c
-    return a,b,c
-    
+    c = memoryProxy.getData("Device/SubDeviceList/InertialSensor/GyroscopeZ/Sensor/Value")
+    print "a", a
+    print "b", b
+    print "c", c
 
-    
 #==============================================================================
 # fait certains mouvements par les mains et les pieds de robot
 #============================================================================== 
@@ -889,8 +846,8 @@ class HumanGreeterModule(ALModule):
     def RobotFall(self,*_args):
         
         memory.unsubscribeToEvent("robotHasFallen","HumanGreeter")
-        self.tts.say("Je suis tombe, aidez moi")
-        print 'je suis tombe'
+        self.tts.say("Je suis tombé, aidez moi")
+        print 'je suis tombé'
         memory.subscribeToEvent("robotHasFallen","HumanGreeter",
                                 "RobotFall")
     def WordReco(self, *_args):
@@ -943,19 +900,6 @@ class HumanGreeterModule(ALModule):
         memory.subscribeToEvent("FaceDetected",
             "HumanGreeter",
             "onFaceDetected")
-def hake():
-    vocabulary = ["yes", "no", "please"]
-    asr.setVocabulary(vocabulary, False)
-
-# Start the speech recognition engine with user Test_ASR
-    asr.subscribe("Test_ASR")
-    print 'Speech recognition engine started'
-    time.sleep(20)
-    tt.say
-    asr.unsubscribe("Test_ASR")
-    
-    WordRecognized = [ "yes", 0.8, "no", 0.75, "please", 0.7]
-
         
 #==============================================================================
 # test generale pour un robot
@@ -963,198 +907,24 @@ def hake():
 
 if __name__== "__main__":
     doInitialisation()
-    #test de la vision du NAO
-    try:
-#        pa()
-#        time.sleep(5)
-#        doStop()
-#
-#        fsr()
-#        time.sleep(1)
-#        
-#        tts.say("bonjour")
-#        
-#        gyroscope()
-#        time.sleep(1)
-#        
-#        userArmArticular_r(motionProxy)
-#        time.sleep(1)
-#        
-#        steps()
-#        time.sleep(1)
-#        
-#        userArmArticular(motionProxy)
-#        time.sleep(1)
 
-           
-#        print 'b0 :'
-#        b0 = BatteryMemory()
-#        #test de capteurs
-#        print "Test des capteurs frontaux du robot" 
-#        TrySensors()
-#        print "Fin capteurs..." 
-###
-##
-#        print 'Gauche' ,TrySensors()[0],'\nDroite',TrySensors()[1]
-#        print "Fin capteurs..." 
-#
-##
-###        print "Test de calcul de vitesse et position"
-###        target_velocity()
-###        position_robot()
-###        print "Fin vitesse / position ..." 
-#        parser = OptionParser()
-#        parser.add_option("--pip",
-#        help="Parent broker port. The IP address or your robot",
-#        dest="pip")
-#        parser.add_option("--pport",
-#        help="Parent broker port. The port NAOqi is listening to",
-#        dest="pport",
-#        type="int")
-#        parser.set_defaults(
-#        pip=robotIP,
-#        pport=9559)
-#    
-#        (opts, args_) = parser.parse_args()
-#        pip   = opts.pip
-#        pport = opts.pport
-#        
-#        #    print pip,pport
-#        # We need this broker to be able to construct
-#        # NAOqi modules and subscribe to other modules
-#        # The broker must stay alive until the program exists
-#        myBroker = ALBroker("myBroker",
-#           "0.0.0.0",   # listen to anyone
-#           0,           # find a free port and use it
-#           pip,         # parent broker IP
-#           pport)       # parent broker port
-#    
-#    
-#        # Warning: HumanGreeter must be a global variable
-#        # The name given to the constructor must be the name of the
-#        # variable
-#        print "define HumanGreeter"
-#        global HumanGreeter
-#        HumanGreeter = HumanGreeterModule("HumanGreeter")
-#        
-#        print "suscribe to event"
-#        SpeechReco.subscribe('Arr')
-#        print(str(SpeechReco.getParameter()))
-#        print "wait..."
-#        time.sleep(15)
-#        SpeechReco.unsubscribe('Arr')
-#        
-#        print "c est la fin"
-#        time.sleep(15) 
-            
-        Sa, Sb, Sc =  0 ,0 ,0
-        a,b,c = gyroscope()
-        Sa, Sb, Sc = a ,b ,c
-        print a, b, c
-        id = motionProxy.post.moveTo(0, 0, np.pi)
-        print 'ici'
-        t0 = time.time()
-        Rada , Radb ,Radc =  0,0,0
-        print 'la'
-        while motionProxy.isRunning(id):
-            a ,b ,c = gyroscope()
-            print a,b,c
-            Rada += a * 0.1
-            Radb += b * 0.1
-            Radc += c * 0.1
-            time.sleep(0.01)
-        print 'angle A',Rada
-        print 'angle B',Radb
-        print 'angle C',Radc
-        
-        time.sleep(1)
-        print "c'est fini"
-#        print 'b0 :'
-#        b0 = BatteryMemory()
-        #test de capteurs
-#        print "Test des capteurs frontaux du robot" 
-#        TrySensors()
-#        print "Fin capteurs..." 
-#        print 'Gauche' ,TrySensors()[0],'\nDroite',TrySensors()[1]
-#        print "Fin capteurs..." 
+    tts.say('Bonjour')
+    
+    time.sleep(2)
+          
+    tts.say('Salut')
+    
+    time.sleep(2)
+    
+    tts.say('endomorphisme')
+    
+    time.sleep(2)
+    
+    tts.say('Fromage')
+    
+    time.sleep(2)
+    
+    tts.say('Anticonstitutionnel')
+#    time.sleep(10)
 
-#
-##        print "Test de calcul de vitesse et position"
-##        target_velocity()
-##        position_robot()
-##        print "Fin vitesse / position ..." 
-#        print "Test de la fonction de parole du nao"
-#        TestTts("Test Micro")
-#        time.sleep(1.0)
-#        print "Fin parole..."
-#        
-#        print "Test de deplacement du robot"
-#        print "trajectoire: carre gauche puis carre droite"
-#        Test_Square_Left_Right()
-#        print "Fin deplacement..."
-#
-#        print "Test des articulations Tete / Bras"
-#        Test_Articulations()
-#        print "Fin articulations..."
-##        
-#        print "b1 :"
-#        b1 = BatteryMemory()
-#        print "Fin Batterie..."
-#        print "difference",(b0-b1)
-###        
-#
-##        print "Test de la fonction de parole du nao"
-##        TestTts("Test Micro")
-##        time.sleep(1.0)
-##        print "Fin parole..."
-##        
-##        print "Test de deplacement du robot"
-##        print "trajectoire: carre gauche puis carre droite"
-##        Test_Square_Left_Right()
-##        print "Fin deplacement..."
-##
-##        print "Test des articulations Tete / Bras"
-##        Test_Articulations()
-##        print "Fin articulations..."
-#
-##        print "Test d'affichage en temps reel de la vision du robot"
-##        doStop()
-##        app = QApplication(sys.argv)
-##        myWidget = vis.ImageWidget(robotIP, port, CameraID)
-##        myWidget.show()
-##        boutton= QPushButton()
-##        boutton.show()
-##        boutton.clicked.connect(close)
-##
-##        sys.exit(app.exec_())
-#        
-#
-#        print "Test d'affichage en temps reel de la vision du robot"
-#        print "b1 :"
-#        b1 = BatteryMemory()
-#        print "Fin Batterie..."
-#        print "difference",(b0-b1)
-#
-#        print "Test d'affichage en temps reel de la vision du robot"
-#        doStop()
-#        app = QApplication(sys.argv)
-#        myWidget = vis.ImageWidget(robotIP, port, CameraID)
-#        myWidget.show()
-#        boutton= QPushButton()
-#        boutton.show()
-#        boutton.clicked.connect(close)
-#
-#        sys.exit(app.exec_())
-##        
-#        print "Fin video..."
-#
-#        print "Fin video..."
-#        print "Fin video..."
-
-        print "Fin video..."
-
-        
-    except Exception, e:
-        print'erreur: ', e
-      
     doStop()
