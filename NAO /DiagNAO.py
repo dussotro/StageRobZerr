@@ -745,10 +745,33 @@ def gyroscope():
     a = memoryProxy.getData("Device/SubDeviceList/InertialSensor/GyroscopeX/Sensor/Value")
     b = memoryProxy.getData("Device/SubDeviceList/InertialSensor/GyroscopeY/Sensor/Value")
     c=0
-#    print "a", a
-#    print "b", b
-#    print "c", c
-    return a,b,c
+    
+#    Sa, Sb, Sc =  0 ,0 ,0
+#    a,b,c = gyroscope()
+#    Sa, Sb, Sc = a ,b ,c
+#    print a, b, c
+#    id = motionProxy.post.moveTo(0, 0, np.pi)
+#    print 'ici'
+#    t0 = time.time()
+#    Rada , Radb ,Radc =  0,0,0
+#    print 'la'
+#    while motionProxy.isRunning(id):
+#        a ,b ,c = gyroscope()
+#        print a,b,c
+#        Rada += a * 0.1
+#        Radb += b * 0.1
+#        Radc += c * 0.1
+#        time.sleep(0.01)
+#    print 'angle A',Rada
+#    print 'angle B',Radb
+#    print 'angle C',Radc
+#    
+#    time.sleep(1)
+#    print "c'est fini"
+    print "a", a
+    print "b", b
+    print "c", c
+#    return a,b,c
     
 
     
@@ -1047,28 +1070,7 @@ if __name__== "__main__":
 #        print "c est la fin"
 #        time.sleep(15) 
             
-        Sa, Sb, Sc =  0 ,0 ,0
-        a,b,c = gyroscope()
-        Sa, Sb, Sc = a ,b ,c
-        print a, b, c
-        id = motionProxy.post.moveTo(0, 0, np.pi)
-        print 'ici'
-        t0 = time.time()
-        Rada , Radb ,Radc =  0,0,0
-        print 'la'
-        while motionProxy.isRunning(id):
-            a ,b ,c = gyroscope()
-            print a,b,c
-            Rada += a * 0.1
-            Radb += b * 0.1
-            Radc += c * 0.1
-            time.sleep(0.01)
-        print 'angle A',Rada
-        print 'angle B',Radb
-        print 'angle C',Radc
         
-        time.sleep(1)
-        print "c'est fini"
 #        print 'b0 :'
 #        b0 = BatteryMemory()
         #test de capteurs

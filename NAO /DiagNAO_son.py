@@ -11,7 +11,7 @@ from PyQt4.QtGui import QWidget, QImage, QApplication, QPainter, QPushButton
 import signal
 from optparse import OptionParser
 
-
+robotIP = "172.20.12.210" #Nabotbleudeu
 #robotIP = "172.20.13.107" #Eta
 robotIP = "172.20.13.63" #Rouge
 #robotIP = "172.20.28.103" #Bleu
