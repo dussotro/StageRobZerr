@@ -63,6 +63,12 @@ try:
 except Exception, e:
     print "Could not create proxy to AlBattery"
     print "Error was: ", e
+    
+try :
+    audioProxy = ALProxy("ALAudioPlayer", robotIP, port)
+except Exception, e:
+    print'Could not create proxy to ALMotion'
+    print"Error was: ",e
 
 
 
@@ -1103,6 +1109,18 @@ if __name__== "__main__":
         
         dancer()
         time.sleep(2)
+#        audioProxy.post.playFile("/home21/eldandao/Téléchargements/a.mp3")
+#        ##        tts.say('''j'voudrais faire un Slam
+#        ##pour une grande dame que j'connais depuis tout petit
+#        ##j'voudrais faire un Slam
+#        ##pour celle qui voit ma vieille canne du lundi au samedi
+#        ##j'voudrais faire un Slam
+#        ##pour une vieille femme dans laquelle j'ai grandi
+#        ##j'voudrais faire un Slam
+#        ##pour cette banlieue nord de paname qu'on appelle saint denis
+#        ##''') 
+#        time.sleep(12)
+#        audioProxy.post.stopAll() 
 #        
 #        print "b1 :"
 #        b1 = BatteryMemory()
