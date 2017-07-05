@@ -5,7 +5,6 @@ import sys, time, math
 sys.path.append("pynaoqi-python2.7-2.1.4.13-linux64")
 from naoqi import ALProxy
 import rest
-import camRepair
 import time
 import pylab as pl
 import almath
@@ -31,6 +30,10 @@ HSVmax = np.array([100,255,160], np.uint8)
 # Movement parameters
 bangbang = 0.7
 inv_coeff_x, inv_coeff_y = -3.0, 3.0
+
+def rep(IP, PORT):
+	camProxy=ALProxy("ALVideoDevice",IP, PORT)
+	camProxy.unsubscribe("python_client")
 
 def StiffnessOn(proxy, ok):
     pNames = "Body"
@@ -280,8 +283,7 @@ def Main():
         elif cmd=="stop":
             print "je m'arrete"
             motionProxy.stopMove()
-            camRepair.rep(robotIP, port)
-            rest.rest(robotIP, port)
+            Cancel()
            
             isRuning=False
             filein=open("cmd","w")
@@ -295,7 +297,6 @@ def Main():
         
         print 'la commande etait : ', cmd
         print 'executer en : ', time.time() - t0
-    
     
     
 def Cancel(): 
