@@ -81,10 +81,10 @@ def StiffnessOn(proxy):
     
 def doInitialisation():
     print">>>>>> Initialisation"
-    # Set NAO in Stiffness On
-#    StiffnessOn(motionProxy)
-    # Send NAO to Pose Init
-#    postureProxy.goToPosture("StandInit", 0.5)
+#     Set NAO in Stiffness On
+    StiffnessOn(motionProxy)
+#     Send NAO to Pose Init
+    postureProxy.goToPosture("StandInit", 0.5)
     
 def doStandUp():
     
@@ -445,10 +445,10 @@ def doright(angle):
     
 def doStop():
     time.sleep(0.2)
-#    motionProxy.setWalkTargetVelocity(0, 0, 0, Frequency)
-#    postureProxy.goToPosture("Crouch", 0.5)
-#    Accelero()
-#    motionProxy.setStiffnesses("Body", 0.0)
+    motionProxy.setWalkTargetVelocity(0, 0, 0, Frequency)
+    postureProxy.goToPosture("Crouch", 0.5)
+    Accelero()
+    motionProxy.setStiffnesses("Body", 0.0)
     motionProxy.rest()
     time.sleep(0.5)
     print"Stopping"
@@ -820,11 +820,7 @@ class HumanGreeterModule(ALModule):
     """
     def __init__(self, name):
         ALModule.__init__(self, name)
-        # No need for IP and port here because
-        # we have our Python broker connected to NAOqi broker
-
-        # Create a proxy to ALTextToSpeech for later use
-#        self.tts = ALProxy("ALTextToSpeech")
+        
         try:
             self.SpeechReco = ALProxy("ALSpeechRecognition",robotIP,port)
 #            try :
@@ -854,18 +850,17 @@ class HumanGreeterModule(ALModule):
         
         global memory
         memory = ALProxy("ALMemory")
-#        memory.subscribeToEvent("FaceDetected",
-#            "HumanGreeter",
-#            "onFaceDetected")
+        memory.subscribeToEvent("FaceDetected",
+            "HumanGreeter",
+            "onFaceDetected")
 
         memory.subscribeToEvent("robotHasFallen", "HumanGreeter",
                                 "RobotFall")
         
+        
+    def Subs():
         memory.subscribeToEvent("WordRecognized", "HumanGreeter",
                                 "WordReco")
-
-#        memory.subscribeToEvent("LastWordRecognized","HumanGreeter",
-#                                "LastWordReco")
         
     def RobotFall(self,*_args):
         
@@ -889,18 +884,6 @@ class HumanGreeterModule(ALModule):
         memory.subscribeToEvent("WordRecognized", "HumanGreeter",
                                 "WordReco")
 
-#    def LastWordReco(self, *_args):
-#        memory.unsubscribeToEvent("LastWordRecognized","HumanGreeter")
-#        
-##        SpeechReco.unsubscribe('python_client')
-#        
-#        self.tts.say("tu viens de dire"+str(_args[1][0]))
-#        print "tu viens de dire"+str(_args)
-#        
-##        SpeechReco.subscribe('python_client')
-#        
-#        memory.subscribeToEvent("LastWordRecognized", "HumanGreeter",
-#                                "LastWordReco")
         
         
     def onFaceDetected(self, *_args):
@@ -908,15 +891,16 @@ class HumanGreeterModule(ALModule):
         detected.
 
         """
-        # Unsubscribe to the event when talking,
-        # to avoid repetitions
+ 
         memory.unsubscribeToEvent("FaceDetected",
             "HumanGreeter")
 
         tts.say("Hello, you")
-       
+        userArmArticular_r(motionProxy)
+        time.sleep(3)
+        userArmArticular(motionProxy)
+        time.sleep(3)
 
-        # Subscribe again to the event
         memory.subscribeToEvent("FaceDetected",
             "HumanGreeter",
             "onFaceDetected")
@@ -931,6 +915,8 @@ class HumanGreeterModule(ALModule):
         except:
             pass
             
+    def stopWord(self):
+        memory.unsubscribeToEvent("WordRecognized","HumanGreeter")
         
 #==============================================================================
 # test generale pour un robot
@@ -975,68 +961,12 @@ if __name__== "__main__":
         
         HumanGreeter = HumanGreeterModule("HumanGreeter")
         print "Ready"
-#        SpeechReco.subscribe('Arr')
-#        print(str(SpeechReco.getParameter()))
+        time.sleep(60)
 
-        print "wait..."
-        time.sleep(120)
-#        SpeechReco.unsubscribe('Arr')
-
-
-
-#        print 'b0 :'
-#        b0 = BatteryMemory()
-        #test de capteurs
-#        print "Test des capteurs frontaux du robot" 
-#        TrySensors()
-#        print "Fin capteurs..." 
-#        print 'Gauche' ,TrySensors()[0],'\nDroite',TrySensors()[1]
-#        print "Fin capteurs..." (["
-
-#
-##        print "Test de calcul de vitesse et position"
-##        target_velocity()
-##        position_robot()
-##        print "Fin vitesse / position ..." 
-#        print "Test de la fonction de parole du nao"
-#        TestTts("Test Micro")
-#        time.sleep(1.0)
-#        print "Fin parole..."
-#        
-#        print "Test de deplacement du robot"
-#        print "trajectoire: carre gauche puis carre droite"
-#        Test_Square_Left_Right()
-#        print "Fin deplacement..."
-#
-#        print "Test des articulations Tete / Bras"
-#        Test_Articulations()
-#        print "Fin articulations..."
-#        print "b1 :"
-#        b1 = BatteryMemory()
-#        print "Fin Batterie..."
-#        print "différence",(b0-b1)
-#
-#        print "Test d'affichage en temps réel de la vision du robot"
-#        doStop()
-#        app = QApplication(sys.argv)
-#        myWidget = vis.ImageWidget(robotIP, port, CameraID)
-#        myWidget.show()
-#        boutton= QPushButton()
-#        boutton.show()
-#        boutton.clicked.connect(close)
-#
-#        sys.exit(app.exec_())
-    
-
-        print "ARRETER DE PARLER"
-        
-        time.sleep(5)
-#        audio.closeAudioInputs()
         while not memory.getData("ALTextToSpeech/TextDone")  :    
             print "Waiting to stop"
             time.sleep(0.1)
         print "Fin video..."
-        
         HumanGreeter.stop()
         
     except KeyboardInterrupt:

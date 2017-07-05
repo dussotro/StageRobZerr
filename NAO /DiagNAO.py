@@ -12,8 +12,8 @@ import signal
 from optparse import OptionParser
 
 
-#robotIP = "172.20.28.103" #Eta
-robotIP = "172.20.13.63" #Rouge
+robotIP = "172.20.13.107" #Eta
+#robotIP = "172.20.13.63" #Rouge
 #robotIP = "172.20.28.103" #Bleu
 #robotIP = "172.20.11.237"# gamma 
 #robotIP = "172.20.11.242"# beta
@@ -121,7 +121,7 @@ def doStandUp():
 
 
 def initmouv():
-    postureProxy.goToPosture("Crouch", 2.0)
+    postureProxy.goToPosture("StandZero", 2.0)
 #    names = ['HipYawPitch','RKneePitch','LKneePitch' ,'LHipPitch','RHipPitch','RAnklePitch','LAnklePitch']
 #    kneeAngle = 2.1
 #    angles = [0.0, kneeAngle, kneeAngle , -kneeAngle/2 , -kneeAngle/2 ,-kneeAngle/2, -kneeAngle/2 ]
@@ -137,13 +137,13 @@ def initmouv():
                     0,
                     0]
 
-    tab = [0,0,0,0,0,0,0,0,120,0,0]
+    tab = [0,0,0,0,0,0,0,0,2.1,0,0]
     
     listValStandInit = sumList(listValStandInit, tab)     
     configRob(listValStandInit[0], listValStandInit[1], listValStandInit[2], listValStandInit[3], listValStandInit[4], listValStandInit[5], listValStandInit[6], listValStandInit[7], listValStandInit[8], listValStandInit[9], listValStandInit[10])
     
     time.sleep(0.5)
-
+    
     
 
 #==============================================================================
@@ -214,7 +214,7 @@ def configRob(HeadYawAngle, HeadPitchAngle, ShoulderPitchAngle, ShoulderRollAngl
         pTargetAngles = Head + LeftArm + LeftLeg + RightLeg + RightArm
     
         # Convert to radians
-        pTargetAngles = [ x * almath.TO_RAD for x in pTargetAngles]
+        pTargetAngles = [ x for x in pTargetAngles]
 
         # We use the "Body" name to signify the collection of all joints
         pNames = "Body"
@@ -598,44 +598,56 @@ def Tete(queue=None,prog=None):
 
 def Epaule(queue=None,prog=None):
     initmouv()
+    freq = 0.30
+    print 'Temp 1 '
+    print 'RPitch ', memoryProxy.getData ("Device/SubDeviceList/RShoulderPitch/Temperature/Sensor/Value")
+    print 'LPitch ', memoryProxy.getData ("Device/SubDeviceList/LShoulderPitch/Temperature/Sensor/Value")
+    print 'RRoll' , memoryProxy.getData ("Device/SubDeviceList/RShoulderRoll/Temperature/Sensor/Value")
+    print 'LRoll' , memoryProxy.getData ("Device/SubDeviceList/LShoulderRoll/Temperature/Sensor/Value")
     names = ['LShoulderPitch']
     angles = [2.0857]
-    motionProxy.setAngles(names,angles,.35)
+    motionProxy.setAngles(names,angles,freq)
 #    time.sleep(2)
     names = ['RShoulderPitch']
     angles = [2.0857]
-    motionProxy.setAngles(names,angles,.35)
+    motionProxy.setAngles(names,angles,freq)
     time.sleep(2)
     names = ['LShoulderPitch']
     angles = [-2.0857]
-    motionProxy.setAngles(names,angles,.35)
+    motionProxy.setAngles(names,angles,freq)
 #    time.sleep(2)
     names = ['RShoulderPitch']
     angles = [-2.0857]
-    motionProxy.setAngles(names,angles,.35)
+    motionProxy.setAngles(names,angles,freq)
     time.sleep(2)
     names = ['LShoulderPitch']
     angles = [0]
-    motionProxy.setAngles(names,angles,.35)
+    motionProxy.setAngles(names,angles,freq)
 #    time.sleep(2)  
     names = ['RShoulderPitch']
     angles = [0]
-    motionProxy.setAngles(names,angles,.35)
+    motionProxy.setAngles(names,angles,freq)
     time.sleep(2)
     
     names = ['LShoulderRoll','RShoulderRoll']
     angles = [-0.3142,0.3142]
-    motionProxy.setAngles(names,angles,.35)
+    motionProxy.setAngles(names,angles,freq)
     time.sleep(0.5)
     names = ['LShoulderRoll','RShoulderRoll']
     angles =  [1.3265, 	-1.3265 ]
     time.sleep(1)
-    motionProxy.setAngles(names,angles,.35)
+    motionProxy.setAngles(names,angles,freq)
     names = ['LShoulderRoll','RShoulderRoll']
     angles =  [0, 0 ]
     time.sleep(1)
-    motionProxy.setAngles(names,angles,.35)
+    motionProxy.setAngles(names,angles,freq)
     prog.value = 0
+    
+    print 'Temp 2'
+    print 'RPitch ', memoryProxy.getData ("Device/SubDeviceList/RShoulderPitch/Temperature/Sensor/Value")
+    print 'LPitch ', memoryProxy.getData ("Device/SubDeviceList/LShoulderPitch/Temperature/Sensor/Value")
+    print 'RRoll' , memoryProxy.getData ("Device/SubDeviceList/RShoulderRoll/Temperature/Sensor/Value")
+    print 'LRoll' , memoryProxy.getData ("Device/SubDeviceList/LShoulderRoll/Temperature/Sensor/Value")
     
 def Coudes(queue=None,prog=None):
     initmouv()
@@ -726,13 +738,20 @@ def fsr():
  
 def gyroscope():
     
+#    a = memoryProxy.getData("Device/SubDeviceList/InertialSensor/GyroscopeX/Sensor/Value")
+#    b = memoryProxy.getData("Device/SubDeviceList/InertialSensor/GyroscopeY/Sensor/Value")
+#    c = memoryProxy.getData("Device/SubDeviceList/InertialSensor/GyroscopeZ/Sensor/Value")
+    
     a = memoryProxy.getData("Device/SubDeviceList/InertialSensor/GyroscopeX/Sensor/Value")
     b = memoryProxy.getData("Device/SubDeviceList/InertialSensor/GyroscopeY/Sensor/Value")
-    c = memoryProxy.getData("Device/SubDeviceList/InertialSensor/GyroscopeZ/Sensor/Value")
-    print "a", a
-    print "b", b
-    print "c", c
+    c=0
+#    print "a", a
+#    print "b", b
+#    print "c", c
+    return a,b,c
+    
 
+    
 #==============================================================================
 # fait certains mouvements par les mains et les pieds de robot
 #============================================================================== 
@@ -984,51 +1003,72 @@ if __name__== "__main__":
 ###        target_velocity()
 ###        position_robot()
 ###        print "Fin vitesse / position ..." 
-        parser = OptionParser()
-        parser.add_option("--pip",
-        help="Parent broker port. The IP address or your robot",
-        dest="pip")
-        parser.add_option("--pport",
-        help="Parent broker port. The port NAOqi is listening to",
-        dest="pport",
-        type="int")
-        parser.set_defaults(
-        pip=robotIP,
-        pport=9559)
-    
-        (opts, args_) = parser.parse_args()
-        pip   = opts.pip
-        pport = opts.pport
-        
-        #    print pip,pport
-        # We need this broker to be able to construct
-        # NAOqi modules and subscribe to other modules
-        # The broker must stay alive until the program exists
-        myBroker = ALBroker("myBroker",
-           "0.0.0.0",   # listen to anyone
-           0,           # find a free port and use it
-           pip,         # parent broker IP
-           pport)       # parent broker port
-    
-    
-        # Warning: HumanGreeter must be a global variable
-        # The name given to the constructor must be the name of the
-        # variable
-        print "define HumanGreeter"
-        global HumanGreeter
-        HumanGreeter = HumanGreeterModule("HumanGreeter")
-        
-        print "suscribe to event"
+#        parser = OptionParser()
+#        parser.add_option("--pip",
+#        help="Parent broker port. The IP address or your robot",
+#        dest="pip")
+#        parser.add_option("--pport",
+#        help="Parent broker port. The port NAOqi is listening to",
+#        dest="pport",
+#        type="int")
+#        parser.set_defaults(
+#        pip=robotIP,
+#        pport=9559)
+#    
+#        (opts, args_) = parser.parse_args()
+#        pip   = opts.pip
+#        pport = opts.pport
+#        
+#        #    print pip,pport
+#        # We need this broker to be able to construct
+#        # NAOqi modules and subscribe to other modules
+#        # The broker must stay alive until the program exists
+#        myBroker = ALBroker("myBroker",
+#           "0.0.0.0",   # listen to anyone
+#           0,           # find a free port and use it
+#           pip,         # parent broker IP
+#           pport)       # parent broker port
+#    
+#    
+#        # Warning: HumanGreeter must be a global variable
+#        # The name given to the constructor must be the name of the
+#        # variable
+#        print "define HumanGreeter"
+#        global HumanGreeter
+#        HumanGreeter = HumanGreeterModule("HumanGreeter")
+#        
+#        print "suscribe to event"
 #        SpeechReco.subscribe('Arr')
 #        print(str(SpeechReco.getParameter()))
-        print "wait..."
-        time.sleep(15)
+#        print "wait..."
+#        time.sleep(15)
 #        SpeechReco.unsubscribe('Arr')
-        
-        print "c est la fin"
-        time.sleep(15) 
+#        
+#        print "c est la fin"
+#        time.sleep(15) 
             
-           
+        Sa, Sb, Sc =  0 ,0 ,0
+        a,b,c = gyroscope()
+        Sa, Sb, Sc = a ,b ,c
+        print a, b, c
+        id = motionProxy.post.moveTo(0, 0, np.pi)
+        print 'ici'
+        t0 = time.time()
+        Rada , Radb ,Radc =  0,0,0
+        print 'la'
+        while motionProxy.isRunning(id):
+            a ,b ,c = gyroscope()
+            print a,b,c
+            Rada += a * 0.1
+            Radb += b * 0.1
+            Radc += c * 0.1
+            time.sleep(0.01)
+        print 'angle A',Rada
+        print 'angle B',Radb
+        print 'angle C',Radc
+        
+        time.sleep(1)
+        print "c'est fini"
 #        print 'b0 :'
 #        b0 = BatteryMemory()
         #test de capteurs
@@ -1109,7 +1149,7 @@ if __name__== "__main__":
 #        print "Fin video..."
 #
 #        print "Fin video..."
-        print "Fin video..."
+#        print "Fin video..."
 
         print "Fin video..."
 

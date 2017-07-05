@@ -803,11 +803,7 @@ class HumanGreeterModule(ALModule):
     def onFaceDetected(self, *_args):
         """ This will be called each time a face is
         detected.
-
-        """
-       
-        # Unsubscribe to the event when talking,
-        # to avoid repetitions
+        """"
         memory.unsubscribeToEvent("FaceDetected",
             "HumanGreeter")
 
@@ -815,12 +811,8 @@ class HumanGreeterModule(ALModule):
         userArmArticular_r(motionProxy)
         time.sleep(3)
         userArmArticular(motionProxy)
-        time.sleep(3)
+        time.sleep(10)
         
-#        capteur_detection = 1
-       
-
-        # Subscribe again to the event
         memory.subscribeToEvent("FaceDetected",
             "HumanGreeter",
             "onFaceDetected")
