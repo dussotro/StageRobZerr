@@ -11,11 +11,11 @@ from PyQt4.QtGui import QWidget, QImage, QApplication, QPainter, QPushButton
 import signal
 from optparse import OptionParser
 
-
-#robotIP = "172.20.28.103" #Eta
-#robotIP = "172.20.13.63" #Rouge
+robotIP = "172.20.12.210" #Nabotbleudeu
+#robotIP = "172.20.13.107" #Eta
+robotIP = "172.20.13.63" #Rouge
 #robotIP = "172.20.28.103" #Bleu
-robotIP = "172.20.11.237"# gamma 
+#robotIP = "172.20.11.237"# gamma 
 #robotIP = "172.20.11.242"# beta
 
 port = 9559
@@ -67,23 +67,8 @@ except Exception, e:
     print "Could not create proxy to AlBattery"
     print "Error was: ", e
 
-try:
-    SpeechReco = ALProxy("ALSpeechRecognition",robotIP,port)
-    try :
-        print ' je tente d unsub'
-        SpeechReco.unsubscribe('Arr')
-        print 'a'
-        SpeechReco.unsubscribe('Arr')
-        print 'b'
-        SpeechReco.unsubscribe('Arr')
-        print'c'
-    except :
-        pass
-#        print 'Error was: ',e
-        SpeechReco.setWordListAsVocabulary(["Bonjour","Fromage","Romain","Salut","Anticonstitutionnelle","Endomorphisme"])
-except Exception,e: 
-    print"Could not create proxy to ALSpeechRecognition"
-    print "Error was :",e
+
+
 
 
 #stiffness for real NAO Robot
@@ -96,9 +81,9 @@ def StiffnessOn(proxy):
     
 def doInitialisation():
     print">>>>>> Initialisation"
-    # Set NAO in Stiffness On
+#     Set NAO in Stiffness On
     StiffnessOn(motionProxy)
-    # Send NAO to Pose Init
+#     Send NAO to Pose Init
     postureProxy.goToPosture("StandInit", 0.5)
     
 def doStandUp():
@@ -459,13 +444,13 @@ def doright(angle):
 
     
 def doStop():
-    time.sleep(1)
+    time.sleep(0.2)
     motionProxy.setWalkTargetVelocity(0, 0, 0, Frequency)
     postureProxy.goToPosture("Crouch", 0.5)
     Accelero()
     motionProxy.setStiffnesses("Body", 0.0)
     motionProxy.rest()
-    time.sleep(t)
+    time.sleep(0.5)
     print"Stopping"
 
 
@@ -835,31 +820,52 @@ class HumanGreeterModule(ALModule):
     """
     def __init__(self, name):
         ALModule.__init__(self, name)
-        # No need for IP and port here because
-        # we have our Python broker connected to NAOqi broker
+        
+        try:
+            self.SpeechReco = ALProxy("ALSpeechRecognition",robotIP,port)
+#            try :
+#                print ' je tente d unsub'
+#                self.SpeechReco.unsubscribe('Arr')
+#                print 'a'
+#                self.SpeechReco.unsubscribe('Arr')
+#                print 'b'
+#                #SpeechReco.unsubscribe('Arr')
+##                print'c'
+#            except :
+#                pass
+#                print 'Error was: ',e
+        except Exception,e: 
+            print"Could not create proxy to ALSpeechRecognition"
+            print "Error was :",e
 
-        # Create a proxy to ALTextToSpeech for later use
-        self.tts = ALProxy("ALTextToSpeech")
-
+        try:
+        #    print SpeechReco.isRunning()
+            self.SpeechReco.setVocabulary(["automorphisme","Bibi","Nao","Bonjour","chut","salut je m'appelle Romain","Allo","Fromage","Romain","Salut","Anticonstitutionnelle","Endomorphisme"],
+                                          True)
+        
+        except Exception,e: 
+            print"Could not set vocab."
+            print "Error was :",e
         # Subscribe to the FaceDetected event:
+        
         global memory
         memory = ALProxy("ALMemory")
-#        memory.subscribeToEvent("FaceDetected",
-#            "HumanGreeter",
-#            "onFaceDetected")
+        memory.subscribeToEvent("FaceDetected",
+            "HumanGreeter",
+            "onFaceDetected")
+
         memory.subscribeToEvent("robotHasFallen", "HumanGreeter",
                                 "RobotFall")
         
+        
+    def Subs():
         memory.subscribeToEvent("WordRecognized", "HumanGreeter",
                                 "WordReco")
-
-#        memory.subscribeToEvent("LastWordRecognized","HumanGreeter",
-#                                "LastWordReco")
         
     def RobotFall(self,*_args):
         
         memory.unsubscribeToEvent("robotHasFallen","HumanGreeter")
-        self.tts.say("Je suis tombé, aidez moi")
+        tts.say("Je suis tombé, aidez moi")
         print 'je suis tombé'
         memory.subscribeToEvent("robotHasFallen","HumanGreeter",
                                 "RobotFall")
@@ -869,31 +875,15 @@ class HumanGreeterModule(ALModule):
 #        SpeechReco.unsubscribe('python_client')
         tts.enableNotifications()
         print memory.getData("ALTextToSpeech/TextDone")
-        self.tts.say("tu viens de dire :"+str(_args[1][0]))
+        tts.say(str(_args[1][0]))
         
         print "tu viens de dire "+str(_args[1])
-        tts.enableNotifications()
-        while True :    
-            print memory.getData("ALTextToSpeech/TextDone")
-            time.sleep(1)
-        
+    
         
 #        SpeechReco.subscribe('python_client')
         memory.subscribeToEvent("WordRecognized", "HumanGreeter",
                                 "WordReco")
 
-#    def LastWordReco(self, *_args):
-#        memory.unsubscribeToEvent("LastWordRecognized","HumanGreeter")
-#        
-##        SpeechReco.unsubscribe('python_client')
-#        
-#        self.tts.say("tu viens de dire"+str(_args[1][0]))
-#        print "tu viens de dire"+str(_args)
-#        
-##        SpeechReco.subscribe('python_client')
-#        
-#        memory.subscribeToEvent("LastWordRecognized", "HumanGreeter",
-#                                "LastWordReco")
         
         
     def onFaceDetected(self, *_args):
@@ -901,18 +891,32 @@ class HumanGreeterModule(ALModule):
         detected.
 
         """
-        # Unsubscribe to the event when talking,
-        # to avoid repetitions
+ 
         memory.unsubscribeToEvent("FaceDetected",
             "HumanGreeter")
 
-        self.tts.say("Hello, you")
-       
+        tts.say("Hello, you")
+        userArmArticular_r(motionProxy)
+        time.sleep(3)
+        userArmArticular(motionProxy)
+        time.sleep(3)
 
-        # Subscribe again to the event
         memory.subscribeToEvent("FaceDetected",
             "HumanGreeter",
             "onFaceDetected")
+        
+    def stop(self):
+        try :
+            memory.unsubscribeToEvent("FaceDetected","HumanGreeter")
+        except:
+            pass
+        try:
+            memory.unsubscribeToEvent("WordRecognized","HumanGreeter")
+        except:
+            pass
+            
+    def stopWord(self):
+        memory.unsubscribeToEvent("WordRecognized","HumanGreeter")
         
 #==============================================================================
 # test generale pour un robot
@@ -936,9 +940,9 @@ if __name__== "__main__":
     
         (opts, args_) = parser.parse_args()
         pip   = opts.pip
-        pport = opts.pport
         
         #    print pip,pport
+        pport = opts.pport
         # We need this broker to be able to construct
         # NAOqi modules and subscribe to other modules
         # The broker must stay alive until the program exists
@@ -954,68 +958,19 @@ if __name__== "__main__":
         # variable
         print "define HumanGreeter"
         global HumanGreeter
+        
         HumanGreeter = HumanGreeterModule("HumanGreeter")
-        
-        print "suscribe to event"
-#        SpeechReco.subscribe('Arr')
-#        print(str(SpeechReco.getParameter()))
-        print "wait..."
-        time.sleep(15)
-#        SpeechReco.unsubscribe('Arr')
-        
-        print "c est la fin"
-        time.sleep(15) 
-            
-           
-#        print 'b0 :'
-#        b0 = BatteryMemory()
-        #test de capteurs
-#        print "Test des capteurs frontaux du robot" 
-#        TrySensors()
-#        print "Fin capteurs..." 
-#        print 'Gauche' ,TrySensors()[0],'\nDroite',TrySensors()[1]
-#        print "Fin capteurs..." 
+        print "Ready"
+        time.sleep(60)
 
-#
-##        print "Test de calcul de vitesse et position"
-##        target_velocity()
-##        position_robot()
-##        print "Fin vitesse / position ..." 
-#        print "Test de la fonction de parole du nao"
-#        TestTts("Test Micro")
-#        time.sleep(1.0)
-#        print "Fin parole..."
-#        
-#        print "Test de deplacement du robot"
-#        print "trajectoire: carre gauche puis carre droite"
-#        Test_Square_Left_Right()
-#        print "Fin deplacement..."
-#
-#        print "Test des articulations Tete / Bras"
-#        Test_Articulations()
-#        print "Fin articulations..."
-#        print "b1 :"
-#        b1 = BatteryMemory()
-#        print "Fin Batterie..."
-#        print "différence",(b0-b1)
-#
-#        print "Test d'affichage en temps réel de la vision du robot"
-#        doStop()
-#        app = QApplication(sys.argv)
-#        myWidget = vis.ImageWidget(robotIP, port, CameraID)
-#        myWidget.show()
-#        boutton= QPushButton()
-#        boutton.show()
-#        boutton.clicked.connect(close)
-#
-#        sys.exit(app.exec_())
+        while not memory.getData("ALTextToSpeech/TextDone")  :    
+            print "Waiting to stop"
+            time.sleep(0.1)
         print "Fin video..."
-
-
-        print "Fin video..."
-
+        HumanGreeter.stop()
         
-    except Exception, e:
-        print'erreur: ', e
+    except KeyboardInterrupt:
+        pass
+        HumanGreeter.stop()
       
     doStop()
