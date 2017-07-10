@@ -45,7 +45,7 @@ except Exception, e:
 
 try :
     audio = ALProxy("ALAudioDevice", robotIP,port)
-    audio.setOutputVolume(30)
+    audio.setOutputVolume(70)
 except Exception, e: 
     print "Could not create proxy to ALaudioProxy"
     print "Error was: ", e
@@ -570,9 +570,9 @@ class HumanGreeterModule(ALModule):
         # Subscribe to the FaceDetected event:
         global memory
         memory = ALProxy("ALMemory")
-        memory.subscribeToEvent("FaceDetected",
-            "HumanGreeter",
-            "onFaceDetected")
+#        memory.subscribeToEvent("FaceDetected",
+#            "HumanGreeter",
+#            "onFaceDetected")
         memory.subscribeToEvent("footContactChanged",
                                 "HumanGreeter",
                                 "Footcontact")
@@ -680,16 +680,16 @@ if __name__== "__main__":
     
     
         audioProxy.post.playFile("/home/nao/music/a.mp3")
-        tts.say('''j'voudrais faire un Slam
-pour une grande dame que j'connais depuis tout petit
-j'voudrais faire un Slam
-pour celle qui voit ma vieille canne du lundi au samedi
-j'voudrais faire un Slam
-pour une vieille femme dans laquelle j'ai grandi
-j'voudrais faire un Slam
-pour cette banlieue nord de paname qu'on appelle saint denis
-''') 
-        time.sleep(3)
+#        tts.say('''j'voudrais faire un Slam
+#pour une grande dame que j'connais depuis tout petit
+#j'voudrais faire un Slam
+#pour celle qui voit ma vieille canne du lundi au samedi
+#j'voudrais faire un Slam
+#pour une vieille femme dans laquelle j'ai grandi
+#j'voudrais faire un Slam
+#pour cette banlieue nord de paname qu'on appelle saint denis
+#''') 
+        time.sleep(15)
         audioProxy.post.stopAll()      
 
      

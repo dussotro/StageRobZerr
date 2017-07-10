@@ -13,7 +13,7 @@ from optparse import OptionParser
 
 robotIP = "172.20.12.210" #Nabotbleudeu
 #robotIP = "172.20.13.107" #Eta
-robotIP = "172.20.13.63" #Rouge
+#robotIP = "172.20.13.63" #Rouge
 #robotIP = "172.20.28.103" #Bleu
 #robotIP = "172.20.11.237"# gamma 
 #robotIP = "172.20.11.242"# beta
@@ -84,7 +84,7 @@ def doInitialisation():
 #     Set NAO in Stiffness On
     StiffnessOn(motionProxy)
 #     Send NAO to Pose Init
-    postureProxy.goToPosture("StandInit", 0.5)
+    postureProxy.goToPosture("StandInit", 2)
     
 def doStandUp():
     
@@ -850,34 +850,37 @@ class HumanGreeterModule(ALModule):
         
         global memory
         memory = ALProxy("ALMemory")
-        memory.subscribeToEvent("FaceDetected",
-            "HumanGreeter",
-            "onFaceDetected")
+#        memory.subscribeToEvent("FaceDetected",
+#            "HumanGreeter",
+#            "onFaceDetected")
 
         memory.subscribeToEvent("robotHasFallen", "HumanGreeter",
                                 "RobotFall")
         
         
-    def Subs():
+    def Subs(self):
         memory.subscribeToEvent("WordRecognized", "HumanGreeter",
                                 "WordReco")
         
-    def RobotFall(self,*_args):
+#    def RobotFall(self,*_args):
+#        
+#        memory.unsubscribeToEvent("robotHasFallen","HumanGreeter")
+#        tts.say("Je suis tombé, aidez moi")
+#        print 'je suis tombé'
+#        memory.subscribeToEvent("robotHasFallen","HumanGreeter",
+#                                "RobotFall")
+
+    def WordReco(self,idword,value,untruc):
         
-        memory.unsubscribeToEvent("robotHasFallen","HumanGreeter")
-        tts.say("Je suis tombé, aidez moi")
-        print 'je suis tombé'
-        memory.subscribeToEvent("robotHasFallen","HumanGreeter",
-                                "RobotFall")
-    def WordReco(self, *_args):
         
         memory.unsubscribeToEvent("WordRecognized","HumanGreeter")
 #        SpeechReco.unsubscribe('python_client')
-        tts.enableNotifications()
-        print memory.getData("ALTextToSpeech/TextDone")
-        tts.say(str(_args[1][0]))
+#        tts.enableNotifications()
+#        print memory.getData("ALTextToSpeech/TextDone")
+        print value
+        tts.say(str(value))
         
-        print "tu viens de dire "+str(_args[1])
+        print "tu viens de dire "+str(value)
     
         
 #        SpeechReco.subscribe('python_client')
@@ -886,24 +889,24 @@ class HumanGreeterModule(ALModule):
 
         
         
-    def onFaceDetected(self, *_args):
-        """ This will be called each time a face is
-        detected.
-
-        """
- 
-        memory.unsubscribeToEvent("FaceDetected",
-            "HumanGreeter")
-
-        tts.say("Hello, you")
-        userArmArticular_r(motionProxy)
-        time.sleep(3)
-        userArmArticular(motionProxy)
-        time.sleep(3)
-
-        memory.subscribeToEvent("FaceDetected",
-            "HumanGreeter",
-            "onFaceDetected")
+#    def onFaceDetected(self, *_args):
+#        """ This will be called each time a face is
+#        detected.
+#
+#        """
+# 
+#        memory.unsubscribeToEvent("FaceDetected",
+#            "HumanGreeter")
+#
+#        tts.say("Hello, you")
+##        userArmArticular_r(motionProxy)
+##        time.sleep(3)
+##        userArmArticular(motionProxy)
+##        time.sleep(3)
+#
+#        memory.subscribeToEvent("FaceDetected",
+#            "HumanGreeter",
+#            "onFaceDetected")
         
     def stop(self):
         try :
@@ -926,6 +929,7 @@ if __name__== "__main__":
     doInitialisation()
     #test de la vision du NAO
     try:
+        
         parser = OptionParser()
         parser.add_option("--pip",
         help="Parent broker port. The IP address or your robot",
@@ -961,14 +965,15 @@ if __name__== "__main__":
         
         HumanGreeter = HumanGreeterModule("HumanGreeter")
         print "Ready"
+        HumanGreeter.Subs()        
         time.sleep(60)
-
-        while not memory.getData("ALTextToSpeech/TextDone")  :    
-            print "Waiting to stop"
-            time.sleep(0.1)
+        
+#        while not memory.getData("ALTextToSpeech/TextDone")  :    
+#            print "Waiting to stop"
+#            time.sleep(0.1)
         print "Fin video..."
         HumanGreeter.stop()
-        
+        doStop()
     except KeyboardInterrupt:
         pass
         HumanGreeter.stop()

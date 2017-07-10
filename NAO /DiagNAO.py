@@ -12,8 +12,8 @@ import signal
 from optparse import OptionParser
 
 
-robotIP = "172.20.13.107" #Eta
-#robotIP = "172.20.13.63" #Rouge
+#robotIP = "172.20.13.107" #Eta
+robotIP = "172.20.13.63" #Rouge
 #robotIP = "172.20.28.103" #Bleu
 #robotIP = "172.20.11.237"# gamma 
 #robotIP = "172.20.11.242"# beta
@@ -598,7 +598,7 @@ def Tete(queue=None,prog=None):
 
 def Epaule(queue=None,prog=None):
     initmouv()
-    freq = 0.30
+    freq = 0.35
     print 'Temp 1 '
     print 'RPitch ', memoryProxy.getData ("Device/SubDeviceList/RShoulderPitch/Temperature/Sensor/Value")
     print 'LPitch ', memoryProxy.getData ("Device/SubDeviceList/LShoulderPitch/Temperature/Sensor/Value")
