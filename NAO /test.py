@@ -931,20 +931,20 @@ if __name__== "__main__":
         dancer()
         time.sleep(2)
         
-#         audioProxy.post.playFile("/home/nao/music/a.mp3")
-##        tts.say('''j'voudrais faire un Slam
-##pour une grande dame que j'connais depuis tout petit
-##j'voudrais faire un Slam
-##pour celle qui voit ma vieille canne du lundi au samedi
-##j'voudrais faire un Slam
-##pour une vieille femme dans laquelle j'ai grandi
-##j'voudrais faire un Slam
-##pour cette banlieue nord de paname qu'on appelle saint denis
-##''') 
+#        audioProxy.post.playFile("/home/nao/music/a.mp3")
+###        tts.say('''j'voudrais faire un Slam
+###pour une grande dame que j'connais depuis tout petit
+###j'voudrais faire un Slam
+###pour celle qui voit ma vieille canne du lundi au samedi
+###j'voudrais faire un Slam
+###pour une vieille femme dans laquelle j'ai grandi
+###j'voudrais faire un Slam
+###pour cette banlieue nord de paname qu'on appelle saint denis
+###''') 
 #        time.sleep(3)
 #        audioProxy.post.stopAll() 
-        
-        doStop()
+#        
+#        doStop()
 #        print 'b0 :'
 #        b0 = BatteryMemory()
 #        #test de capteurs
@@ -994,6 +994,6 @@ if __name__== "__main__":
     except Exception, e:
         print'erreur: ', e
        
-        doStop()
-#        myBroker.shutdown()
-#        sys.exit(0)
+#        doStop()
+        myBroker.shutdown()
+        sys.exit(0)
