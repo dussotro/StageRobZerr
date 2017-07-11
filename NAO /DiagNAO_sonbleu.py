@@ -23,7 +23,10 @@ CameraID = 0
 Frequency = 0.0 #low speed
 t=1.0
 
-
+#Fichier ayant pour but de lancer un suivie de son par un NAO Bleue.
+#Le Nao dera se rendre vers le son émit. 
+#les résultat sont approximatif. Néanmoins si le son est suffisament net,
+#fort alors ce sera moins approximatif et plus cohérent.
 
 try:
     motionProxy = ALProxy("ALMotion", robotIP, port)
@@ -44,7 +47,7 @@ except Exception, e:
 
 try :
     audio = ALProxy("ALAudioDevice", robotIP,port)
-    audio.setOutputVolume(50)
+    audio.setOutputVolume(90)
 except Exception, e: 
     print "Could not create proxy to ALaudioProxy"
     print "Error was: ", e
@@ -864,9 +867,8 @@ class HumanGreeterModule(ALModule):
             
         try : 
             self.SpeechReco.setVisualExpression(True)
-            print self.SpeechReco.getParameter("Sensitivity")
-            self.SpeechReco.setParameter("Sensitivity" , 1)
-            print self.SpeechReco.getParameter("Sensitivity")
+            self.SpeechReco.setParameter("Sensitivity" , 0)
+            
         except Exception,e:
             print "Error:", e
         # Subscribe to the FaceDetected event:
@@ -879,15 +881,16 @@ class HumanGreeterModule(ALModule):
 
 #        memory.subscribeToEvent("robotHasFallen", "HumanGreeter",
 #                                "RobotFall")
-#        memory.subscribeToEvent("ALSoundLocalization/SoundLocated","HumanGreeter",
-#                                "Soundalert")
-#        
+
+        memory.subscribeToEvent("ALSoundLocalization/SoundLocated","HumanGreeter",
+                                "Soundalert")
+        
     def Soundalert(self,idword,value,untruc):
         
         memory.unsubscribeToEvent("ALSoundLocalization/SoundLocated","HumanGreeter")
-        
-        print value
-        time.sleep(2)
+        A = memoryProxy.getData("ALSoundLocalization/SoundLocated")
+        print(A)
+        time.sleep(1)
         memory.subscribeToEvent("ALSoundLocalization/SoundLocated","HumanGreeter",
                                 "Soundalert")
     def Subs(self):
@@ -949,10 +952,16 @@ class HumanGreeterModule(ALModule):
             memory.unsubscribeToEvent("WordRecognized","HumanGreeter")
         except:
             pass
+        try:
+            memory.unsubscribeToEvent("ALSoundLocalization/SoundLocated","HumanGreeter")
+        except:
+            pass
+        
             
     def stopWord(self):
         memory.unsubscribeToEvent("WordRecognized","HumanGreeter")
-        
+
+
 #==============================================================================
 # test generale pour un robot
 #============================================================================== 
@@ -996,6 +1005,19 @@ if __name__== "__main__":
 
         HumanGreeter = HumanGreeterModule("HumanGreeter")
         print "Ready"
+
+        A = memoryProxy.getData("ALSoundLocalization/SoundLocated")
+        distance,confidence =  5 , 0.15
+        tracker.registerTarget("Sound", [distance, confidence])
+        tracker.setMode('Move')
+        tracker.setRelativePosition([-0.5, 0.0, 0.0, 0.1, 0.1, 0.3])    
+        tracker.track("Sound")
+#        for i in range (100):
+    #        print tracker.getTargetPosition(0)
+#            A = memoryProxy.getData("ALSoundLocalization/SoundLocated")
+#            print(A)
+#            time.sleep(1)    
+        
 #        HumanGreeter.Subs()        
 #        time.sleep(15)
 #        
@@ -1005,19 +1027,25 @@ if __name__== "__main__":
 #        print "Fin video..."
 #        HumanGreeter.stop()
 #        doStop()
-        A = memoryProxy.getData("ALSoundLocalization/SoundLocated")
-#        print(A)
-        distance, confidence = 2.5 , A[1][3]
-        tracker.registerTarget("Sound", [distance, confidence])
-        tracker.setMode('Move')
-        tracker.setRelativePosition([0.5, 0.0, 0.0, 0.1, 0.1, 0.3])    
-        tracker.track("Sound")
-        time.sleep(120)
-    
-    
+
+
+#        distance, confidence = 2.5 , 0.2
+#        tracker.registerTarget("Sound", [distance, confidence])
+#        tracker.setMode('Move')
+#        tracker.setRelativePosition([0.5, 0.0, 0.0, 0.1, 0.1, 0.3])    
+#        tracker.track("Sound")
+#        for i in range (50):
+#            print tracker.getTargetPosition(0)
+#            time.sleep(1)
+
+        time.sleep(60)
+              
+        HumanGreeter.stop()
+        myBroker.shutdown()
     except KeyboardInterrupt:
         pass
         HumanGreeter.stop()
+        myBroker.shutdown()
     tracker.stopTracker()
     tracker.unregisterAllTargets()
       

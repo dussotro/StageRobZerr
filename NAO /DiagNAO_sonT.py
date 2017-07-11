@@ -71,6 +71,12 @@ try:
 except Exception, e:
     print "Could not create proxy to AlBattery"
     print "Error was: ", e
+    
+try :
+    audioProxy = ALProxy("ALAudioPlayer", robotIP, port)
+except Exception, e:
+    print'Could not create proxy to ALMotion'
+    print"Error was: ",e
 
 
 #stiffness for real NAO Robot
@@ -908,15 +914,23 @@ class HumanGreeterModule(ALModule):
 if __name__== "__main__":
     doInitialisation()
 
-    tts.say('Par Ici')
+#    tts.say('Par Ici ')
     
 #    time.sleep(3)
           
 #    tts.say('Salut')
-    while True :
-        time.sleep(3)
-        
-        tts.say('Par Ici')      
+    audioProxy.post.playFile("/home/nao/music/a.mp3")
+
+    time.sleep(60)
+    
+    audioProxy.post.stopAll()     
+
+#    for i in range(10):
+#        time.sleep(3)
+#        
+#        tts.say('Par Ici')      
+
+
 #    time.sleep(3)
 #    
 #    tts.say('Par Ici')
