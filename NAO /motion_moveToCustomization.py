@@ -15,23 +15,14 @@ def StiffnessOn(proxy):
     proxy.stiffnessInterpolation(pNames, pStiffnessLists, pTimeLists)
 
 
-def main(robotIP):
-    try:
-        motionProxy = ALProxy("ALMotion", robotIP, 9559)
-    except Exception, e:
-        print "Could not create proxy to ALMotion"
-        print "Error was: ", e
-
-    # Set NAO in stiffness On
-    StiffnessOn(motionProxy)
-
+def main(robotIP, proxy):
     x     = 0.2
     y     = 0.0
     theta = 0.0
 
     # This example show customization for the both foot
     # with all the possible gait parameters
-    motionProxy.moveTo(-3*x, y, theta,
+    proxy.moveTo(-3*x, y, theta,
         [ ["MaxStepX", 0.10],         # step of 2 cm in front
           ["MaxStepY", 0.16],         # default value
           ["MaxStepTheta", 0.4],      # default value
@@ -53,7 +44,7 @@ def main(robotIP):
 #          ["TorsoWy", 0.1] ])         # torso bend 0.1 rad in front
     
     
-    motionProxy.moveTo(3*x, y, theta,
+    proxy.moveTo(3*x, y, theta,
         [ ["MaxStepX", 0.5],         # step of 2 cm in front
           ["MaxStepY", 0.16],         # default value
           ["MaxStepTheta", 0.4],      # default value
