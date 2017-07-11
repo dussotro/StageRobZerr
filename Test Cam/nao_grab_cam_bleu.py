@@ -1,4 +1,4 @@
-# -*- coding: utf-8 -*-
+# -*- encoding: UTF-8 -*- 
 
 #--------------------------------------------------------------------------#
 #  Bibliotheque                                                            #
@@ -48,7 +48,7 @@ HSVmax = np.array([40,240,255], np.uint8)
 #HSVmax = np.array([120,250,150], np.uint8)
 
 # on definit une constante qui permettront de modifier les differentes vitesses de deplacements du robot
-bangbang = 0.7
+inv_coeff_x, inv_coeff_y = -3.0, 3.0
 
 #on definit une fonction de "réparation" du prosy de la caméra (seulement un unsubscribe en fait...)
 def rep(IP, PORT):

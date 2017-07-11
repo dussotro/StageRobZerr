@@ -6,7 +6,6 @@ import motion
 import select
 import vision_showimages as vis
 import numpy as np
-import almath
 import DiagNAO_eta as eta
 
 robotIP = "172.20.28.103" #éta
@@ -59,7 +58,20 @@ except Exception, e:
     print "Could not create proxy to AlBattery"
     print "Error was: ", e
 
-configEta = [["Frequency", 1.0],
+
+
+
+
+def moveToEta(X, Y, Theta, Frequency, proxy):
+    """
+    In :
+        X -> Distance à parcourir en X (face)
+        Y -> Distance à parcourir en Y (cote)
+        Theta -> Angle à parcourir    
+        Frequency -> Vitesse du robot (entre 0 et 1)
+        proxy -> MotionProxy
+    """ 
+    configEta = [["Frequency", 1.0],
           #BOTH FEET
           ["MaxStepX", 0.08],
           ["MaxStepFrequency", 0.4],
@@ -73,22 +85,11 @@ configEta = [["Frequency", 1.0],
           ["RightStepHeight", 0.0022],
           ["RightTorsoWx", 3*almath.TO_RAD],
           ["RightTorsoWy", 3.0*almath.TO_RAD]]
-
-
-
-def moveToEta(X, Y, Theta, Frequency):
-    """
-    In :
-        X -> Distance à parcourir en X (face)
-        Y -> Distance à parcourir en Y (cote)
-        Theta -> Angle à parcourir    
-        Frequency -> Vitesse du robot (entre 0 et 1)
-    """ 
-    
     #définition des booléens d'objectifs
     flag, flagX, flagY, flagTh = False, False, False, False
     
     #récupération de la position initiale
+    import almath
     initRobotPosition = almath.Pose2D(motionProxy.getRobotPosition(False))
     initRobotPosition = list(almath.transformFromPose2D(initRobotPosition).toVector())
     print(initRobotPosition)
@@ -117,7 +118,7 @@ def moveToEta(X, Y, Theta, Frequency):
         omega = min(-0.05, omega)
     #application des vitesses
     try:
-        motionProxy.moveToward(vX, vY, omega, configEta)  
+        proxy.moveToward(vX, vY, omega, configEta)  
         pass
     except Exception, errorMsg:
         print str(errorMsg)
@@ -150,7 +151,7 @@ def moveToEta(X, Y, Theta, Frequency):
         if flagX and flagY and flagTh:
             flag = True            
         motionProxy.moveToward(vX, vY, omega, configEta)  
-        
+        # -*- encoding: UTF-8 -*- 
     #remise à zero de la vitesse après atteinte des objectifs    
     motionProxy.moveToward(0.0, 0.0, 0.0)
     
@@ -164,10 +165,46 @@ def moveTowardEta(U, V, Omega, Frequency):
         Theta -> Angle à parcourir    
     
     """   
-
+    configEta = [["Frequency", 1.0],
+          #BOTH FEET
+          ["MaxStepX", 0.08],
+          ["MaxStepFrequency", 0.4],
+          
+          # LEFT FOOT
+          ["LeftStepHeight", 0.0022],
+          ["LeftTorsoWx", -3*almath.TO_RAD],
+          ["LeftTorsoWy", 3.0*almath.TO_RAD],
+          
+          # RIGHT FOOT
+          ["RightStepHeight", 0.0022],
+          ["RightTorsoWx", 3*almath.TO_RAD],
+          ["RightTorsoWy", 3.0*almath.TO_RAD]]
     
     motionProxy.moveToward(U, V, Omega, configEta)
     
+def moveToOpt(X, Y, Theta, Frequency, proxy):
+    
+    proxy.moveTo(X, Y, Theta,
+        [ ["MaxStepX", 0.10],         # step of 2 cm in front
+          ["MaxStepY", 0.16],         # default value
+          ["MaxStepTheta", 0.4],      # default value
+          ["MaxStepFrequency", Frequency],  # low frequency
+          ["StepHeight", 0.01],       # step height of 1 cm
+          ["TorsoWx", 0.0],           # default value
+          ["TorsoWy", 0.1] ])         # torso bend 0.1 rad in front
+        
+def moveTowardOpt(vX, vY, Omega, Frequency, proxy):
+    
+    proxy.moveToward(vX, vY, Omega,
+        [ ["MaxStepX", 0.10],         # step of 2 cm in front
+          ["MaxStepY", 0.16],         # default value
+          ["MaxStepTheta", 0.4],      # default value
+          ["MaxStepFrequency", Frequency],  # low frequency
+          ["StepHeight", 0.01],       # step height of 1 cm
+          ["TorsoWx", 0.0],           # default value
+          ["TorsoWy", 0.1] ])         # torso bend 0.1 rad in front
+
+
     
 if __name__ == '__main__':
     eta.doInitialisation()
