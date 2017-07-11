@@ -84,16 +84,18 @@ def splitImage(img, cpt):
     hue = cv2.split(img)[0]
     sat = cv2.split(img)[1] 
     val = cv2.split(img)[2]
-    print 'Done'
     #affichage sur la meme figure que la mise a jour en continue
-    pl.subplot(337)
+    pl.subplot2grid((3,6), (2,0), colspan = 2) 
     pl.imshow(hue, cmap='Greys')
+    pl.title("Hauteur (coloration)")
     if not cpt : pl.colorbar()
-    pl.subplot(338)
+    pl.subplot2grid((3,6), (2,2), colspan = 2) 
     pl.imshow(sat, cmap='Greys')
+    pl.title("Saturation")
     if not cpt : pl.colorbar()            
-    pl.subplot(339)
+    pl.subplot2grid((3,6), (2,4), colspan = 2) 
     pl.imshow(val, cmap='Greys')
+    pl.title("Valeur (luminance)")
     if not cpt : pl.colorbar()   
     
     pl.savefig('Image/HSV.png')
@@ -213,9 +215,9 @@ def Main():
             
             #on transforme l'image du nao encode RGB en tableau de pixel
             if affichage:
-                pl.subplot(331) 
+                pl.subplot2grid((3,6), (0,0), colspan = 3) 
             else:
-                pl.subplot(221)
+                pl.subplot2grid((2,2), (0,0)) 
             img_PIL1 = Image.frombytes("RGB", (imageWidth, imageHeight), img_nao)
             pl.imshow(img_PIL1)
             if not cpt : pl.colorbar() #affichage de la bar une seule fois
@@ -227,9 +229,9 @@ def Main():
 
             #on applique une transformation de RGB a HSV pour eviter les problemes de luminosite par la suite
             if affichage:
-                pl.subplot(333) 
+                pl.subplot2grid((3,6), (0,3), colspan = 3) 
             else:
-                pl.subplot(222)            
+                pl.subplot2grid((2,2), (1,0))           
             img_PIL2 = cv2.cvtColor(np.asarray(img_PIL1), cv2.COLOR_RGB2HSV)
             pl.imshow(img_PIL2)
             if not cpt : pl.colorbar()
@@ -240,11 +242,11 @@ def Main():
 
 
             #on floute l'image pour permettre de filtrer les erreurs de comprehension 
-            #un pied de table eloigne mais d'une couleur similaire a celle detectee deviendra inperceptible
+            #un pied de table éloigné mais d'une couleur similaire a celle detectee deviendra inperceptible
             if affichage:
-                pl.subplot(334) 
+                pl.subplot2grid((3,6), (1,0), colspan = 3) 
             else:
-                pl.subplot(223)
+                pl.subplot2grid((2,2), (1,0)) 
             img_PIL3 = cv2.blur(img_PIL2, (5,5))
             pl.imshow(img_PIL3)
             if not cpt : pl.colorbar()
@@ -255,9 +257,9 @@ def Main():
             
             #on filtre les couleurs que l'on veut garder dans l'image avec les bornes HSVmin et HSVmax
             if affichage:
-                pl.subplot(336) 
+                pl.subplot2grid((3,6), (1,3), colspan = 3) 
             else:
-                pl.subplot(224)
+                pl.subplot2grid((2,2), (1,1)) 
             img_PIL4 = cv2.inRange(img_PIL3, HSVmin, HSVmax)
             pl.imshow(img_PIL4)
             if not cpt : pl.colorbar()
@@ -313,8 +315,8 @@ def Main():
                 omega = -x/2
                 print " | dx : ", dx, " | dy : ", dy
                 #on effectue les mouvements de la tete
-                motionProxy.setAngles("HeadYaw", -x*almath.TO_RAD, 0.5)
-                motionProxy.setAngles("HeadPitch", y*almath.TO_RAD, 0.5)
+                motionProxy.setAngles("HeadYaw", -x/3*almath.TO_RAD, 0.5)
+                motionProxy.setAngles("HeadPitch", y/3*almath.TO_RAD, 0.5)
 
             #theta egal a l'angle de rotation necessaire de la tete
             #on suppose qu'on voudrait y arriver en 1 seconde
@@ -354,7 +356,19 @@ def Main():
 #            filein=open("cmd","w")
 #            filein.write("stop")
 #            filein.close() 
-            
+        
+        """
+        Detection d'obstacle frontaux en cas de probleme au niveau de la reconnaissance
+        Plus prise en compte des obstacles de couleurs différentes
+        """
+
+        leftSensor = memoryProxy.memoryProxy.getData("Device/SubDeviceList/US/Left/Sensor/Value")
+        rightSensor = memoryProxy.memoryProxy.getData("Device/SubDeviceList/US/Right/Sensor/Value")
+        
+        error = 0.1
+        
+
+    
         elif cmd=="stop":
             print "je m'arrete"
             motionProxy.stopMove()
