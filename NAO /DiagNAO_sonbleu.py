@@ -23,10 +23,12 @@ CameraID = 0
 Frequency = 0.0 #low speed
 t=1.0
 
-#Fichier ayant pour but de lancer un suivie de son par un NAO Bleue.
-#Le Nao dera se rendre vers le son émit. 
-#les résultat sont approximatif. Néanmoins si le son est suffisament net,
-#fort alors ce sera moins approximatif et plus cohérent.
+"""
+Fichier ayant pour but de lancer un suivie de son par un NAO Bleue.
+Le Nao dera se rendre vers le son émit. 
+les résultat sont approximatif. Néanmoins si le son est suffisament net,
+fort alors ce sera moins approximatif et plus cohérent.
+"""
 
 try:
     motionProxy = ALProxy("ALMotion", robotIP, port)
@@ -1012,12 +1014,10 @@ if __name__== "__main__":
         tracker.setMode('Move')
         tracker.setRelativePosition([-0.5, 0.0, 0.0, 0.1, 0.1, 0.3])    
         tracker.track("Sound")
-#        for i in range (100):
-    #        print tracker.getTargetPosition(0)
-#            A = memoryProxy.getData("ALSoundLocalization/SoundLocated")
-#            print(A)
-#            time.sleep(1)    
         
+        
+        
+#        for i in range (100):
 #        HumanGreeter.Subs()        
 #        time.sleep(15)
 #        
@@ -1029,14 +1029,6 @@ if __name__== "__main__":
 #        doStop()
 
 
-#        distance, confidence = 2.5 , 0.2
-#        tracker.registerTarget("Sound", [distance, confidence])
-#        tracker.setMode('Move')
-#        tracker.setRelativePosition([0.5, 0.0, 0.0, 0.1, 0.1, 0.3])    
-#        tracker.track("Sound")
-#        for i in range (50):
-#            print tracker.getTargetPosition(0)
-#            time.sleep(1)
 
         time.sleep(60)
               

@@ -11,6 +11,10 @@ from PyQt4.QtGui import QWidget, QImage, QApplication, QPainter, QPushButton
 import signal
 from optparse import OptionParser
 
+"""
+Fichier pour lancez le son de manière a ce que le Nao bleue.
+En décommantant soit un fichier mp3 est lancé. Soit le robot répéte 'Par ici'.
+"""
 
 #robotIP = "172.20.13.107" #Eta
 robotIP = "172.20.13.63" #Rouge
@@ -914,11 +918,6 @@ class HumanGreeterModule(ALModule):
 if __name__== "__main__":
     doInitialisation()
 
-#    tts.say('Par Ici ')
-    
-#    time.sleep(3)
-          
-#    tts.say('Salut')
     audioProxy.post.playFile("/home/nao/music/a.mp3")
 
     time.sleep(60)
@@ -930,36 +929,5 @@ if __name__== "__main__":
 #        
 #        tts.say('Par Ici')      
 
-
-#    time.sleep(3)
-#    
-#    tts.say('Par Ici')
-#
-#    time.sleep(3)
-#    
-#    tts.say('Par Ici')
-#    
-#    time.sleep(3)
-#    
-#    tts.say('Par Ici')
-#    
-#    time.sleep(3)
-#    
-#    tts.say('Ici')
-#    
-#    time.sleep(3)
-#    
-#    tts.say('Ici')
-#    
-#    time.sleep(3)
-#    
-#    tts.say('Ici')
-#    
-#    time.sleep(3)
-#    
-#    tts.say('Ici')
-    
-    
-#    time.sleep(10)
-
     doStop()
+    

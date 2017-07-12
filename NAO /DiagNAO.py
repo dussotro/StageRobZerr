@@ -11,6 +11,14 @@ from PyQt4.QtGui import QWidget, QImage, QApplication, QPainter, QPushButton
 import signal
 from optparse import OptionParser
 
+"""
+Fichier contenant les fonctions principales. il est importé dans d'autres.
+Par exemple l'interface graphique importe ce fichier.
+
+"""
+
+
+
 
 #robotIP = "172.20.13.107" #Eta
 robotIP = "172.20.13.63" #Rouge

@@ -71,7 +71,7 @@ def main(robotIP = "127.0.0.1"):
 
 
 if __name__ == "__main__":
-    robotIp = "172.20.27.244"
+    robotIp = "172.20.13.63"
 
     if len(sys.argv) <= 1:
         print "Usage python motion_walkCustomization.py robotIP (optional default: 127.0.0.1)"

@@ -1,4 +1,4 @@
-
+# -*- encoding: UTF-8 -*- 
 from PyQt4 import QtGui,uic
 from naoqi import ALProxy, ALModule
 from PyQt4.QtGui import QWidget, QImage, QApplication, QPainter
@@ -10,7 +10,10 @@ import sys
 import os
 from multiprocessing import Process, Queue, Value
 
-
+"""
+Interface graphique permettant le test de toutes les fonctionnalités matériel principales du robot.
+Pour connaitre l'utilisation ce reféré au readme.
+"""
 
 
 robotIP = "172.20.13.63" #Rouge
@@ -139,7 +142,7 @@ class UiTest(QtGui.QMainWindow):
         
     def parole(self):
        
-        DiagNAO.TestTts("Bonjour tout lmonde")
+        DiagNAO.TestTts("Test Micro")
         
     
         

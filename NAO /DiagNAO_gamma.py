@@ -10,7 +10,10 @@ import almath
 from optparse import OptionParser
 from PyQt4.QtGui import QWidget, QImage, QApplication, QPainter, QPushButton
 
-
+""" 
+Fichier contenant la configuration pour gamma
+ainsi que la danse
+"""
 #robotIP = "172.20.12.126" #Rouge
 #robotIP = "172.20.28.36 "
 robotIP ="172.20.12.2"  

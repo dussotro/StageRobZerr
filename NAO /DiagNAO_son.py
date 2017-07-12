@@ -23,6 +23,9 @@ CameraID = 0
 Frequency = 0.0 #low speed
 t=1.0
 
+"""
+Ecoute du nao pour un Nao Orange tentative de reconnaissage de mot
+"""
 
 
 try:
