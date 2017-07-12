@@ -205,6 +205,28 @@ def moveTowardOpt(vX, vY, Omega, Frequency, proxy):
           ["TorsoWy", 0.1] ])         # torso bend 0.1 rad in front
 
 
+
+
+
+
+
+
+
+
+#Partie courir vite avec le rouge
+#   motionProxy.setWalkTargetVelocity(X, Y, 0, Frequency,
+#        [ # LEFT FOOT
+#        ["StepHeight", 0.015],
+#        ["MaxStepX", 0.35],
+#        ["MaxStepFrequency", 1],
+#        ["TorsoWy", 3*almath.TO_RAD] ],
+#         
+#        [ # RIGHT FOOT
+#        ["StepHeight", 0.015],
+#        ["MaxStepX", 0.35],
+#        ["MaxStepFrequency", 1],
+#        ["TorsoWy", 3*almath.TO_RAD] ] )
+
     
 if __name__ == '__main__':
     eta.doInitialisation()

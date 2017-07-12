@@ -59,15 +59,17 @@ def main(robotIP = "127.0.0.1"):
         ["TorsoWy", 3*almath.TO_RAD] ] )
 
     time.sleep(5.0)
-    motionProxy.setWalkTargetVelocity(0, 0, Theta, Frequency)
-    time.sleep(3)
+#    motionProxy.setWalkTargetVelocity(0, 0, Theta, Frequency)
+#    time.sleep(3)
     
-    motionProxy.setWalkTargetVelocity(X, Y, 0, Frequency)
-    time.sleep(3)
-    motionProxy.setWalkTargetVelocity(-X, Y, 0, Frequency)
-    time.sleep(5)
+#    motionProxy.setWalkTargetVelocity(X, Y, 0, Frequency)
+#    time.sleep(3)
+#    motionProxy.setWalkTargetVelocity(-X, Y, 0, Frequency)
+#    time.sleep(5)
     # stop walk in the next double support
+    motionProxy.setWalkTargetVelocity(0, 0, 0, Frequency)
     motionProxy.stopMove()
+    motionProxy.rest()
 
 
 if __name__ == "__main__":
