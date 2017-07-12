@@ -346,29 +346,43 @@ def Main():
                 setLeds(0, 255, 0)
                 vitesse = 0.0
                 #led verte si l'obstacle est a la bonne distance
-            if omega > -0.2 or omega < +0.2: omega = 0.0
+            if omega > -0.1 or omega < +0.1: omega = 0.0
+        
+            """
+            Detection d'obstacle frontaux en cas de probleme au niveau de la reconnaissance
+            Plus prise en compte des obstacles de couleurs différentes
+            """
+    
+            leftSensor = memoryProxy.getData("Device/SubDeviceList/US/Left/Sensor/Value")
+            rightSensor = memoryProxy.getData("Device/SubDeviceList/US/Right/Sensor/Value")
+            
+            if rightSensor < 0.5 or leftSensor < 0.5:
+                error = 0.1
+                diffSensor = rightSensor - leftSensor
+                
+                if diffSensor > error:
+                    while rightSensor < 0.3:
+                        rightSensor = memoryProxy.getData("Device/SubDeviceList/US/Right/Sensor/Value")
+                        motionProxy.moveToward(0.0, 0.0, 0.5, 1.0)
+                elif diffSensor < -error:
+                    while leftSensor < 0.3:
+                        leftSensor = memoryProxy.getData("Device/SubDeviceList/US/Left/Sensor/Value")
+                        motionProxy.moveToward(0.0, 0.0, -0.5, 1.0)
+                else:
+                    while rightSensor < 0.3 or leftSensor < 0.3:
+                        leftSensor = memoryProxy.getData("Device/SubDeviceList/US/Left/Sensor/Value")
+                        rightSensor = memoryProxy.getData("Device/SubDeviceList/US/Right/Sensor/Value")
+                        motionProxy.moveToward(-0.4, 0.0, 0.0, 1.0)
             
             #on applique les vitesses     
             print 'vitesse et theta', vitesse, omega    
-            motionProxy.post.setWalkTargetVelocity(vitesse, 0.0, omega, 0.3)
-            
+            motionProxy.post.setWalkTargetVelocity(vitesse, 0.0, omega,0.3)
+
             #utile si l'on veut faire un essai sur un tour de boucle
 #            filein=open("cmd","w")
 #            filein.write("stop")
-#            filein.close() 
-        
-        """
-        Detection d'obstacle frontaux en cas de probleme au niveau de la reconnaissance
-        Plus prise en compte des obstacles de couleurs différentes
-        """
+#            filein.close()     
 
-        leftSensor = memoryProxy.memoryProxy.getData("Device/SubDeviceList/US/Left/Sensor/Value")
-        rightSensor = memoryProxy.memoryProxy.getData("Device/SubDeviceList/US/Right/Sensor/Value")
-        
-        error = 0.1
-        
-
-    
         elif cmd=="stop":
             print "je m'arrete"
             motionProxy.stopMove()

@@ -185,47 +185,34 @@ def moveTowardEta(U, V, Omega, Frequency):
 def moveToOpt(X, Y, Theta, Frequency, proxy):
     
     proxy.moveTo(X, Y, Theta,
-        [ ["MaxStepX", 0.10],         # step of 2 cm in front
-          ["MaxStepY", 0.16],         # default value
-          ["MaxStepTheta", 0.4],      # default value
-          ["MaxStepFrequency", Frequency],  # low frequency
-          ["StepHeight", 0.01],       # step height of 1 cm
-          ["TorsoWx", 0.0],           # default value
-          ["TorsoWy", 0.1] ])         # torso bend 0.1 rad in front
+        [ # LEFT FOOT
+        ["StepHeight", 0.015],
+        ["MaxStepX", 0.35],
+        ["MaxStepFrequency", 1],
+        ["TorsoWy", 3*almath.TO_RAD] ],
+         
+        [ # RIGHT FOOT
+        ["StepHeight", 0.015],
+        ["MaxStepX", 0.35],
+        ["MaxStepFrequency", 1],
+        ["TorsoWy", 3*almath.TO_RAD] ] )       
         
 def moveTowardOpt(vX, vY, Omega, Frequency, proxy):
     
     proxy.moveToward(vX, vY, Omega,
-        [ ["MaxStepX", 0.10],         # step of 2 cm in front
-          ["MaxStepY", 0.16],         # default value
-          ["MaxStepTheta", 0.4],      # default value
-          ["MaxStepFrequency", Frequency],  # low frequency
-          ["StepHeight", 0.01],       # step height of 1 cm
-          ["TorsoWx", 0.0],           # default value
-          ["TorsoWy", 0.1] ])         # torso bend 0.1 rad in front
+        [ # LEFT FOOT
+        ["StepHeight", 0.015],
+        ["MaxStepX", 0.35],
+        ["MaxStepFrequency", 1],
+        ["TorsoWy", 3*almath.TO_RAD] ],
+         
+        [ # RIGHT FOOT
+        ["StepHeight", 0.015],
+        ["MaxStepX", 0.35],
+        ["MaxStepFrequency", 1],
+        ["TorsoWy", 3*almath.TO_RAD] ] )
 
 
-
-
-
-
-
-
-
-
-#Partie courir vite avec le rouge
-#   motionProxy.setWalkTargetVelocity(X, Y, 0, Frequency,
-#        [ # LEFT FOOT
-#        ["StepHeight", 0.015],
-#        ["MaxStepX", 0.35],
-#        ["MaxStepFrequency", 1],
-#        ["TorsoWy", 3*almath.TO_RAD] ],
-#         
-#        [ # RIGHT FOOT
-#        ["StepHeight", 0.015],
-#        ["MaxStepX", 0.35],
-#        ["MaxStepFrequency", 1],
-#        ["TorsoWy", 3*almath.TO_RAD] ] )
 
     
 if __name__ == '__main__':
