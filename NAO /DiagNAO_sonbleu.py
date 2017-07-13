@@ -4,7 +4,7 @@ import sys
 from naoqi import ALProxy, ALModule, ALBroker
 import motion
 import select
-import vision_showimages as vis
+#import vision_showimages as vis
 import numpy as np
 import almath
 from PyQt4.QtGui import QWidget, QImage, QApplication, QPainter, QPushButton
@@ -827,8 +827,267 @@ def towalk():
     # After another 10 seconds, we'll make him stop
     time.sleep(10)
     motionProxy.moveToward(0.0, 0.0, 0.0)
-    
 
+def dancer():
+    
+    
+    # Set NAO in Stiffness On
+#    StiffnessOn(proxy)
+
+    # Send NAO to Pose Init
+    postureProxy.goToPosture("StandInit", 0.5)
+
+    # Enable Whole Body Balancer
+    isEnabled  = True
+    motionProxy.wbEnable(isEnabled)
+
+    # Legs are constrained fixed
+    stateName  = "Fixed"
+    supportLeg = "Legs"
+    motionProxy.wbFootState(stateName, supportLeg)
+
+    # Constraint Balance Motion
+    isEnable   = True
+    supportLeg = "Legs"
+    motionProxy.wbEnableBalanceConstraint(isEnable, supportLeg)
+
+    # Arms motion
+    effectorList = ["LArm", "RArm"]
+
+    space        = motion.FRAME_ROBOT
+
+    pathList     = [
+                    [
+                     [0.0,   0.08,  0.14, 0.0, 0.0, 0.0], # target 1 for "LArm"
+                     [0.0,  -0.05, -0.07, 0.0, 0.0, 0.0], # target 2 for "LArm"
+                     [0.0,   0.08,  0.14, 0.0, 0.0, 0.0], # target 3 for "LArm"
+                     [0.0,  -0.05, -0.07, 0.0, 0.0, 0.0], # target 4 for "LArm"
+                     [0.0,   0.08,  0.14, 0.0, 0.0, 0.0], # target 5 for "LArm"
+                     ],
+                    [
+                     [0.0,   0.05, -0.07, 0.0, 0.0, 0.0], # target 1 for "RArm"
+                     [0.0,  -0.08,  0.14, 0.0, 0.0, 0.0], # target 2 for "RArm"
+                     [0.0,   0.05, -0.07, 0.0, 0.0, 0.0], # target 3 for "RArm"
+                     [0.0,  -0.08,  0.14, 0.0, 0.0, 0.0], # target 4 for "RArm"
+                     [0.0,   0.05, -0.07, 0.0, 0.0, 0.0], # target 5 for "RArm"
+                     [0.0,  -0.08,  0.14, 0.0, 0.0, 0.0], # target 6 for "RArm"
+                     ]
+                    ]
+
+    axisMaskList = [almath.AXIS_MASK_VEL, # for "LArm"
+                    almath.AXIS_MASK_VEL] # for "RArm"
+
+    coef       = 1.5
+    timesList  = [ [coef*(i+1) for i in range(5)],  # for "LArm" in seconds
+                   [coef*(i+1) for i in range(6)] ] # for "RArm" in seconds
+
+    isAbsolute   = False
+
+    # called cartesian interpolation
+    motionProxy.positionInterpolations(effectorList, space, pathList,
+                                 axisMaskList, timesList, isAbsolute)
+
+    # Torso Motion
+    effectorList = ["Torso", "LArm", "RArm"]
+
+    dy = 0.06
+    dz = 0.06
+    pathList     = [
+                    [
+                     [0.0, +dy, -dz, 0.0, 0.0, 0.0], # target  1 for "Torso"
+                     [0.0, 0.0, 0.0, 0.0, 0.0, 0.0], # target  2 for "Torso"
+                     [0.0, -dy, -dz, 0.0, 0.0, 0.0], # target  3 for "Torso"
+                     [0.0, 0.0, 0.0, 0.0, 0.0, 0.0], # target  4 for "Torso"
+                     [0.0, +dy, -dz, 0.0, 0.0, 0.0], # target  5 for "Torso"
+                     [0.0, 0.0, 0.0, 0.0, 0.0, 0.0], # target  6 for "Torso"
+                     [0.0, -dy, -dz, 0.0, 0.0, 0.0], # target  7 for "Torso"
+                     [0.0, 0.0, 0.0, 0.0, 0.0, 0.0], # target  8 for "Torso"
+                     [0.0, +dy, -dz, 0.0, 0.0, 0.0], # target  9 for "Torso"
+                     [0.0, 0.0, 0.0, 0.0, 0.0, 0.0], # target 10 for "Torso"
+                     [0.0, -dy, -dz, 0.0, 0.0, 0.0], # target 11 for "Torso"
+                     [0.0, 0.0, 0.0, 0.0, 0.0, 0.0], # target 12 for "Torso"
+                     ],
+                     [[0.0, 0.0, 0.0, 0.0, 0.0, 0.0]], # for "LArm"
+                     [[0.0, 0.0, 0.0, 0.0, 0.0, 0.0]], # for "LArm"
+                    ]
+
+    axisMaskList = [almath.AXIS_MASK_ALL, # for "Torso"
+                    almath.AXIS_MASK_VEL, # for "LArm"
+                    almath.AXIS_MASK_VEL] # for "RArm"
+
+    coef       = 0.5
+    timesList  = [
+                  [coef*(i+1) for i in range(12)], # for "Torso" in seconds
+                  [coef*12],                       # for "LArm" in seconds
+                  [coef*12]                        # for "RArm" in seconds
+                 ]
+
+    isAbsolute   = False
+
+    motionProxy.positionInterpolations(effectorList, space, pathList, 
+                                      axisMaskList, timesList, isAbsolute)
+
+
+    # Deactivate whole body
+    isEnabled    = False
+    motionProxy.wbEnable(isEnabled)
+
+    # Send NAO to Pose Init
+    postureProxy.goToPosture("StandInit", 0.5)
+ 
+def dancer():
+    
+    
+    # Set NAO in Stiffness On
+#    StiffnessOn(proxy)
+
+    # Send NAO to Pose Init
+    postureProxy.goToPosture("StandInit", 0.5)
+
+    # Enable Whole Body Balancer
+    isEnabled  = True
+    motionProxy.wbEnable(isEnabled)
+
+    # Legs are constrained fixed
+    stateName  = "Fixed"
+    supportLeg = "Legs"
+    motionProxy.wbFootState(stateName, supportLeg)
+
+    # Constraint Balance Motion
+    isEnable   = True
+    supportLeg = "Legs"
+    motionProxy.wbEnableBalanceConstraint(isEnable, supportLeg)
+
+    # Arms motion
+    effectorList = ["LArm", "RArm"]
+
+    space        = motion.FRAME_ROBOT
+
+    pathList     = [
+                    [
+                     [0.0,   0.08,  0.14, 0.0, 0.0, 0.0], # target 1 for "LArm"
+                     [0.0,  -0.05, -0.07, 0.0, 0.0, 0.0], # target 2 for "LArm"
+                     [0.0,   0.08,  0.14, 0.0, 0.0, 0.0], # target 3 for "LArm"
+                     [0.0,  -0.05, -0.07, 0.0, 0.0, 0.0], # target 4 for "LArm"
+                     [0.0,   0.08,  0.14, 0.0, 0.0, 0.0], # target 5 for "LArm"
+                     ],
+                    [
+                     [0.0,   0.05, -0.07, 0.0, 0.0, 0.0], # target 1 for "RArm"
+                     [0.0,  -0.08,  0.14, 0.0, 0.0, 0.0], # target 2 for "RArm"
+                     [0.0,   0.05, -0.07, 0.0, 0.0, 0.0], # target 3 for "RArm"
+                     [0.0,  -0.08,  0.14, 0.0, 0.0, 0.0], # target 4 for "RArm"
+                     [0.0,   0.05, -0.07, 0.0, 0.0, 0.0], # target 5 for "RArm"
+                     [0.0,  -0.08,  0.14, 0.0, 0.0, 0.0], # target 6 for "RArm"
+                     ]
+                    ]
+
+    axisMaskList = [almath.AXIS_MASK_VEL, # for "LArm"
+                    almath.AXIS_MASK_VEL] # for "RArm"
+
+    coef       = 1.5
+    timesList  = [ [coef*(i+1) for i in range(5)],  # for "LArm" in seconds
+                   [coef*(i+1) for i in range(6)] ] # for "RArm" in seconds
+
+    isAbsolute   = False
+
+    # called cartesian interpolation
+    motionProxy.positionInterpolations(effectorList, space, pathList,
+                                 axisMaskList, timesList, isAbsolute)
+
+    # Torso Motion
+    effectorList = ["Torso", "LArm", "RArm"]
+
+    dy = 0.06
+    dz = 0.06
+    pathList     = [
+                    [
+                     [0.0, +dy, -dz, 0.0, 0.0, 0.0], # target  1 for "Torso"
+                     [0.0, 0.0, 0.0, 0.0, 0.0, 0.0], # target  2 for "Torso"
+                     [0.0, -dy, -dz, 0.0, 0.0, 0.0], # target  3 for "Torso"
+                     [0.0, 0.0, 0.0, 0.0, 0.0, 0.0], # target  4 for "Torso"
+                     [0.0, +dy, -dz, 0.0, 0.0, 0.0], # target  5 for "Torso"
+                     [0.0, 0.0, 0.0, 0.0, 0.0, 0.0], # target  6 for "Torso"
+                     [0.0, -dy, -dz, 0.0, 0.0, 0.0], # target  7 for "Torso"
+                     [0.0, 0.0, 0.0, 0.0, 0.0, 0.0], # target  8 for "Torso"
+                     [0.0, +dy, -dz, 0.0, 0.0, 0.0], # target  9 for "Torso"
+                     [0.0, 0.0, 0.0, 0.0, 0.0, 0.0], # target 10 for "Torso"
+                     [0.0, -dy, -dz, 0.0, 0.0, 0.0], # target 11 for "Torso"
+                     [0.0, 0.0, 0.0, 0.0, 0.0, 0.0], # target 12 for "Torso"
+                     ],
+                     [[0.0, 0.0, 0.0, 0.0, 0.0, 0.0]], # for "LArm"
+                     [[0.0, 0.0, 0.0, 0.0, 0.0, 0.0]], # for "LArm"
+                    ]
+
+    axisMaskList = [almath.AXIS_MASK_ALL, # for "Torso"
+                    almath.AXIS_MASK_VEL, # for "LArm"
+                    almath.AXIS_MASK_VEL] # for "RArm"
+
+    coef       = 0.5
+    timesList  = [
+                  [coef*(i+1) for i in range(12)], # for "Torso" in seconds
+                  [coef*12],                       # for "LArm" in seconds
+                  [coef*12]                        # for "RArm" in seconds
+                 ]
+
+    isAbsolute   = False
+
+    motionProxy.positionInterpolations(effectorList, space, pathList, 
+                                      axisMaskList, timesList, isAbsolute)
+
+
+    # Deactivate whole body
+    isEnabled    = False
+    motionProxy.wbEnable(isEnabled)
+
+    # Send NAO to Pose Init
+    postureProxy.goToPosture("StandInit", 0.5)
+    
+def dab():
+        
+        motionProxy.setStiffnesses("Body", 1.0)
+        postureProxy.goToPosture("Crouch", 0.3)
+    
+        # Example showing how to set angles, using a fraction of max speed
+        names  = ["Body"]
+        angles  = [-0.6872739791870117, 0.43254613876342773, -0.7271580696105957, 0.8636000156402588, 2.0785279273986816, -0.03490658476948738, -1.8238691091537476, 0.7567999958992004, -0.2438640594482422, -0.07359004020690918, -0.6626460552215576, 2.112546443939209, -1.1842899322509766, 0.07520794868469238, -0.2438640594482422, 0.052197933197021484, -0.6765360832214355, 2.112546443939209, -1.1857401132583618, -0.08125996589660645, 0.18565607070922852, 0.3141592741012573, 0.5920820236206055, 1.282465934753418, -0.0844118595123291, 0.8459999561309814]
+        fractionMaxSpeed  = 0.2
+        motionProxy.setAngles(names, angles, fractionMaxSpeed)
+    
+        time.sleep(3.0)
+        motionProxy.setStiffnesses("Body", 1.0)
+        angles = [0.7224719524383545, 0.46782803535461426, -0.15804386138916016, -0.1565098762512207, -0.3237159252166748, -1.2609061002731323, 0.19937801361083984, 0.7555999755859375, -0.23619413375854492, -0.06131792068481445, -0.5675380229949951, 2.112546443939209, -1.182755947113037, 0.07827591896057129, -0.23619413375854492, 0.05373191833496094, -0.5722239017486572, 2.112546443939209, -1.1857401132583618, -0.0827939510345459, -0.8497941493988037, -0.7501680850982666, 0.9771161079406738, 0.07674193382263184, -1.7012481689453125, 0.7192000150680542]
+    
+        fractionMaxSpeed  = 0.2
+        motionProxy.setAngles(names, angles, fractionMaxSpeed)
+#        
+#        self.motionProxy.setStiffnesses("Body", 1.0)
+    
+#        time.sleep(3.0)
+#        self.motionProxy.setStiffnesses("Body", 1.0)
+#        angles = [0.09966802597045898, 0.5092461109161377, 1.1565940380096436, 1.2839161157608032, -1.4742159843444824, -0.04597806930541992, 0.18250393867492676, 0.785599946975708, -0.2730100154876709, 0.21326804161071777, -0.8743381500244141, 2.112546443939209, -1.1842899322509766, 0.06753802299499512, -0.2730100154876709, 0.13810205459594727, -0.4418339729309082, 1.7349958419799805, -1.1136419773101807, 0.12582993507385254, -0.420274019241333, -1.115260124206543, 1.7533200979232788, 0.5093300342559814, -1.8238691091537476, 0.6979999542236328]
+    
+#        fractionMaxSpeed  = 0.1
+#        self.motionProxy.setAngles(names, angles, fractionMaxSpeed)
+#       
+#        self.motionProxy.setStiffnesses("Body", 1.0)
+    
+        time.sleep(3.0)
+        motionProxy.setStiffnesses("Body", 1.0)
+        angles = [-0.5737578868865967, 0.35584592819213867, 1.992624044418335, 0.49697399139404297, -0.5584180355072021, -1.0798940658569336, -1.4051861763000488, 0.7087999582290649, -0.2638061046600342, -0.06592011451721191, -0.5782761573791504, 2.112546443939209, -1.185823917388916, 0.08594608306884766, -0.2638061046600342, 0.04912996292114258, -0.5890979766845703, 2.112546443939209, -1.1857401132583618, -0.0858621597290039, 0.3728039264678955, -0.5630199909210205, 1.6674160957336426, 1.432797908782959, -1.4849538803100586, 0.7588000297546387]
+    
+        fractionMaxSpeed  = 0.2
+        motionProxy.setAngles(names, angles, fractionMaxSpeed)
+        time.sleep(3.0)
+        motionProxy.setStiffnesses("Body", 1.0) 
+        fractionMaxSpeed  = 2
+        for i in range(2):
+        	motionProxy.closeHand('RHand')
+        	time.sleep(0.05)
+        	motionProxy.openHand('RHand')
+        time.sleep(0.1)
+        doInitialisation()
+        
+        
 #==============================================================================
 # les EVENTS  d un robot
 #============================================================================== 
@@ -860,7 +1119,7 @@ class HumanGreeterModule(ALModule):
 
         try:
         #    print SpeechReco.isRunning()
-            self.SpeechReco.setVocabulary(["Romain Du sceau d'eau pfr",'Romain Dussot',"Ca va","automorphisme","Bibi","Nao","Bonjour","chut","salut je m'appelle Romain","Allo","Fromage","Romain","Salut","Anticonstitutionnelle","Endomorphisme"],
+            self.SpeechReco.setVocabulary(["Dab","Romain Du sceau d'eau pfr",'Romain Dussot',"Ca va","automorphisme","Bibi","Nao","Bonjour","chut","salut je m'appelle Romain","Allo","Fromage","Romain","Salut","Anticonstitutionnelle","Endomorphisme"],
                                           False)
         
         except Exception,e: 
@@ -874,7 +1133,7 @@ class HumanGreeterModule(ALModule):
         except Exception,e:
             print "Error:", e
         # Subscribe to the FaceDetected event:
-        
+        self.mot = ''
         global memory
         memory = ALProxy("ALMemory")
 #        memory.subscribeToEvent("FaceDetected",
@@ -884,8 +1143,8 @@ class HumanGreeterModule(ALModule):
 #        memory.subscribeToEvent("robotHasFallen", "HumanGreeter",
 #                                "RobotFall")
 
-        memory.subscribeToEvent("ALSoundLocalization/SoundLocated","HumanGreeter",
-                                "Soundalert")
+#        memory.subscribeToEvent("ALSoundLocalization/SoundLocated","HumanGreeter",
+#                                "Soundalert")
         
     def Soundalert(self,idword,value,untruc):
         
@@ -915,10 +1174,10 @@ class HumanGreeterModule(ALModule):
 #        tts.enableNotifications()
 #        print memory.getData("ALTextToSpeech/TextDone")
         print value
-        tts.say(str(value[0].split(',')))
+#        tts.say(str(value[0].split(',')))
         
         print "tu viens de dire "+str(value[0])
-    
+        self.mot = str(value[0])
         
 #        SpeechReco.subscribe('python_client')
         memory.subscribeToEvent("WordRecognized", "HumanGreeter",
@@ -956,7 +1215,7 @@ class HumanGreeterModule(ALModule):
             pass
         try:
             memory.unsubscribeToEvent("ALSoundLocalization/SoundLocated","HumanGreeter")
-        except:
+        except:    
             pass
         
             
@@ -1008,29 +1267,66 @@ if __name__== "__main__":
         HumanGreeter = HumanGreeterModule("HumanGreeter")
         print "Ready"
 
-        A = memoryProxy.getData("ALSoundLocalization/SoundLocated")
-        distance,confidence =  5 , 0.15
-        tracker.registerTarget("Sound", [distance, confidence])
-        tracker.setMode('Move')
-        tracker.setRelativePosition([-0.5, 0.0, 0.0, 0.1, 0.1, 0.3])    
-        tracker.track("Sound")
+#        A = memoryProxy.getData("ALSoundLocalization/SoundLocated")
+#        distance,confidence =  5 , 0.15
+#        tracker.registerTarget("Sound", [distance, confidence])
+#        tracker.setMode('Move')
+#        tracker.setRelativePosition([-0.5, 0.0, 0.0, 0.1, 0.1, 0.3])    
+#        tracker.track("Sound")
+#        time.sleep(60)
         
         
         
-#        for i in range (100):
 #        HumanGreeter.Subs()        
-#        time.sleep(15)
-#        
-#        while not memory.getData("ALTextToSpeech/TextDone")  :    
-#            print "Waiting to stop"
-#            time.sleep(0.1)
-#        print "Fin video..."
-#        HumanGreeter.stop()
-#        doStop()
+#        for i in range(50):
+#            if HumanGreeter.mot != '':
+#                HumanGreeter.stopWord()
+#                if HumanGreeter.mot =='Bonjour':
+#            
+#                    tts.say('Bonjour vous')
+#                    HumanGreeter.mot = ''
+#                    
+#                if HumanGreeter.mot =='Salut':
+#                    
+#                    tts.say('Yo')
+#                    HumanGreeter.mot = ''
+#                    
+#                if HumanGreeter.mot == 'Ca va':
+#                    
+#                    tts.say('Tranquille')
+#                    HumanGreeter.mot = ''
+#                    print HumanGreeter.mot
+#                    
+#                if HumanGreeter.mot == 'Dab':
+#                    
+#                    dab()
+#                    HumanGreeter.mot = ''
+#                if HumanGreeter.mot == 'Endomorphisme' or HumanGreeter.mot == automorphisme:
+#                    tts.say("C'est fini la prépa, boloss")
+#                    HumanGreeter.mot = ''
+#                
+#                if HumanGreeter.mot == 'Dance':
+#                    pass
+#                    
+#                HumanGreeter.Subs()
+#                    
+#            time.sleep(0.25)
+        steps()
+        time.sleep(2)
+        
+        dancer()
+        time.sleep(2)
+        
+        while not memory.getData("ALTextToSpeech/TextDone")  :    
+            print "Waiting to stop"
+            time.sleep(0.1)
+        print "Fin video..."
+        HumanGreeter.stop()
+        doStop()
 
 
 
-        time.sleep(60)
+
               
         HumanGreeter.stop()
         myBroker.shutdown()

@@ -4,7 +4,7 @@ import sys
 from naoqi import ALProxy, ALModule, ALBroker
 import motion
 import select
-import vision_showimages as vis
+#import vision_showimages as vis
 import numpy as np
 import almath
 from PyQt4.QtGui import QWidget, QImage, QApplication, QPainter, QPushButton
@@ -241,6 +241,7 @@ def Test_Articulations(queue=None,prog=None):
     initmouv()
     prog.value = 0
     
+
 def sumList(a, b):
     result = []
     for i in range(len(a)):
@@ -850,6 +851,7 @@ class HumanGreeterModule(ALModule):
             print"Could not set vocab."
             print "Error was :",e
         # Subscribe to the FaceDetected event:
+        self.mot = ''
         
         global memory
         memory = ALProxy("ALMemory")
