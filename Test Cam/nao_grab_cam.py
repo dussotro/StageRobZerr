@@ -7,7 +7,7 @@
 import numpy as np
 import cv2
 from PIL import Image
-import sys, time, math
+import sys, math
 sys.path.append("pynaoqi-python2.7-2.1.4.13-linux64")
 from naoqi import ALProxy
 import time
@@ -21,7 +21,13 @@ import almath
 # NAO parameters
 #robotIP, port = "172.20.27.47", 9559
 #robotIP, port = "172.20.25.150", 9559
-robotIP, port = "172.20.25.150", 9559
+#robotIP, port = "172.20.25.150", 9559
+
+#utilisation de sys
+if len(sys.argv) >= 2:
+    print 'il va chercher l\'adresse ip'
+    print sys.argv[1]
+    robotIP, port =  sys.argv[1], 9559
 
 #On liste les futures valeurs de capteurs à récupérer
 ALMEMORY_KEY_NAMES = ["Device/SubDeviceList/HeadYaw/Position/Sensor/Value", "Device/SubDeviceList/HeadPitch/Position/Sensor/Value"]
@@ -87,15 +93,15 @@ def splitImage(img, cpt):
     #affichage sur la meme figure que la mise a jour en continue
     pl.subplot2grid((3,6), (2,0), colspan = 2) 
     pl.imshow(hue, cmap='Greys')
-    pl.title("Hauteur (coloration)")
+    pl.ylabel("Hauteur (coloration)")
     if not cpt : pl.colorbar()
     pl.subplot2grid((3,6), (2,2), colspan = 2) 
     pl.imshow(sat, cmap='Greys')
-    pl.title("Saturation")
+    pl.ylabel("Saturation")
     if not cpt : pl.colorbar()            
     pl.subplot2grid((3,6), (2,4), colspan = 2) 
     pl.imshow(val, cmap='Greys')
-    pl.title("Valeur (luminance)")
+    pl.ylabel("Valeur (luminance)")
     if not cpt : pl.colorbar()   
     
     pl.savefig('Image/HSV.png')
@@ -212,7 +218,7 @@ def Main():
             # on recupere la video du NAO
             from_video = VideoProxy.getImageRemote(videoClient)
             img_nao = from_video[6]
-            
+           
             #on transforme l'image du nao encode RGB en tableau de pixel
             if affichage:
                 pl.subplot2grid((3,6), (0,0), colspan = 3) 
@@ -220,6 +226,7 @@ def Main():
                 pl.subplot2grid((2,2), (0,0)) 
             img_PIL1 = Image.frombytes("RGB", (imageWidth, imageHeight), img_nao)
             pl.imshow(img_PIL1)
+            pl.ylabel('RGB')
             if not cpt : pl.colorbar() #affichage de la bar une seule fois
 #            pl.figure(figsize=(4,4))
 #            pl.imshow(img_PIL)
@@ -234,6 +241,7 @@ def Main():
                 pl.subplot2grid((2,2), (1,0))           
             img_PIL2 = cv2.cvtColor(np.asarray(img_PIL1), cv2.COLOR_RGB2HSV)
             pl.imshow(img_PIL2)
+            pl.ylabel('HSV')
             if not cpt : pl.colorbar()
 #            pl.figure(figsize=(4,4))
 #            pl.imshow(img_PIL)
@@ -249,6 +257,7 @@ def Main():
                 pl.subplot2grid((2,2), (1,0)) 
             img_PIL3 = cv2.blur(img_PIL2, (5,5))
             pl.imshow(img_PIL3)
+            pl.ylabel('HSV Blur')
             if not cpt : pl.colorbar()
 #            pl.figure(figsize=(4,4))
 #            pl.imshow(img_PIL)
@@ -262,6 +271,7 @@ def Main():
                 pl.subplot2grid((2,2), (1,1)) 
             img_PIL4 = cv2.inRange(img_PIL3, HSVmin, HSVmax)
             pl.imshow(img_PIL4)
+            pl.ylabel('Target')
             if not cpt : pl.colorbar()
 #            pl.figure(figsize=(4,4)) 
 #            pl.imshow(img_PIL4)
@@ -312,8 +322,8 @@ def Main():
                 x, y = recordData()
                 #on ajoute les differentiels
                 x, y = x* Ang_x/imageWidth + dx, y*Ang_y/imageHeight + dy
-                omega = -x/2
-                print " | dx : ", dx, " | dy : ", dy
+                omega = -x
+                print x
                 #on effectue les mouvements de la tete
                 motionProxy.setAngles("HeadYaw", -x/3*almath.TO_RAD, 0.5)
                 motionProxy.setAngles("HeadPitch", y/3*almath.TO_RAD, 0.5)
@@ -321,8 +331,8 @@ def Main():
             #theta egal a l'angle de rotation necessaire de la tete
             #on suppose qu'on voudrait y arriver en 1 seconde
             #donc la norme de theta egale la norme de x
-            if omega < -0.7 : omega = -0.7
-            if omega > +0.7 : omega = +0.7
+            if omega < -0.9 : omega = -0.9
+            if omega > +0.9 : omega = +0.9
             #on ajoute un maximum a omega pour garder l'equilibre
             #le maximum correspond au decalage maximum en une seconde (il ne peut pas aller plus loin en agnle que ce qu'il voit)
             if best_area > seuilHaut:
@@ -346,36 +356,34 @@ def Main():
                 setLeds(0, 255, 0)
                 vitesse = 0.0
                 #led verte si l'obstacle est a la bonne distance
-            if omega > -0.1 or omega < +0.1: omega = 0.0
+            if omega < -0.1 or omega > +0.1: omega = 0.0
         
             """
             Detection d'obstacle frontaux en cas de probleme au niveau de la reconnaissance
             Plus prise en compte des obstacles de couleurs différentes
             """
-    
+            
             leftSensor = memoryProxy.getData("Device/SubDeviceList/US/Left/Sensor/Value")
             rightSensor = memoryProxy.getData("Device/SubDeviceList/US/Right/Sensor/Value")
+            print "Left: ", leftSensor, "Right: ", rightSensor
             
-            if rightSensor < 0.5 or leftSensor < 0.5:
-                error = 0.1
-                diffSensor = rightSensor - leftSensor
+            if rightSensor < 0.4 or leftSensor < 0.4:
                 
-                if diffSensor > error:
-                    while rightSensor < 0.3:
-                        rightSensor = memoryProxy.getData("Device/SubDeviceList/US/Right/Sensor/Value")
-                        motionProxy.moveToward(0.0, 0.0, 0.5, 1.0)
-                elif diffSensor < -error:
-                    while leftSensor < 0.3:
+                if rightSensor < 0.4 and leftSensor < 0.4:
+                    while rightSensor < 0.4 and leftSensor < 0.4:
                         leftSensor = memoryProxy.getData("Device/SubDeviceList/US/Left/Sensor/Value")
-                        motionProxy.moveToward(0.0, 0.0, -0.5, 1.0)
+                        rightSensor = memoryProxy.getData("Device/SubDeviceList/US/Right/Sensor/Value")
+                        motionProxy.post.setWalkTargetVelocity(-0.4, 0.0, 0.0, 1.0)
+                elif leftSensor > 0.4:
+                    while rightSensor < 0.4:
+                        rightSensor = memoryProxy.getData("Device/SubDeviceList/US/Right/Sensor/Value")
+                        motionProxy.post.setWalkTargetVelocity(0.0, 0.0, 0.5, 1.0)
                 else:
-                    while rightSensor < 0.3 or leftSensor < 0.3:
+                    while leftSensor < 0.4:
                         leftSensor = memoryProxy.getData("Device/SubDeviceList/US/Left/Sensor/Value")
-                        rightSensor = memoryProxy.getData("Device/SubDeviceList/US/Right/Sensor/Value")
-                        motionProxy.moveToward(-0.4, 0.0, 0.0, 1.0)
+                        motionProxy.post.setWalkTargetVelocity(0.0, 0.0, -0.5, 1.0)
             
-            #on applique les vitesses     
-            print 'vitesse et theta', vitesse, omega    
+            #on applique les vitesses      
             motionProxy.post.setWalkTargetVelocity(vitesse, 0.0, omega,0.3)
 
             #utile si l'on veut faire un essai sur un tour de boucle
@@ -384,7 +392,6 @@ def Main():
 #            filein.close()     
 
         elif cmd=="stop":
-            print "je m'arrete"
             motionProxy.stopMove()
             Cancel()
            
@@ -398,7 +405,7 @@ def Main():
             pl.ioff()
             #pass
         
-        print 'la commande etait : ', cmd
+#        print 'la commande etait : ', cmd
         print 'executer en : ', time.time() - t0
     
     

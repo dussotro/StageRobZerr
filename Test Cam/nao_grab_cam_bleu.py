@@ -21,8 +21,12 @@ import almath
 # NAO parameters
 #robotIP, port = "172.20.27.47", 9559
 #robotIP, port = "172.20.25.150", 9559
-robotIP, port = "172.20.25.150", 9559
+#robotIP, port = "172.20.25.150", 9559
 
+#utilisation de sys
+if len(sys.argv) >= 2:
+    robotIP, port =  sys.argv[1], 9559
+    
 #On liste les futures valeurs de capteurs à récupérer
 ALMEMORY_KEY_NAMES = ["Device/SubDeviceList/HeadYaw/Position/Sensor/Value", "Device/SubDeviceList/HeadPitch/Position/Sensor/Value"]
 
@@ -40,12 +44,12 @@ affichage = 1
 #On cree des limites de detection pour isoler un objet avec OpenCV
 
 #pour la couleur orange
-HSVmin = np.array([0,100,120], np.uint8)
-HSVmax = np.array([40,240,255], np.uint8)
+#HSVmin = np.array([0,100,120], np.uint8)
+#HSVmax = np.array([40,240,255], np.uint8)
 
 #pour la couleur bleu
-#HSVmin = np.array([90,100,0], np.uint8)
-#HSVmax = np.array([120,250,150], np.uint8)
+HSVmin = np.array([90,100,0], np.uint8)
+HSVmax = np.array([120,250,150], np.uint8)
 
 # on definit une constante qui permettront de modifier les differentes vitesses de deplacements du robot
 inv_coeff_x, inv_coeff_y = -3.0, 3.0
