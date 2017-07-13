@@ -6,9 +6,8 @@ import motion
 import select
 import vision_showimages as vis
 import numpy as np
-import DiagNAO_eta as eta
-
-robotIP = "172.20.28.103" #éta
+import DiagNAO
+robotIP = "172.20.13.63" #éta
 
 port = 9559
 CameraID = 0
@@ -216,8 +215,8 @@ def moveTowardOpt(vX, vY, Omega, Frequency, proxy):
 
     
 if __name__ == '__main__':
-    eta.doInitialisation()
-    
+    DiagNAO.doInitialisation()
+    moveToOpt(0.5,0,0,1,motionProxy)
 #    try :
 #        print ">>>>>>>>>>>>>> Test moveToEta"
 #        moveToEta(0.57, 0, 0, 1.0)
@@ -240,7 +239,7 @@ if __name__ == '__main__':
 #        motionProxy.setAngles("RHipRoll", enter ,0.3)
 #        time.sleep(1)
     
-    eta.doStop()
+    DiagNAO.doStop()
     
     
     
